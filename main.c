@@ -4,6 +4,11 @@
 #include "io_hal.h"
 #include "pmm_hal.h"
 #include "driverlib.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "led_hil.h"
+#include "control_motors.h"
 
 void test(void)
 {
@@ -57,6 +62,46 @@ void init(void)
     IO_reset(P7);
     IO_reset(P8);
     IO_reset(PJ);
+    LEDI_init();
+    CM_init();
+}
+
+void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer,
+                                    StackType_t **ppxIdleTaskStackBuffer,
+                                    uint32_t *pulIdleTaskStackSize )
+{
+static StaticTask_t xIdleTaskTCB;
+static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ];
+    *ppxIdleTaskTCBBuffer = &xIdleTaskTCB;
+    *ppxIdleTaskStackBuffer = uxIdleTaskStack;
+    *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
+}
+
+#define LED1_TASK_STDEPTH (configMINIMAL_STACK_SIZE)
+static StackType_t _led1_stack[LED1_TASK_STDEPTH];
+static StaticTask_t _led1_task;
+void led1Task(void * params)
+{
+    volatile uint32_t i;
+    while(1)
+    {
+        LEDI_toggleLed(LED1);
+        for(i=120000; i>0; --i);
+    }
+}
+
+#define LED2_TASK_STDEPTH (configMINIMAL_STACK_SIZE)
+static StackType_t _led2_stack[LED2_TASK_STDEPTH];
+static StaticTask_t _led2_task;
+void led2Task(void * params)
+{
+    volatile uint32_t i;
+    while(1)
+    {
+        for(i=60000; i>0; --i);
+        LEDI_toggleLed(LED2);
+        for(i=60000; i>0; --i);
+    }
 }
 
 int main(void)
@@ -64,6 +109,11 @@ int main(void)
     init();
     test();
 
-    while(1);
+    xTaskCreateStatic(led1Task, "led1 task", LED1_TASK_STDEPTH, NULL, 1, _led1_stack, &_led1_task);
+    xTaskCreateStatic(led2Task, "led2 task", LED2_TASK_STDEPTH, NULL, 1, _led2_stack, &_led2_task);
+    vTaskStartScheduler();
+
+
+    ASSERT(false);
 
 }

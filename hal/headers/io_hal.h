@@ -11,6 +11,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#undef OUT
+#undef DIR
+
+
 typedef struct
 {
     volatile const uint8_t IN;

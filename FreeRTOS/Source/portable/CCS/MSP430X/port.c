@@ -189,13 +189,13 @@ void vPortSetupTimerInterrupt( void )
     TB_setCcr(TB0, 0, 1000/configTICK_RATE_HZ);
     TB_configureCtl(TB0, &timer_ctl_config);
     TB_configureCctl(TB0, 0, &timer_cctl_config);
-    __enable_interrupt();
     TB_start(TB0, tbCtlMcUp);
+    __enable_interrupt();
 }
 /*-----------------------------------------------------------*/
 
 #pragma vector=TIMER0_B0_VECTOR
-interrupt void vTickISREntry( void )
+void __attribute__ ((interrupt)) vTickISREntry( void )
 {
 extern void vPortTickISR( void );
 
@@ -208,5 +208,6 @@ extern void vPortTickISR( void );
 		vPortCooperativeTickISR();
 	#endif
 }
+
 
 	

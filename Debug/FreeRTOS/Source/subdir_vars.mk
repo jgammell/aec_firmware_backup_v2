@@ -8,31 +8,37 @@ SHELL = cmd.exe
 C_SRCS += \
 ../FreeRTOS/Source/list.c \
 ../FreeRTOS/Source/queue.c \
-../FreeRTOS/Source/tasks.c 
+../FreeRTOS/Source/tasks.c \
+../FreeRTOS/Source/timers.c 
 
 C_DEPS += \
 ./FreeRTOS/Source/list.d \
 ./FreeRTOS/Source/queue.d \
-./FreeRTOS/Source/tasks.d 
+./FreeRTOS/Source/tasks.d \
+./FreeRTOS/Source/timers.d 
 
 OBJS += \
 ./FreeRTOS/Source/list.obj \
 ./FreeRTOS/Source/queue.obj \
-./FreeRTOS/Source/tasks.obj 
+./FreeRTOS/Source/tasks.obj \
+./FreeRTOS/Source/timers.obj 
 
 OBJS__QUOTED += \
 "FreeRTOS\Source\list.obj" \
 "FreeRTOS\Source\queue.obj" \
-"FreeRTOS\Source\tasks.obj" 
+"FreeRTOS\Source\tasks.obj" \
+"FreeRTOS\Source\timers.obj" 
 
 C_DEPS__QUOTED += \
 "FreeRTOS\Source\list.d" \
 "FreeRTOS\Source\queue.d" \
-"FreeRTOS\Source\tasks.d" 
+"FreeRTOS\Source\tasks.d" \
+"FreeRTOS\Source\timers.d" 
 
 C_SRCS__QUOTED += \
 "../FreeRTOS/Source/list.c" \
 "../FreeRTOS/Source/queue.c" \
-"../FreeRTOS/Source/tasks.c" 
+"../FreeRTOS/Source/tasks.c" \
+"../FreeRTOS/Source/timers.c" 
 
 

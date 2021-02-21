@@ -117,4 +117,5 @@ FreeRTOS/Source/portable/CCS/MSP430X \
 app/src \
 driverlib/MSP430F5xx_6xx \
 hal/src \
+hil/src \
 

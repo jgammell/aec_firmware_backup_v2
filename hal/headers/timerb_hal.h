@@ -178,7 +178,6 @@ typedef struct
     TB_CtlTbssel_Enum tbssel;
     TB_CtlCntl_Enum cntl;
     TB_CtlTbclgrp_Enum tbclgrp;
-    void (*handler)(void);
 } TB_CtlConfig_Struct;
 typedef struct
 {
