@@ -111,11 +111,13 @@ void CM_init(void)
     ASSERT(theta_ownership == NULL);
     theta_ownership = xSemaphoreCreateBinaryStatic(&theta_ownership_buffer);
     ASSERT(theta_ownership != NULL);
+    xSemaphoreGive(theta_ownership);
 
     static StaticSemaphore_t phi_ownership_buffer;
     ASSERT(phi_ownership == NULL);
     phi_ownership = xSemaphoreCreateBinaryStatic(&phi_ownership_buffer);
     ASSERT(phi_ownership != NULL);
+    xSemaphoreGive(phi_ownership);
 
     static uint8_t theta_turnsteps_command_storage_buffer[1U*sizeof(CM_TurnStepsCmd_Struct)];
     static StaticQueue_t theta_turnsteps_command_buffer;
@@ -207,8 +209,13 @@ void CM_turnMotorSteps(CM_Motor_Enum motor, uint32_t num_steps, CM_Dir_Enum dir,
     xQueueSend(motor==theta? theta_turnsteps_command : phi_turnsteps_command, &cmd, portMAX_DELAY);
 }
 
-void CM_align(CM_Motor_Enum motor)
+void CM_align(CM_Motor_Enum motor, void (*handler)(void))
 {
+    CM_AlignCmd_Struct cmd =
+    {
+     .handler = handler
+    };
+    xQueueSend(motor==theta? theta_align_command : phi_align_command, &cmd, portMAX_DELAY);
 }
 
 static void _turnMotorStepsTask(void * _motor)

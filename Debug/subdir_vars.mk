@@ -9,21 +9,27 @@ CMD_SRCS += \
 ../lnk_msp430f5529.cmd 
 
 C_SRCS += \
+../hal.c \
 ../main.c 
 
 C_DEPS += \
+./hal.d \
 ./main.d 
 
 OBJS += \
+./hal.obj \
 ./main.obj 
 
 OBJS__QUOTED += \
+"hal.obj" \
 "main.obj" 
 
 C_DEPS__QUOTED += \
+"hal.d" \
 "main.d" 
 
 C_SRCS__QUOTED += \
+"../hal.c" \
 "../main.c" 
 
 

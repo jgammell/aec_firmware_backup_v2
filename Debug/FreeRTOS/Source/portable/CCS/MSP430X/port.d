@@ -29,6 +29,9 @@ FreeRTOS/Source/portable/CCS/MSP430X/port.obj: C:/Users/jgamm/Desktop/sp2021/ece
 FreeRTOS/Source/portable/CCS/MSP430X/port.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/FreeRTOS/Source/include/list.h
 FreeRTOS/Source/portable/CCS/MSP430X/port.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal/headers/timerb_hal.h
 FreeRTOS/Source/portable/CCS/MSP430X/port.obj: C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/include/stdbool.h
+FreeRTOS/Source/portable/CCS/MSP430X/port.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/driverlib/MSP430F5xx_6xx/ucs.h
+FreeRTOS/Source/portable/CCS/MSP430X/port.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/driverlib/MSP430F5xx_6xx/inc/hw_memmap.h
+FreeRTOS/Source/portable/CCS/MSP430X/port.obj: C:/ti/ccs1011/ccs/ccs_base/msp430/include/msp430f5xx_6xxgeneric.h
 
 ../FreeRTOS/Source/portable/CCS/MSP430X/port.c: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/FreeRTOS/Source/include/FreeRTOS.h: 
@@ -59,3 +62,6 @@ C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/FreeRTOS/Source/includ
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/FreeRTOS/Source/include/list.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal/headers/timerb_hal.h: 
 C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/include/stdbool.h: 
+C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/driverlib/MSP430F5xx_6xx/ucs.h: 
+C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/driverlib/MSP430F5xx_6xx/inc/hw_memmap.h: 
+C:/ti/ccs1011/ccs/ccs_base/msp430/include/msp430f5xx_6xxgeneric.h: 

@@ -114,6 +114,14 @@ SUBDIRS := \
 . \
 FreeRTOS/Source \
 FreeRTOS/Source/portable/CCS/MSP430X \
+USB_API/USB_CDC_API \
+USB_API/USB_Common \
+USB_API/USB_HID_API \
+USB_API/USB_MSC_API \
+USB_API/USB_PHDC_API \
+USB_API \
+USB_app \
+USB_config \
 app/src \
 driverlib/MSP430F5xx_6xx \
 hal/src \

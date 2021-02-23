@@ -79,6 +79,8 @@ main.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/FreeRTOS/Sou
 main.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/FreeRTOS/Source/include/queue.h
 main.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hil/headers/led_hil.h
 main.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/control_motors.h
+main.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/interface.h
+main.obj: ../hal.h
 
 ../main.c: 
 C:/ti/ccs1011/ccs/ccs_base/msp430/include/in430.h: 
@@ -159,3 +161,5 @@ C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/FreeRTOS/Source/includ
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/FreeRTOS/Source/include/queue.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hil/headers/led_hil.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/control_motors.h: 
+C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/interface.h: 
+../hal.h: 

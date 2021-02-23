@@ -10,6 +10,7 @@ GEN_OPTS__FLAG :=
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
+"./hal.obj" \
 "./main.obj" \
 "./FreeRTOS/Source/list.obj" \
 "./FreeRTOS/Source/queue.obj" \
@@ -17,6 +18,19 @@ ORDERED_OBJS += \
 "./FreeRTOS/Source/timers.obj" \
 "./FreeRTOS/Source/portable/CCS/MSP430X/port.obj" \
 "./FreeRTOS/Source/portable/CCS/MSP430X/portext.obj" \
+"./USB_API/USB_CDC_API/UsbCdc.obj" \
+"./USB_API/USB_Common/usb.obj" \
+"./USB_API/USB_Common/usbdma.obj" \
+"./USB_API/USB_HID_API/UsbHid.obj" \
+"./USB_API/USB_HID_API/UsbHidReq.obj" \
+"./USB_API/USB_MSC_API/UsbMscReq.obj" \
+"./USB_API/USB_MSC_API/UsbMscScsi.obj" \
+"./USB_API/USB_MSC_API/UsbMscStateMachine.obj" \
+"./USB_API/USB_PHDC_API/UsbPHDC.obj" \
+"./USB_app/usbConstructs.obj" \
+"./USB_app/usbEventHandling.obj" \
+"./USB_config/UsbIsr.obj" \
+"./USB_config/descriptors.obj" \
 "./app/src/control_motors.obj" \
 "./app/src/error.obj" \
 "./app/src/interface.obj" \
@@ -70,6 +84,7 @@ ORDERED_OBJS += \
 "./hil/src/led_hil.obj" \
 "./hil/src/pwm.obj" \
 "../lnk_msp430f5529.cmd" \
+"../USB_API/msp430USB.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibmath.a \
 -llibc.a \
@@ -84,6 +99,14 @@ RMDIR := RMDIR /S/Q
 -include subdir_vars.mk
 -include FreeRTOS/Source/subdir_vars.mk
 -include FreeRTOS/Source/portable/CCS/MSP430X/subdir_vars.mk
+-include USB_API/USB_CDC_API/subdir_vars.mk
+-include USB_API/USB_Common/subdir_vars.mk
+-include USB_API/USB_HID_API/subdir_vars.mk
+-include USB_API/USB_MSC_API/subdir_vars.mk
+-include USB_API/USB_PHDC_API/subdir_vars.mk
+-include USB_API/subdir_vars.mk
+-include USB_app/subdir_vars.mk
+-include USB_config/subdir_vars.mk
 -include app/src/subdir_vars.mk
 -include driverlib/MSP430F5xx_6xx/subdir_vars.mk
 -include hal/src/subdir_vars.mk
@@ -91,6 +114,14 @@ RMDIR := RMDIR /S/Q
 -include subdir_rules.mk
 -include FreeRTOS/Source/subdir_rules.mk
 -include FreeRTOS/Source/portable/CCS/MSP430X/subdir_rules.mk
+-include USB_API/USB_CDC_API/subdir_rules.mk
+-include USB_API/USB_Common/subdir_rules.mk
+-include USB_API/USB_HID_API/subdir_rules.mk
+-include USB_API/USB_MSC_API/subdir_rules.mk
+-include USB_API/USB_PHDC_API/subdir_rules.mk
+-include USB_API/subdir_rules.mk
+-include USB_app/subdir_rules.mk
+-include USB_config/subdir_rules.mk
 -include app/src/subdir_rules.mk
 -include driverlib/MSP430F5xx_6xx/subdir_rules.mk
 -include hal/src/subdir_rules.mk
@@ -218,17 +249,19 @@ ecen4620_firmware.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 ecen4620_firmware.hex: $(EXE_OUTPUTS)
 	@echo 'Building files: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo 'Invoking: MSP430 Hex Utility'
-	"C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/bin/hex430" --memwidth=8 --romwidth=8 -o "ecen4620_firmware.hex" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/bin/hex430" --memwidth=8 --romwidth=8 --diag_wrap=off -o "ecen4620_firmware.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo ' '
 
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "FreeRTOS\Source\list.obj" "FreeRTOS\Source\queue.obj" "FreeRTOS\Source\tasks.obj" "FreeRTOS\Source\timers.obj" "FreeRTOS\Source\portable\CCS\MSP430X\port.obj" "FreeRTOS\Source\portable\CCS\MSP430X\portext.obj" "app\src\control_motors.obj" "app\src\error.obj" "app\src\interface.obj" "driverlib\MSP430F5xx_6xx\adc10_a.obj" "driverlib\MSP430F5xx_6xx\adc12_a.obj" "driverlib\MSP430F5xx_6xx\aes.obj" "driverlib\MSP430F5xx_6xx\battbak.obj" "driverlib\MSP430F5xx_6xx\comp_b.obj" "driverlib\MSP430F5xx_6xx\crc.obj" "driverlib\MSP430F5xx_6xx\ctsd16.obj" "driverlib\MSP430F5xx_6xx\dac12_a.obj" "driverlib\MSP430F5xx_6xx\dma.obj" "driverlib\MSP430F5xx_6xx\eusci_a_spi.obj" "driverlib\MSP430F5xx_6xx\eusci_a_uart.obj" "driverlib\MSP430F5xx_6xx\eusci_b_i2c.obj" "driverlib\MSP430F5xx_6xx\eusci_b_spi.obj" "driverlib\MSP430F5xx_6xx\flashctl.obj" "driverlib\MSP430F5xx_6xx\gpio.obj" "driverlib\MSP430F5xx_6xx\lcd_b.obj" "driverlib\MSP430F5xx_6xx\lcd_c.obj" "driverlib\MSP430F5xx_6xx\ldopwr.obj" "driverlib\MSP430F5xx_6xx\mpy32.obj" 
-	-$(RM) "driverlib\MSP430F5xx_6xx\oa.obj" "driverlib\MSP430F5xx_6xx\pmap.obj" "driverlib\MSP430F5xx_6xx\pmm.obj" "driverlib\MSP430F5xx_6xx\ram.obj" "driverlib\MSP430F5xx_6xx\ref.obj" "driverlib\MSP430F5xx_6xx\rtc_a.obj" "driverlib\MSP430F5xx_6xx\rtc_b.obj" "driverlib\MSP430F5xx_6xx\rtc_c.obj" "driverlib\MSP430F5xx_6xx\sd24_b.obj" "driverlib\MSP430F5xx_6xx\sfr.obj" "driverlib\MSP430F5xx_6xx\sysctl.obj" "driverlib\MSP430F5xx_6xx\tec.obj" "driverlib\MSP430F5xx_6xx\timer_a.obj" "driverlib\MSP430F5xx_6xx\timer_b.obj" "driverlib\MSP430F5xx_6xx\timer_d.obj" "driverlib\MSP430F5xx_6xx\tlv.obj" "driverlib\MSP430F5xx_6xx\ucs.obj" "driverlib\MSP430F5xx_6xx\usci_a_spi.obj" "driverlib\MSP430F5xx_6xx\usci_a_uart.obj" "driverlib\MSP430F5xx_6xx\usci_b_i2c.obj" "driverlib\MSP430F5xx_6xx\usci_b_spi.obj" "driverlib\MSP430F5xx_6xx\wdt_a.obj" "hal\src\io_hal.obj" "hal\src\pmm_hal.obj" "hal\src\timera_hal.obj" "hal\src\timerb_hal.obj" "hal\src\ucs_hal.obj" "hil\src\io_interrupts.obj" "hil\src\led_hil.obj" "hil\src\pwm.obj" 
-	-$(RM) "main.d" "FreeRTOS\Source\list.d" "FreeRTOS\Source\queue.d" "FreeRTOS\Source\tasks.d" "FreeRTOS\Source\timers.d" "FreeRTOS\Source\portable\CCS\MSP430X\port.d" "app\src\control_motors.d" "app\src\error.d" "app\src\interface.d" "driverlib\MSP430F5xx_6xx\adc10_a.d" "driverlib\MSP430F5xx_6xx\adc12_a.d" "driverlib\MSP430F5xx_6xx\aes.d" "driverlib\MSP430F5xx_6xx\battbak.d" "driverlib\MSP430F5xx_6xx\comp_b.d" "driverlib\MSP430F5xx_6xx\crc.d" "driverlib\MSP430F5xx_6xx\ctsd16.d" "driverlib\MSP430F5xx_6xx\dac12_a.d" "driverlib\MSP430F5xx_6xx\dma.d" "driverlib\MSP430F5xx_6xx\eusci_a_spi.d" "driverlib\MSP430F5xx_6xx\eusci_a_uart.d" "driverlib\MSP430F5xx_6xx\eusci_b_i2c.d" "driverlib\MSP430F5xx_6xx\eusci_b_spi.d" "driverlib\MSP430F5xx_6xx\flashctl.d" "driverlib\MSP430F5xx_6xx\gpio.d" "driverlib\MSP430F5xx_6xx\lcd_b.d" "driverlib\MSP430F5xx_6xx\lcd_c.d" "driverlib\MSP430F5xx_6xx\ldopwr.d" "driverlib\MSP430F5xx_6xx\mpy32.d" "driverlib\MSP430F5xx_6xx\oa.d" "driverlib\MSP430F5xx_6xx\pmap.d" "driverlib\MSP430F5xx_6xx\pmm.d" 
-	-$(RM) "driverlib\MSP430F5xx_6xx\ram.d" "driverlib\MSP430F5xx_6xx\ref.d" "driverlib\MSP430F5xx_6xx\rtc_a.d" "driverlib\MSP430F5xx_6xx\rtc_b.d" "driverlib\MSP430F5xx_6xx\rtc_c.d" "driverlib\MSP430F5xx_6xx\sd24_b.d" "driverlib\MSP430F5xx_6xx\sfr.d" "driverlib\MSP430F5xx_6xx\sysctl.d" "driverlib\MSP430F5xx_6xx\tec.d" "driverlib\MSP430F5xx_6xx\timer_a.d" "driverlib\MSP430F5xx_6xx\timer_b.d" "driverlib\MSP430F5xx_6xx\timer_d.d" "driverlib\MSP430F5xx_6xx\tlv.d" "driverlib\MSP430F5xx_6xx\ucs.d" "driverlib\MSP430F5xx_6xx\usci_a_spi.d" "driverlib\MSP430F5xx_6xx\usci_a_uart.d" "driverlib\MSP430F5xx_6xx\usci_b_i2c.d" "driverlib\MSP430F5xx_6xx\usci_b_spi.d" "driverlib\MSP430F5xx_6xx\wdt_a.d" "hal\src\io_hal.d" "hal\src\pmm_hal.d" "hal\src\timera_hal.d" "hal\src\timerb_hal.d" "hal\src\ucs_hal.d" "hil\src\io_interrupts.d" "hil\src\led_hil.d" "hil\src\pwm.d" 
+	-$(RM) "hal.obj" "main.obj" "FreeRTOS\Source\list.obj" "FreeRTOS\Source\queue.obj" "FreeRTOS\Source\tasks.obj" "FreeRTOS\Source\timers.obj" "FreeRTOS\Source\portable\CCS\MSP430X\port.obj" "FreeRTOS\Source\portable\CCS\MSP430X\portext.obj" "USB_API\USB_CDC_API\UsbCdc.obj" "USB_API\USB_Common\usb.obj" "USB_API\USB_Common\usbdma.obj" "USB_API\USB_HID_API\UsbHid.obj" "USB_API\USB_HID_API\UsbHidReq.obj" "USB_API\USB_MSC_API\UsbMscReq.obj" "USB_API\USB_MSC_API\UsbMscScsi.obj" "USB_API\USB_MSC_API\UsbMscStateMachine.obj" "USB_API\USB_PHDC_API\UsbPHDC.obj" "USB_app\usbConstructs.obj" "USB_app\usbEventHandling.obj" "USB_config\UsbIsr.obj" "USB_config\descriptors.obj" "app\src\control_motors.obj" "app\src\error.obj" "app\src\interface.obj" "driverlib\MSP430F5xx_6xx\adc10_a.obj" "driverlib\MSP430F5xx_6xx\adc12_a.obj" "driverlib\MSP430F5xx_6xx\aes.obj" "driverlib\MSP430F5xx_6xx\battbak.obj" "driverlib\MSP430F5xx_6xx\comp_b.obj" "driverlib\MSP430F5xx_6xx\crc.obj" "driverlib\MSP430F5xx_6xx\ctsd16.obj" "driverlib\MSP430F5xx_6xx\dac12_a.obj" 
+	-$(RM) "driverlib\MSP430F5xx_6xx\dma.obj" "driverlib\MSP430F5xx_6xx\eusci_a_spi.obj" "driverlib\MSP430F5xx_6xx\eusci_a_uart.obj" "driverlib\MSP430F5xx_6xx\eusci_b_i2c.obj" "driverlib\MSP430F5xx_6xx\eusci_b_spi.obj" "driverlib\MSP430F5xx_6xx\flashctl.obj" "driverlib\MSP430F5xx_6xx\gpio.obj" "driverlib\MSP430F5xx_6xx\lcd_b.obj" "driverlib\MSP430F5xx_6xx\lcd_c.obj" "driverlib\MSP430F5xx_6xx\ldopwr.obj" "driverlib\MSP430F5xx_6xx\mpy32.obj" "driverlib\MSP430F5xx_6xx\oa.obj" "driverlib\MSP430F5xx_6xx\pmap.obj" "driverlib\MSP430F5xx_6xx\pmm.obj" "driverlib\MSP430F5xx_6xx\ram.obj" "driverlib\MSP430F5xx_6xx\ref.obj" "driverlib\MSP430F5xx_6xx\rtc_a.obj" "driverlib\MSP430F5xx_6xx\rtc_b.obj" "driverlib\MSP430F5xx_6xx\rtc_c.obj" "driverlib\MSP430F5xx_6xx\sd24_b.obj" "driverlib\MSP430F5xx_6xx\sfr.obj" "driverlib\MSP430F5xx_6xx\sysctl.obj" "driverlib\MSP430F5xx_6xx\tec.obj" "driverlib\MSP430F5xx_6xx\timer_a.obj" "driverlib\MSP430F5xx_6xx\timer_b.obj" "driverlib\MSP430F5xx_6xx\timer_d.obj" "driverlib\MSP430F5xx_6xx\tlv.obj" 
+	-$(RM) "driverlib\MSP430F5xx_6xx\ucs.obj" "driverlib\MSP430F5xx_6xx\usci_a_spi.obj" "driverlib\MSP430F5xx_6xx\usci_a_uart.obj" "driverlib\MSP430F5xx_6xx\usci_b_i2c.obj" "driverlib\MSP430F5xx_6xx\usci_b_spi.obj" "driverlib\MSP430F5xx_6xx\wdt_a.obj" "hal\src\io_hal.obj" "hal\src\pmm_hal.obj" "hal\src\timera_hal.obj" "hal\src\timerb_hal.obj" "hal\src\ucs_hal.obj" "hil\src\io_interrupts.obj" "hil\src\led_hil.obj" "hil\src\pwm.obj" 
+	-$(RM) "hal.d" "main.d" "FreeRTOS\Source\list.d" "FreeRTOS\Source\queue.d" "FreeRTOS\Source\tasks.d" "FreeRTOS\Source\timers.d" "FreeRTOS\Source\portable\CCS\MSP430X\port.d" "USB_API\USB_CDC_API\UsbCdc.d" "USB_API\USB_Common\usb.d" "USB_API\USB_Common\usbdma.d" "USB_API\USB_HID_API\UsbHid.d" "USB_API\USB_HID_API\UsbHidReq.d" "USB_API\USB_MSC_API\UsbMscReq.d" "USB_API\USB_MSC_API\UsbMscScsi.d" "USB_API\USB_MSC_API\UsbMscStateMachine.d" "USB_API\USB_PHDC_API\UsbPHDC.d" "USB_app\usbConstructs.d" "USB_app\usbEventHandling.d" "USB_config\UsbIsr.d" "USB_config\descriptors.d" "app\src\control_motors.d" "app\src\error.d" "app\src\interface.d" "driverlib\MSP430F5xx_6xx\adc10_a.d" "driverlib\MSP430F5xx_6xx\adc12_a.d" "driverlib\MSP430F5xx_6xx\aes.d" "driverlib\MSP430F5xx_6xx\battbak.d" "driverlib\MSP430F5xx_6xx\comp_b.d" "driverlib\MSP430F5xx_6xx\crc.d" "driverlib\MSP430F5xx_6xx\ctsd16.d" "driverlib\MSP430F5xx_6xx\dac12_a.d" "driverlib\MSP430F5xx_6xx\dma.d" "driverlib\MSP430F5xx_6xx\eusci_a_spi.d" "driverlib\MSP430F5xx_6xx\eusci_a_uart.d" 
+	-$(RM) "driverlib\MSP430F5xx_6xx\eusci_b_i2c.d" "driverlib\MSP430F5xx_6xx\eusci_b_spi.d" "driverlib\MSP430F5xx_6xx\flashctl.d" "driverlib\MSP430F5xx_6xx\gpio.d" "driverlib\MSP430F5xx_6xx\lcd_b.d" "driverlib\MSP430F5xx_6xx\lcd_c.d" "driverlib\MSP430F5xx_6xx\ldopwr.d" "driverlib\MSP430F5xx_6xx\mpy32.d" "driverlib\MSP430F5xx_6xx\oa.d" "driverlib\MSP430F5xx_6xx\pmap.d" "driverlib\MSP430F5xx_6xx\pmm.d" "driverlib\MSP430F5xx_6xx\ram.d" "driverlib\MSP430F5xx_6xx\ref.d" "driverlib\MSP430F5xx_6xx\rtc_a.d" "driverlib\MSP430F5xx_6xx\rtc_b.d" "driverlib\MSP430F5xx_6xx\rtc_c.d" "driverlib\MSP430F5xx_6xx\sd24_b.d" "driverlib\MSP430F5xx_6xx\sfr.d" "driverlib\MSP430F5xx_6xx\sysctl.d" "driverlib\MSP430F5xx_6xx\tec.d" "driverlib\MSP430F5xx_6xx\timer_a.d" "driverlib\MSP430F5xx_6xx\timer_b.d" "driverlib\MSP430F5xx_6xx\timer_d.d" "driverlib\MSP430F5xx_6xx\tlv.d" "driverlib\MSP430F5xx_6xx\ucs.d" "driverlib\MSP430F5xx_6xx\usci_a_spi.d" "driverlib\MSP430F5xx_6xx\usci_a_uart.d" "driverlib\MSP430F5xx_6xx\usci_b_i2c.d" 
+	-$(RM) "driverlib\MSP430F5xx_6xx\usci_b_spi.d" "driverlib\MSP430F5xx_6xx\wdt_a.d" "hal\src\io_hal.d" "hal\src\pmm_hal.d" "hal\src\timera_hal.d" "hal\src\timerb_hal.d" "hal\src\ucs_hal.d" "hil\src\io_interrupts.d" "hil\src\led_hil.d" "hil\src\pwm.d" 
 	-$(RM) "FreeRTOS\Source\portable\CCS\MSP430X\portext.d" 
 	-@echo 'Finished clean'
 	-@echo ' '

@@ -9,12 +9,13 @@
 #include "timera_hal.h"
 #include "io_hal.h"
 #include "error.h"
+#include "ucs.h"
 
 #define _TAx(VAL) ((VAL) == timerA0? TA0 : (VAL) == timerA1? TA1 : TA2)
 #define _PIN(TIMER, OUTPUT) ((TIMER) == timerA0? P1 : P2),\
                             ((TIMER) == timerA0? (OUTPUT)+1 : (TIMER)==timerA1? (OUTPUT)-1 : (OUTPUT)+3)
 
-#define SMCLK_FREQ (6000000UL)
+#define SMCLK_FREQ (UCS_getSMCLK())//(6000000UL)
 
 static void (*ta0Handler)(void);
 static uint32_t ta0_pending;

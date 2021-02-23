@@ -29,6 +29,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timerb_hal.h"
+#include "ucs.h"
 
 /*-----------------------------------------------------------
  * Implementation of functions defined in portable.h for the MSP430X port.
@@ -186,7 +187,7 @@ void vPortSetupTimerInterrupt( void )
      .cm =tbCctlCmNo
     };
     TB_reset(TB0);
-    TB_setCcr(TB0, 0, 1000/configTICK_RATE_HZ);
+    TB_setCcr(TB0, 0, (UCS_getACLK()/8)/configTICK_RATE_HZ);
     TB_configureCtl(TB0, &timer_ctl_config);
     TB_configureCctl(TB0, 0, &timer_cctl_config);
     TB_start(TB0, tbCtlMcUp);
