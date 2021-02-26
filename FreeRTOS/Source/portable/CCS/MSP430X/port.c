@@ -199,7 +199,7 @@ void vPortSetupTimerInterrupt( void )
 void __attribute__ ((interrupt)) vTickISREntry( void )
 {
 extern void vPortTickISR( void );
-    __enable_interrupt();
+    //__enable_interrupt();
 
 	__bic_SR_register_on_exit( SCG1 + SCG0 + OSCOFF + CPUOFF );
 	#if configUSE_PREEMPTION == 1

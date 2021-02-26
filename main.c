@@ -23,10 +23,10 @@ void init(void)
     WDT_A_hold(WDT_A_BASE);
 
 
-    PMM_setVCore(PMM_CORE_LEVEL_3);
-    USBHAL_initClocks(24000000UL);
-    //PMM_setVCore(PMM_CORE_LEVEL_2);
-    //USBHAL_initClocks(8000000UL);
+    //PMM_setVCore(PMM_CORE_LEVEL_3);
+    //USBHAL_initClocks(24000000UL);
+    PMM_setVCore(PMM_CORE_LEVEL_2);
+    USBHAL_initClocks(8000000UL);
 
 
     //PMM_setVCore(PMM_CORE_LEVEL_2);
@@ -91,9 +91,6 @@ static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ];
     *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
 }
 
-// CHANGES:
-//   - Interrupts enabled inside FreeRTOS tick ISR
-//   - Tick interrupt rate reduced to 10Hz
 
 
 int main(void)
