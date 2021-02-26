@@ -64,7 +64,7 @@ static void _doneHandler(void);
 
 void IF_informRx(void)
 {
-    xSemaphoreGive(rx_available);
+    xSemaphoreGiveFromISR(rx_available, NULL);
 }
 
 void IF_init(void)
@@ -112,7 +112,7 @@ static void _rxTask(void * params)
                 ASSERT(count == 14);
                 ((_TurnMotorCmd_Struct *)cmd_struct)->motor = rx_buffer[1]==thetaMsg? theta : phi;
                 ((_TurnMotorCmd_Struct *)cmd_struct)->num_steps = stoui32(rx_buffer+2, 10);
-                ((_TurnMotorCmd_Struct *)cmd_struct)->dir = rx_buffer[6]==cwMsg? clockwise : counterclockwise;
+                ((_TurnMotorCmd_Struct *)cmd_struct)->dir = rx_buffer[12]==cwMsg? clockwise : counterclockwise;
                 _callCommand(turnMotor, cmd_struct);
                 count = 0;
                 break;

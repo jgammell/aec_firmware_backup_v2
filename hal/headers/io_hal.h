@@ -28,7 +28,7 @@ typedef struct
     volatile uint8_t DS;
     volatile const uint8_t RESERVED4;
     volatile uint8_t SEL;
-    volatile const uint8_t RESERVED5;
+    volatile const uint8_t RESERVED5[13];
     volatile uint8_t IES;
     volatile const uint8_t RESERVED6;
     volatile uint8_t IE;

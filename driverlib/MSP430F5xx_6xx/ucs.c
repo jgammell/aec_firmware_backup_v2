@@ -659,7 +659,7 @@ bool UCS_turnOnXT2WithTimeout (uint16_t xt2drive,
 
      //Clear OFIFG fault flag
      HWREG8(SFR_BASE + OFS_SFRIFG1) &= ~OFIFG;
-    }while ((HWREG8(UCS_BASE + OFS_UCSCTL7) & XT2OFFG) && --timeout);
+    }while ((HWREG8(UCS_BASE + OFS_UCSCTL7) & XT2OFFG));// && --timeout);
 
     if (timeout){
         return (STATUS_SUCCESS);
@@ -692,7 +692,7 @@ bool UCS_bypassXT2WithTimeout (uint16_t timeout
 
      //Clear OFIFG fault flag
      HWREG8(SFR_BASE + OFS_SFRIFG1) &= ~OFIFG;
-    }while ((HWREG8(UCS_BASE + OFS_UCSCTL7) & XT2OFFG) && --timeout);
+    }while ((HWREG8(UCS_BASE + OFS_UCSCTL7) & XT2OFFG));// && --timeout);
 
     if (timeout){
         return (STATUS_SUCCESS);

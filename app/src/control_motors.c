@@ -180,7 +180,9 @@ void CM_init(void)
     IO_configurePin(Theta.sd_port, Theta.sd_pin, &io_config);
     IO_configurePin(Theta.reset_port, Theta.reset_pin, &io_config);
     IO_configurePin(Theta.dir_port, Theta.dir_pin, &io_config);
+    io_config.initial_out = !io_config.initial_out;
     IO_configurePin(Phi.sd_port, Phi.sd_pin, &io_config);
+    io_config.initial_out = !io_config.initial_out;
     IO_configurePin(Phi.reset_port, Phi.reset_pin, &io_config);
     IO_configurePin(Phi.dir_port, Phi.dir_pin, &io_config);
     io_config.sel = ioSelPeripheral;
@@ -248,6 +250,8 @@ static void _alignTask(void * _motor)
         CM_AlignCmd_Struct cmd;
         xQueueReceive(cmd_queue, &cmd, portMAX_DELAY);
         xSemaphoreTake(motor_ownership, portMAX_DELAY);
+        motor->es_port->IES &= ~motor->es_pin;
+        motor->es_port->IFG &= ~motor->es_pin;
         motor->es_port->IE |= motor->es_pin;
         if(IO_readPin(motor->es_port, motor->es_pin) != 0)
         {
@@ -257,6 +261,7 @@ static void _alignTask(void * _motor)
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         }
         motor->es_port->IES &= ~motor->es_pin;
+        motor->es_port->IFG &= ~motor->es_pin;
         _enableMotor(motor, counterclockwise);
         _startTurn(motor, CM_STEP_FREQ>>3);
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
@@ -270,12 +275,12 @@ static void _alignTask(void * _motor)
 static void _enableMotor(CM_Motor_Struct * motor, CM_Dir_Enum dir)
 {
     IO_writePin(motor->dir_port, motor->dir_pin, (IO_Out_Enum)dir);
-    IO_writePin(motor->sd_port, motor->sd_pin, (IO_Out_Enum)!CM_PIN_IDLE);
+    IO_writePin(motor->sd_port, motor->sd_pin, (IO_Out_Enum)CM_PIN_IDLE);
 }
 
 static void _disableMotor(CM_Motor_Struct * motor)
 {
-    IO_writePin(motor->sd_port, motor->sd_pin, (IO_Out_Enum)CM_PIN_IDLE);
+    IO_writePin(motor->sd_port, motor->sd_pin, (IO_Out_Enum)!CM_PIN_IDLE);
 }
 
 static void _startTurnSteps(CM_Motor_Struct * motor, uint32_t steps)

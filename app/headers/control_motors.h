@@ -53,8 +53,8 @@ typedef enum
 
 typedef enum
 {
-    clockwise = false,
-    counterclockwise = true
+    clockwise = true,
+    counterclockwise = false
 } CM_Dir_Enum;
 
 void CM_init(void);

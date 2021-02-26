@@ -72,15 +72,15 @@ void PWM_start(PWM_Sources_Enum source, uint32_t num_pulses, void (*handler)(voi
     {
     case timerA0:
         ta0Handler = handler;
-        ta0_pending = num_pulses;
+        ta0_pending = num_pulses-1;
         break;
     case timerA1:
         ta1Handler = handler;
-        ta1_pending = num_pulses;
+        ta1_pending = num_pulses-1;
         break;
     case timerA2:
         ta2Handler = handler;
-        ta2_pending = num_pulses;
+        ta2_pending = num_pulses-1;
         break;
     }
     if(num_pulses != 0)
