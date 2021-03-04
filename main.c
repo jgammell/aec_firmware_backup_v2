@@ -10,6 +10,7 @@
 #include "led_hil.h"
 #include "control_motors.h"
 #include "interface.h"
+#include "check_alignment.h"
 
 #include "hal.h"
 
@@ -78,6 +79,7 @@ void init(void)
     LEDI_init();
     CM_init();
     IF_init();
+    CA_init();
 }
 
 void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer,

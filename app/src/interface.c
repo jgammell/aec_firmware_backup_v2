@@ -13,6 +13,7 @@
 
 #include "interface.h"
 #include "control_motors.h"
+#include "check_alignment.h"
 #include "error.h"
 
 #include "USB_config/descriptors.h"
@@ -25,8 +26,9 @@ typedef enum
 {
     turnMotor = '0',
     alignMotor = '1',
-    checkAlignment = '2',
-    reportStatus = '3',
+    writeLaser = '2',
+    readSensor = '3',
+    reportStatus = '4',
     invalid
 } _Cmd_Enum;
 typedef enum
@@ -39,6 +41,11 @@ typedef enum
     cwMsg = '0',
     ccwMsg = '1'
 } _Dir_Enum;
+typedef enum
+{
+    laserOnMsg = '1',
+    laserOffMsg = '0'
+} _LaserState_Enum;
 
 typedef struct
 {
@@ -50,9 +57,13 @@ typedef struct
     uint32_t num_steps;
     CM_Dir_Enum dir;
 } _TurnMotorCmd_Struct;
+typedef struct
+{
+    bool state;
+} _WriteLaserCmd_Struct;
 
 #define MAX(A, B) ((A)>=(B)? (A) : (B))
-#define CMD_STRUCT_SIZE (MAX(sizeof(_AlignMotorCmd_Struct), sizeof(_TurnMotorCmd_Struct)))
+#define CMD_STRUCT_SIZE (MAX(sizeof(_AlignMotorCmd_Struct), MAX(sizeof(_TurnMotorCmd_Struct), sizeof(_WriteLaserCmd_Struct))))
 
 static SemaphoreHandle_t rx_available = NULL;
 
@@ -61,6 +72,7 @@ static TaskHandle_t rx_task = NULL;
 static void _rxTask(void *);
 static void _callCommand(_Cmd_Enum cmd, void * params);
 static void _doneHandler(void);
+static void _doneHandlerRv(uint16_t);
 
 void IF_informRx(void)
 {
@@ -104,6 +116,7 @@ static void _rxTask(void * params)
         xSemaphoreTake(rx_available, portMAX_DELAY);
         count += USBCDC_receiveDataInBuffer((uint8_t*)(rx_buffer+count), RX_BUFFER_SIZE, CDC0_INTFNUM);
         ASSERT(count <= RX_BUFFER_SIZE);
+        ASSERT(count >= 1);
         if(rx_buffer[count-1] == '\n')
         {
             switch((_Cmd_Enum) rx_buffer[0])
@@ -114,16 +127,20 @@ static void _rxTask(void * params)
                 ((_TurnMotorCmd_Struct *)cmd_struct)->num_steps = stoui32(rx_buffer+2, 10);
                 ((_TurnMotorCmd_Struct *)cmd_struct)->dir = rx_buffer[12]==cwMsg? clockwise : counterclockwise;
                 _callCommand(turnMotor, cmd_struct);
-                count = 0;
                 break;
             case alignMotor:
                 ASSERT(count == 3);
                 ((_AlignMotorCmd_Struct *)cmd_struct)->motor = rx_buffer[1]==thetaMsg? theta : phi;
                 _callCommand(alignMotor, cmd_struct);
-                count = 0;
                 break;
-            case checkAlignment:
-                ASSERT(false);
+            case writeLaser:
+                ASSERT(count == 3);
+                ((_WriteLaserCmd_Struct *)cmd_struct)->state = rx_buffer[1]==laserOnMsg? true : false;
+                _callCommand(writeLaser, cmd_struct);
+                break;
+            case readSensor:
+                ASSERT(count == 2);
+                _callCommand(readSensor, NULL);
                 break;
             case reportStatus:
                 ASSERT(false);
@@ -131,6 +148,7 @@ static void _rxTask(void * params)
             default:
                 ASSERT(false);
             }
+            count = 0;
             USBCDC_sendDataInBackground((uint8_t*)ack, (sizeof(ack)/sizeof(char))-1, CDC0_INTFNUM, 1);
         }
     }
@@ -146,8 +164,11 @@ static void _callCommand(_Cmd_Enum cmd, void * params)
     case alignMotor:
         CM_align(((_AlignMotorCmd_Struct *)params)->motor, _doneHandler);
         break;
-    case checkAlignment:
-        ASSERT(false);
+    case writeLaser:
+        CA_writeLaser(((_WriteLaserCmd_Struct *)params)->state, _doneHandler);
+        break;
+    case readSensor:
+        CA_measureSensor(_doneHandlerRv);
         break;
     case reportStatus:
         ASSERT(false);
@@ -160,5 +181,15 @@ static void _callCommand(_Cmd_Enum cmd, void * params)
 static void _doneHandler(void)
 {
     static const char done_str[] = "d\n";
+    USBCDC_sendDataInBackground((uint8_t*)done_str, (sizeof(done_str)/sizeof(char))-1, CDC0_INTFNUM, 1);
+}
+
+static void _doneHandlerRv(uint16_t rv)
+{
+    uint8_t i;
+    uint16_t base;
+    static char done_str[] ="00000d\n";
+    for(i=0, base=10000; i<5; ++i, base/=10)
+        done_str[i] = (char)('0'+((rv/base)%10));
     USBCDC_sendDataInBackground((uint8_t*)done_str, (sizeof(done_str)/sizeof(char))-1, CDC0_INTFNUM, 1);
 }

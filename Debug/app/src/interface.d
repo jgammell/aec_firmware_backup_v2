@@ -32,6 +32,7 @@ app/src/interface.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware
 app/src/interface.obj: C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/include/stdbool.h
 app/src/interface.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/interface.h
 app/src/interface.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/control_motors.h
+app/src/interface.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/check_alignment.h
 app/src/interface.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_config/descriptors.h
 app/src/interface.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_API/USB_Common/usb.h
 app/src/interface.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_API/USB_Common/device.h
@@ -70,6 +71,7 @@ C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/FreeRTOS/Source/includ
 C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/include/stdbool.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/interface.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/control_motors.h: 
+C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/check_alignment.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_config/descriptors.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_API/USB_Common/usb.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_API/USB_Common/device.h: 
