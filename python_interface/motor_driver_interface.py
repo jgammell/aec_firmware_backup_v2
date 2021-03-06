@@ -8,14 +8,18 @@ DONE_CHAR = 'd'
 
 TURNMOTOR_CMD = '0'
 ALIGNMOTOR_CMD = '1'
-CHECKALIGNMENT_CMD = '2'
-REPORTSTATUS_CMD = '3'
+WRITELASER_CMD = '2'
+READSENSOR_CMD = '3'
+REPORTSTATUS_CMD = '4'
 
 THETA_MSG = '0'
 PHI_MSG = '1'
 
 CW_MSG = '0'
 CCW_MSG = '1'
+
+LASEROFF_MSG = '0'
+LASERON_MSG = '1'
 
 class MotorDriver:
     def __init__(self, port,
@@ -82,8 +86,34 @@ class MotorDriver:
         assert rv == ACK_CHAR
         rv = self._nextMsg()
         assert rv == DONE_CHAR
-        
-        
+    def writeLaser(self, state):
+        assert state in [True, False]
+        msg = []
+        msg.append(WRITELASER_CMD)
+        if state:
+            msg.append(LASERON_MSG)
+        else:
+            msg.append(LASEROFF_MSG)
+        self._transmitMsg(''.join(msg))
+        print('Wrote message')
+        rv = self._nextMsg()
+        assert rv == ACK_CHAR
+        print('Acked')
+        rv = self._nextMsg()
+        assert rv == DONE_CHAR
+        print('Done')
+    def readSensor(self):
+        msg = []
+        msg.append(READSENSOR_CMD)
+        self._transmitMsg(''.join(msg))
+        print('Wrote message')
+        rv = self._nextMsg()
+        assert rv == ACK_CHAR
+        print('Acked')
+        rv = self._nextMsg()
+        assert rv[-1] == DONE_CHAR
+        print('Done')
+        return int(rv[:-1])
         
         
         

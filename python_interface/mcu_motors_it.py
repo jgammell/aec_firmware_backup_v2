@@ -13,7 +13,7 @@ from motor_driver_interface import MotorDriver
 
 MD = MotorDriver(COM)
 
-MD.alignMotor(motor)
+#MD.alignMotor(motor)
 
 #%%
 # Section 2
