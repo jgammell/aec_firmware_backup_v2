@@ -100,6 +100,8 @@ int main(void)
     init();
     test();
 
+    //ASSERT(false);
+
     vTaskStartScheduler();
 
 

@@ -29,6 +29,7 @@ typedef enum
     writeLaser = '2',
     readSensor = '3',
     reportStatus = '4',
+    reportAssertInfo = '5',
     invalid
 } _Cmd_Enum;
 typedef enum
@@ -73,6 +74,7 @@ static void _rxTask(void *);
 static void _callCommand(_Cmd_Enum cmd, void * params);
 static void _doneHandler(void);
 static void _doneHandlerRv(uint16_t);
+static void _reportAssertHandler(void);
 
 void IF_informRx(void)
 {
@@ -111,6 +113,7 @@ static void _rxTask(void * params)
     char rx_buffer[RX_BUFFER_SIZE];
     const char ack[] = "a\n";
     uint8_t cmd_struct[CMD_STRUCT_SIZE];
+    void (*wb_handler)(void) = 0;
     while(1)
     {
         xSemaphoreTake(rx_available, portMAX_DELAY);
@@ -145,11 +148,19 @@ static void _rxTask(void * params)
             case reportStatus:
                 ASSERT(false);
                 break;
+            case reportAssertInfo:
+                wb_handler = _reportAssertHandler;
+                break;
             default:
                 ASSERT(false);
             }
             count = 0;
             USBCDC_sendDataInBackground((uint8_t*)ack, (sizeof(ack)/sizeof(char))-1, CDC0_INTFNUM, 1);
+        }
+        if(wb_handler != 0)
+        {
+            (*wb_handler)();
+            wb_handler = 0;
         }
     }
 }
@@ -192,4 +203,36 @@ static void _doneHandlerRv(uint16_t rv)
     for(i=0, base=10000; i<5; ++i, base/=10)
         done_str[i] = (char)('0'+((rv/base)%10));
     USBCDC_sendDataInBackground((uint8_t*)done_str, (sizeof(done_str)/sizeof(char))-1, CDC0_INTFNUM, 1);
+}
+
+static void _reportAssertHandler(void)
+{
+    static char done_str[124 + 2 + 5];
+    ERROR_AssertInfo_Struct * info = ERROR_lastAssertInfo();
+    if(info == 0)
+    {
+        done_str[0] = 'd';
+        done_str[1] = '\n';
+        USBCDC_sendDataInBackground((uint8_t *)done_str, 2, CDC0_INTFNUM, 1);
+        return;
+    }
+    uint8_t idx;
+    for(idx=0; idx<info->file_len; ++idx)
+        done_str[idx] = info->file[idx];
+    done_str[idx] = '\n';
+    for(idx=0; idx<info->expression_len; ++idx)
+        done_str[idx+info->file_len+1] = info->expression[idx];
+    idx += info->file_len+1;
+    done_str[idx] = '\n';
+    ++idx;
+    uint16_t base;
+    for(base=10000; base>0; base/=10, ++idx)
+        done_str[idx] = '0'+((info->line/base)%10);
+    done_str[idx] = '\n';
+    ++idx;
+    done_str[idx] = 'd';
+    ++idx;
+    done_str[idx] = '\n';
+    ++idx;
+    USBCDC_sendDataInBackground((uint8_t *)done_str, idx, CDC0_INTFNUM, 1);
 }

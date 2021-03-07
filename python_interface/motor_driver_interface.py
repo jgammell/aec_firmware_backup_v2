@@ -11,6 +11,7 @@ ALIGNMOTOR_CMD = '1'
 WRITELASER_CMD = '2'
 READSENSOR_CMD = '3'
 REPORTSTATUS_CMD = '4'
+CHECKASSERTINFO_CMD = '5'
 
 THETA_MSG = '0'
 PHI_MSG = '1'
@@ -114,6 +115,27 @@ class MotorDriver:
         assert rv[-1] == DONE_CHAR
         print('Done')
         return int(rv[:-1])
+    def checkAssertInfo(self):
+        msg = []
+        msg.append(CHECKASSERTINFO_CMD)
+        self._transmitMsg(''.join(msg))
+        print('Wrote message')
+        assert self._nextMsg() == ACK_CHAR
+        print('Acked')
+        file = self._nextMsg()
+        if file == DONE_CHAR:
+            print('No previous ASSERT info saved')
+            print('Done')
+            return None
+        print('File:', file)
+        expression = self._nextMsg()
+        print('Expression:', expression)
+        line = int(self._nextMsg())
+        print('Line:', line)
+        assert self._nextMsg() == DONE_CHAR
+        print('Done')
+        return {'File': file, 'Expression': expression, 'Line': line}
+        
         
         
         
