@@ -11,6 +11,7 @@
 #include "control_motors.h"
 #include "interface.h"
 #include "check_alignment.h"
+#include "USB_API/USB_Common/usb.h"
 
 #include "hal.h"
 

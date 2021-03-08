@@ -22,6 +22,12 @@
 #include "USB_API/USB_CDC_API/UsbCdc.h"
 #include "USB_app/usbConstructs.h"
 
+#include "timerb_hal.h"
+#include "io_hal.h"
+#include "io_interrupts.h"
+
+#include <msp430.h>
+
 typedef enum
 {
     turnMotor = '0',
@@ -30,6 +36,7 @@ typedef enum
     readSensor = '3',
     reportStatus = '4',
     reportAssertInfo = '5',
+    invokeBsl = '6',
     invalid
 } _Cmd_Enum;
 typedef enum
@@ -75,14 +82,31 @@ static void _callCommand(_Cmd_Enum cmd, void * params);
 static void _doneHandler(void);
 static void _doneHandlerRv(uint16_t);
 static void _reportAssertHandler(void);
+static void _invokeBsl(void);
 
 void IF_informRx(void)
 {
     xSemaphoreGiveFromISR(rx_available, NULL);
 }
 
+#define SW2_PORT (P2)
+#define SW2_PIN  (IO_PIN4)
+
 void IF_init(void)
 {
+    IO_PinConfig_Struct button_config =
+    {
+     .initial_out = ioOutHigh,
+     .dir = ioDirInput,
+     .ren = true,
+     .ds = ioDsReduced,
+     .sel = ioSelIo,
+     .ies = ioIesFalling,
+     .ie = true
+    };
+    IO_configurePin(SW2_PORT, SW2_PIN, &button_config);
+    IO_attachInterrupt(SW2_PORT, SW2_PIN, _invokeBsl);
+
     static StaticSemaphore_t rx_available_buffer;
     ASSERT(rx_available == NULL);
     rx_available = xSemaphoreCreateBinaryStatic(&rx_available_buffer);
@@ -150,6 +174,9 @@ static void _rxTask(void * params)
                 break;
             case reportAssertInfo:
                 wb_handler = _reportAssertHandler;
+                break;
+            case invokeBsl:
+                wb_handler = _invokeBsl;
                 break;
             default:
                 ASSERT(false);
@@ -235,4 +262,13 @@ static void _reportAssertHandler(void)
     done_str[idx] = '\n';
     ++idx;
     USBCDC_sendDataInBackground((uint8_t *)done_str, idx, CDC0_INTFNUM, 1);
+}
+
+static void _invokeBsl(void)
+{
+    static char done_str[] = "d\n";
+    USBCDC_sendDataAndWaitTillDone((uint8_t *)done_str, (sizeof(done_str)/sizeof(char))-1, CDC0_INTFNUM, 1);
+    __disable_interrupt();
+    TB_reset(TB0);
+    ((void (*)()) 0x1000)();
 }

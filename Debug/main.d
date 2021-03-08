@@ -81,6 +81,7 @@ main.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hil/headers/
 main.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/control_motors.h
 main.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/interface.h
 main.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/check_alignment.h
+main.obj: ../USB_API/USB_Common/usb.h
 main.obj: ../hal.h
 
 ../main.c: 
@@ -164,4 +165,5 @@ C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hil/headers/led_hil.h:
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/control_motors.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/interface.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/check_alignment.h: 
+../USB_API/USB_Common/usb.h: 
 ../hal.h: 

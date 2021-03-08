@@ -33,7 +33,7 @@ void IO_configurePin(IO_Registers_Struct * Px, uint8_t pin, IO_PinConfig_Struct 
     Px->SEL |= config->sel*pin;
     Px->IES &= ~((!config->ies)*pin);
     Px->IES |= config->ies*pin;
+    Px->IFG &= ~pin;
     Px->IE  &= ~((!config->ie)*pin);
     Px->IE  |= config->ie*pin;
-    Px->IFG &= ~pin;
 }

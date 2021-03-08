@@ -38,6 +38,9 @@ app/src/interface.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware
 app/src/interface.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_API/USB_Common/device.h
 app/src/interface.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_API/USB_CDC_API/UsbCdc.h
 app/src/interface.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_app/usbConstructs.h
+app/src/interface.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal/headers/timerb_hal.h
+app/src/interface.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal/headers/io_hal.h
+app/src/interface.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hil/headers/io_interrupts.h
 
 ../app/src/interface.c: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/FreeRTOS/Source/include/FreeRTOS.h: 
@@ -77,3 +80,6 @@ C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_API/USB_Common/usb
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_API/USB_Common/device.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_API/USB_CDC_API/UsbCdc.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_app/usbConstructs.h: 
+C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal/headers/timerb_hal.h: 
+C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal/headers/io_hal.h: 
+C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hil/headers/io_interrupts.h: 

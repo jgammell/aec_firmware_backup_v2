@@ -7,12 +7,14 @@
 
 #include "error.h"
 #include "io_hal.h"
+#include "timerb_hal.h"
 #include <msp430.h>
 #include <stdbool.h>
 #include "flashctl.h"
+#include "USB_API/USB_Common/usb.h"
 
-#define LED5_PORT (P1)//(P7)
-#define LED5_PIN  (IO_PIN0)//(IO_PIN5)
+#define LED5_PORT (P7)
+#define LED5_PIN  (IO_PIN5)
 
 #define VALID_PATTERN (0xAAAAU)
 #define SEG_LEN       (128U)
@@ -55,8 +57,9 @@ static void _updateLastAssertInfo(char * expression, char * file, uint16_t line)
 
 void __attribute__ ((noreturn)) _assert_failure(char * expression, char * file, uint16_t line)
 {
+    TB_reset(TB0);//__disable_interrupt();
+    USB_disable();
     _updateLastAssertInfo(expression, file, line);
-    __disable_interrupt();
     volatile uint32_t i;
     IO_PinConfig_Struct led_config =
     {

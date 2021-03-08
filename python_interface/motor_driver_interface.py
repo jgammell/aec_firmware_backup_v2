@@ -12,6 +12,7 @@ WRITELASER_CMD = '2'
 READSENSOR_CMD = '3'
 REPORTSTATUS_CMD = '4'
 CHECKASSERTINFO_CMD = '5'
+INVOKEBSL_CMD = '6'
 
 THETA_MSG = '0'
 PHI_MSG = '1'
@@ -67,7 +68,7 @@ class MotorDriver:
         else:
             msg.append(CCW_MSG)
         self._transmitMsg(''.join(msg))
-        print('sent message')
+        print('sent message', ''.join(msg))
         rv = self._nextMsg()
         assert rv == ACK_CHAR
         print('acked')
@@ -135,7 +136,15 @@ class MotorDriver:
         assert self._nextMsg() == DONE_CHAR
         print('Done')
         return {'File': file, 'Expression': expression, 'Line': line}
-        
+    def invokeBsl(self):
+        msg = []
+        msg.append(INVOKEBSL_CMD)
+        self._transmitMsg(''.join(msg))
+        print('Wrote message')
+        assert self._nextMsg() == ACK_CHAR
+        print('Acked')
+        assert self._nextMsg() == DONE_CHAR
+        print('Done')
         
         
         

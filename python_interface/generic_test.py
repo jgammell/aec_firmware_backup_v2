@@ -5,11 +5,11 @@
 
 
 def degreesToSteps(degrees):
-    return int(9140000*(degrees/360))
+    return int(9144000*(degrees/360))
 
 from motor_driver_interface import MotorDriver
 
-COM = r'COM27'
+COM = r'COM21'
 
 MD = MotorDriver(COM)
 
@@ -17,8 +17,8 @@ MD = MotorDriver(COM)
 
 # Motor control
 
-MD.turnMotor('theta', degreesToSteps(1), 'cw')
-MD.turnMotor('theta', degreesToSteps(1), 'ccw')
+MD.turnMotor('theta', degreesToSteps(10), 'cw')
+MD.turnMotor('theta', degreesToSteps(10), 'ccw')
 MD.turnMotor('phi', degreesToSteps(1), 'cw')
 MD.turnMotor('phi', degreesToSteps(1), 'ccw')
 MD.alignMotor('theta')
@@ -37,3 +37,4 @@ print(MD.readSensor())
 # Check status
 
 MD.checkAssertInfo()
+MD.invokeBsl()
