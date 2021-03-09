@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import serial
+import time
 
 TERM_CHAR = '\n'
 ACK_CHAR = 'a'
@@ -69,11 +70,37 @@ class MotorDriver:
             msg.append(CCW_MSG)
         self._transmitMsg(''.join(msg))
         print('sent message', ''.join(msg))
+        t_0 = time.time()
         rv = self._nextMsg()
         assert rv == ACK_CHAR
         print('acked')
         rv = self._nextMsg()
         assert rv == DONE_CHAR
+        print('done')
+        print('Time taken:', time.time()-t_0)
+    def startTurnMotor(self, motor, num_steps, direction):
+        assert motor in ['theta', 'phi']
+        assert type(num_steps) == int
+        assert num_steps == num_steps&0xFFFFFFFF
+        assert direction in ['cw', 'ccw']
+        msg = []
+        msg.append(TURNMOTOR_CMD)
+        if motor == 'theta':
+            msg.append(THETA_MSG)
+        else:
+            msg.append(PHI_MSG)
+        msg += '%010d'%(num_steps)
+        if direction == 'cw':
+            msg.append(CW_MSG)
+        else:
+            msg.append(CCW_MSG)
+        self._transmitMsg(''.join(msg))
+        print('sent message', ''.join(msg))
+        rv = self._nextMsg()
+        assert rv == ACK_CHAR
+        print('acked')
+    def waitForDone(self):
+        assert self._nextMsg()  == DONE_CHAR
         print('done')
     def alignMotor(self, motor):
         assert motor in ['theta', 'phi']

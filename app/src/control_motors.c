@@ -180,11 +180,14 @@ void CM_init(void)
     IO_configurePin(Theta.sd_port, Theta.sd_pin, &io_config);
     IO_configurePin(Theta.reset_port, Theta.reset_pin, &io_config);
     IO_configurePin(Theta.dir_port, Theta.dir_pin, &io_config);
-    io_config.initial_out = !io_config.initial_out;
+    IO_configurePin(Phi.sd_port, Phi.sd_pin, &io_config);
+    IO_configurePin(Phi.reset_port, Phi.reset_pin, &io_config);
+    IO_configurePin(Phi.dir_port, Phi.dir_pin, &io_config);
+    /*io_config.initial_out = !io_config.initial_out;
     IO_configurePin(Phi.sd_port, Phi.sd_pin, &io_config);
     io_config.initial_out = !io_config.initial_out;
     IO_configurePin(Phi.reset_port, Phi.reset_pin, &io_config);
-    IO_configurePin(Phi.dir_port, Phi.dir_pin, &io_config);
+    IO_configurePin(Phi.dir_port, Phi.dir_pin, &io_config);*/
     io_config.sel = ioSelPeripheral;
     IO_configurePin(Theta.step_port, Theta.step_pin, &io_config);
     IO_configurePin(Phi.step_port, Phi.step_pin, &io_config);
@@ -193,6 +196,7 @@ void CM_init(void)
     IO_configurePin(Theta.fault_port, Theta.fault_pin, &io_config);
     IO_configurePin(Theta.es_port, Theta.es_pin, &io_config);
     IO_configurePin(Phi.fault_port, Phi.fault_pin, &io_config);
+    IO_configurePin(Phi.es_port, Theta.es_pin, &io_config);
 
     IO_attachInterrupt(Theta.es_port, Theta.es_pin, _eventAlignTheta);
     IO_attachInterrupt(Phi.es_port, Phi.es_pin, _eventAlignPhi);

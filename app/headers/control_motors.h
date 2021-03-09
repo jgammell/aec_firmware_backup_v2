@@ -14,7 +14,7 @@
 #define CM_PHI_STEP_TID   (timerA1)
 #define CM_PHI_STEP_TOP   (1U)
 #define CM_PHI_STEP_PORT  (P2)
-#define CM_PHI_STEP_PIN   (0U)
+#define CM_PHI_STEP_PIN   (IO_PIN0)
 #define CM_PHI_SD_PORT    (P1)
 #define CM_PHI_SD_PIN     (IO_PIN5)
 #define CM_PHI_RESET_PORT (P1)
@@ -41,7 +41,7 @@
 #define CM_THETA_ES_PORT    (P1)
 #define CM_THETA_ES_PIN     (IO_PIN3)
 
-#define CM_STEP_FREQ  (32768U)
+#define CM_STEP_FREQ  (65536U)//(32768U)
 #define CM_STEP_ONPCT (50U)
 #define CM_PIN_IDLE   (true)
 
