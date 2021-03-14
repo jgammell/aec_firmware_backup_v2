@@ -12,9 +12,7 @@
 #include <stdbool.h>
 #include "flashctl.h"
 #include "USB_API/USB_Common/usb.h"
-
-#define LED5_PORT (P7)
-#define LED5_PIN  (IO_PIN5)
+#include "hal.h"
 
 #define VALID_PATTERN (0xAAAAU)
 #define SEG_LEN       (128U)

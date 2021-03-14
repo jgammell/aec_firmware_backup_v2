@@ -10,21 +10,14 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-
-#define CA_TXRXID_PORT    (P5)
-#define CA_TXRXID_PIN     (IO_PIN6)
-#define CA_INTENSITY_PORT (P6)
-#define CA_INTENSITY_PIN  (IO_PIN1)
-#define CA_INTENSITY_APIN (ADC12_A_INPUT_A1)
-#define CA_INTENSITY_AMEN (ADC12_A_MEMORY_0)
-#define CA_INTENSITY_AIFG (ADC12_A_IFG0)
-#define CA_POWER_PORT     (P6)
-#define CA_POWER_PIN      (IO_PIN3)
+#include "hal.h"
 
 void CA_init(void);
 
-void CA_writeLaser(bool state, void (*handler)(void));
+void CA_writeLaser(bool state, void (*handler)(void *), void * handler_args);
 
-void CA_measureSensor(void (*handler)(uint16_t));
+void CA_measureSensor(void (*handler)(uint16_t, void *), void * handler_args);
+
+bool CA_idProbe(void);
 
 #endif /* APP_HEADERS_CHECK_ALIGNMENT_H_ */

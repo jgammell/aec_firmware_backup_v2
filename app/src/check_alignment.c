@@ -28,11 +28,13 @@ static _Id_Enum id = invalid;
 typedef struct
 {
     bool state;
-    void (*handler)(void);
+    void (*handler)(void *);
+    void * handler_args;
 } _LaserControl_Struct;
 typedef struct
 {
-    void (*handler)(uint16_t);
+    void (*handler)(uint16_t, void *);
+    void * handler_args;
 } _MeasureSensor_Struct;
 static uint8_t cmd_struct[MAX(sizeof(_LaserControl_Struct), sizeof(_MeasureSensor_Struct))];
 
@@ -71,19 +73,27 @@ void CA_init(void)
         _initProbe();
 }
 
-void CA_writeLaser(bool state, void (*handler)(void))
+void CA_writeLaser(bool state, void (*handler)(void *), void * handler_args)
 {
     ASSERT(id == test);
     ((_LaserControl_Struct *)cmd_struct)->state = state;
     ((_LaserControl_Struct *)cmd_struct)->handler = handler;
+    ((_LaserControl_Struct *)cmd_struct)->handler_args = handler_args;
     xTaskNotifyGive(laser_control_task);
 }
 
-void CA_measureSensor(void (*handler)(uint16_t))
+void CA_measureSensor(void (*handler)(uint16_t, void *), void * handler_args)
 {
     ASSERT(id == probe);
     ((_MeasureSensor_Struct *)cmd_struct)->handler = handler;
+    ((_MeasureSensor_Struct *)cmd_struct)->handler_args = handler_args;
     xTaskNotifyGiveIndexed(measure_sensor_task, MEASURESENSOR_EXE_IDX);
+}
+
+bool CA_idProbe(void)
+{
+    ASSERT((id==probe) || (id==test));
+    return id==probe;
 }
 
 static void _initTest(void)
@@ -158,7 +168,7 @@ static void _laserControlTask(void * args)
         xSemaphoreTake(laser_ownership, portMAX_DELAY);
         IO_writePin(CA_POWER_PORT, CA_POWER_PIN, (IO_Out_Enum)cmd->state);
         xSemaphoreGive(laser_ownership);
-        cmd->handler();
+        cmd->handler(cmd->handler_args);
     }
 }
 
@@ -181,7 +191,7 @@ static void _measureSensorTask(void * args)
         ADC12_A_disable(ADC12_A_BASE);
         IO_writePin(CA_POWER_PORT, CA_POWER_PIN, ioOutLow);
         xSemaphoreGive(sensor_ownership);
-        cmd->handler(ADC12_A_getResults(ADC12_A_BASE, CA_INTENSITY_AMEN));
+        cmd->handler(ADC12_A_getResults(ADC12_A_BASE, CA_INTENSITY_AMEN), cmd->handler_args);
     }
 }
 

@@ -84,7 +84,9 @@ void PWM_start(PWM_Sources_Enum source, uint32_t num_pulses, void (*handler)(voi
         break;
     }
     if(num_pulses != 0)
+    {
         _TAx(source)->CCTL[0] |= TA_CCTL_CCIE;
+    }
     TA_start(_TAx(source), taCtlMcUp);
 }
 
@@ -112,35 +114,35 @@ void PWM_stop(PWM_Sources_Enum source)
 #pragma vector=TIMER0_A0_VECTOR
 void __attribute__ ((interrupt)) ta0IRQHandler(void)
 {
-    --ta0_pending;
     if(ta0_pending == 0)
     {
         TA0->CTL &= ~TA_CTL_MC;
         TA0->CCTL[0] &= ~TA_CCTL_CCIE;
         (*ta0Handler)();
     }
+    --ta0_pending;
 }
 
 #pragma vector=TIMER1_A0_VECTOR
 void __attribute__ ((interrupt)) ta1IRQHandler(void)
 {
-    --ta1_pending;
     if(ta1_pending == 0)
     {
         TA1->CTL &= ~TA_CTL_MC;
         TA1->CCTL[0] &= ~TA_CCTL_CCIE;
         (*ta1Handler)();
     }
+    --ta1_pending;
 }
 
 #pragma vector=TIMER2_A0_VECTOR
 void __attribute__ ((interrupt)) ta2IRQHandler(void)
 {
-    --ta2_pending;
     if(ta2_pending == 0)
     {
         TA2->CTL &= ~TA_CTL_MC;
         TA2->CCTL[0] &= ~TA_CCTL_CCIE;
         (*ta2Handler)();
     }
+    --ta2_pending;
 }

@@ -47,6 +47,67 @@
 #define   initClocks      USBHAL_initClocks
 #endif
 
+#define CM_PHI_STEP_TID   (timerA1)
+#define CM_PHI_STEP_TOP   (1U)
+#define CM_PHI_STEP_PORT  (P2)
+#define CM_PHI_STEP_PIN   (IO_PIN0)
+#define CM_PHI_SD_PORT    (P1)
+#define CM_PHI_SD_PIN     (IO_PIN5)
+#define CM_PHI_RESET_PORT (P1)
+#define CM_PHI_RESET_PIN  (IO_PIN6)
+#define CM_PHI_DIR_PORT   (P1)
+#define CM_PHI_DIR_PIN    (IO_PIN7)
+#define CM_PHI_FAULT_PORT (P2)
+#define CM_PHI_FAULT_PIN  (IO_PIN1)
+#define CM_PHI_ES_PORT    (P2)
+#define CM_PHI_ES_PIN     (IO_PIN6)
+
+#define CM_THETA_STEP_TID   (timerA0)
+#define CM_THETA_STEP_TOP   (3U)
+#define CM_THETA_STEP_PORT  (P1)
+#define CM_THETA_STEP_PIN   (IO_PIN4)
+#define CM_THETA_SD_PORT    (P8)
+#define CM_THETA_SD_PIN     (IO_PIN0)
+#define CM_THETA_RESET_PORT (P8)
+#define CM_THETA_RESET_PIN  (IO_PIN1)
+#define CM_THETA_DIR_PORT   (P8)
+#define CM_THETA_DIR_PIN    (IO_PIN2)
+#define CM_THETA_FAULT_PORT (P1)
+#define CM_THETA_FAULT_PIN  (IO_PIN0)
+#define CM_THETA_ES_PORT    (P1)
+#define CM_THETA_ES_PIN     (IO_PIN3)
+
+
+#define CA_INTENSITY_PORT (P6)
+#define CA_INTENSITY_PIN  (IO_PIN1)
+#define CA_INTENSITY_APIN (ADC12_A_INPUT_A1)
+#define CA_INTENSITY_AMEN (ADC12_A_MEMORY_0)
+#define CA_INTENSITY_AIFG (ADC12_A_IFG0)
+
+#define DIST_PCB false
+#if DIST_PCB == true
+#define SW2_PORT (P2)
+#define SW2_PIN (IO_PIN4)
+#define LED5_PORT (P7)
+#define LED5_PIN (IO_PIN5)
+#define CA_POWER_PORT     (P6)
+#define CA_POWER_PIN      (IO_PIN3)
+#define CA_TXRXID_PORT    (P5)
+#define CA_TXRXID_PIN     (IO_PIN6)
+#else
+#define SW2_PORT (P1)
+#define SW2_PIN (IO_PIN0)
+#define LED5_PORT (P4)
+#define LED5_PIN (IO_PIN7)
+#define CA_POWER_PORT (P1)
+#define CA_POWER_PIN (IO_PIN0)
+#define CA_TXRXID_PORT (P3)
+#define CA_TXRXID_PIN (IO_PIN0)
+#endif
+
+
+
+
 void USBHAL_initPorts(void);
 void USBHAL_initClocks(uint32_t mclkFreq);
 //Released_Version_5_20_06_02

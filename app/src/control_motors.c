@@ -36,11 +36,13 @@ typedef struct
 {
     uint32_t    num_steps;
     CM_Dir_Enum dir;
-    void      (*handler)(void);
+    void      (*handler)(void *);
+    void * handler_args;
 } CM_TurnStepsCmd_Struct;
 typedef struct
 {
-    void (*handler)(void);
+    void (*handler)(void *);
+    void * handler_args;
 } CM_AlignCmd_Struct;
 
 static const CM_Motor_Struct Theta =
@@ -204,22 +206,24 @@ void CM_init(void)
     IO_attachInterrupt(Phi.fault_port, Phi.fault_pin, _faultPhi);
 }
 
-void CM_turnMotorSteps(CM_Motor_Enum motor, uint32_t num_steps, CM_Dir_Enum dir, void (*handler)(void))
+void CM_turnMotorSteps(CM_Motor_Enum motor, uint32_t num_steps, CM_Dir_Enum dir, void (*handler)(void *), void * handler_args)
 {
     CM_TurnStepsCmd_Struct cmd =
     {
      .num_steps = num_steps,
      .dir = dir,
-     .handler = handler
+     .handler = handler,
+     .handler_args = handler_args
     };
     xQueueSend(motor==theta? theta_turnsteps_command : phi_turnsteps_command, &cmd, portMAX_DELAY);
 }
 
-void CM_align(CM_Motor_Enum motor, void (*handler)(void))
+void CM_align(CM_Motor_Enum motor, void (*handler)(void *), void * handler_args)
 {
     CM_AlignCmd_Struct cmd =
     {
-     .handler = handler
+     .handler = handler,
+     .handler_args = handler_args
     };
     xQueueSend(motor==theta? theta_align_command : phi_align_command, &cmd, portMAX_DELAY);
 }
@@ -240,7 +244,7 @@ static void _turnMotorStepsTask(void * _motor)
         _stopTurn(motor);
         _disableMotor(motor);
         xSemaphoreGive(motor_ownership);
-        cmd.handler();
+        cmd.handler(cmd.handler_args);
     }
 }
 
@@ -272,7 +276,7 @@ static void _alignTask(void * _motor)
         motor->es_port->IE &= ~motor->es_pin;
         _disableMotor(motor);
         xSemaphoreGive(motor_ownership);
-        cmd.handler();
+        cmd.handler(cmd.handler_args);
     }
 }
 

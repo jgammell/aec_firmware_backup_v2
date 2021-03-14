@@ -195,8 +195,8 @@ uint8_t USBCDC_handleDataReceived (uint8_t intfNum)
 uint8_t USBCDC_handleSendCompleted (uint8_t intfNum)
 {
     //TO DO: You can place your code here
-
-    return (FALSE);                             //return FALSE to go asleep after interrupt (in the case the CPU slept before
+    IF_informTx();
+    return (TRUE);                             //return FALSE to go asleep after interrupt (in the case the CPU slept before
                                                 //interrupt)
 }
 

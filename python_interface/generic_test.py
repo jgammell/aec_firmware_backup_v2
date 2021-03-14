@@ -7,9 +7,9 @@
 def degreesToSteps(degrees):
     return int(9144000*(degrees/360))
 
-from motor_driver_interface import MotorDriver
+from motor_driver_interface_v2 import MotorDriver
 
-COM = r'COM21'
+COM = r'COM14'#r'COM21'
 
 MD = MotorDriver(COM)
 
@@ -72,5 +72,59 @@ print(MD.readSensor())
 
 # Check status
 
-MD.checkAssertInfo()
+MD.getId()
+MD.getAssertInfo()
 MD.invokeBsl()
+
+#%%
+
+# List of things to check to verify functionality
+
+# Should complete without errors.
+from matplotlib import pyplot as plt
+from scipy.stats import linregress
+import numpy as np
+from motor_driver_interface_v2 import MotorDriver
+COM = r'COM14'#r'COM21'
+MD = MotorDriver(COM)
+
+# Assert info should reflect last assert statement
+print(MD.getAssertInfo())
+
+# Test side: ensure TXRXID pin is grounded.
+assert MD.getId() == 'TEST'
+# Laser should turn off/on 5 times.
+for i in range(5):
+    MD.writeLaser(True)
+    time.sleep(.5)
+    MD.writeLaser(False)
+    time.sleep(.5)
+
+# Probe side: ensure TXRXID pin is 3.3V
+assert MD.getId() == 'PROBE'
+print(MD.readSensor()) # Should reflect INTENSITY pin; 4095 for 3.3V and 0 for GND
+
+# Regression lines should match datapoints fairly closely
+steps = []
+times = []
+for i in [1, 10, 100, 1000, 10000]:
+    for j in range(i, 10*i, i):
+        steps.append(j)
+        times.append(MD.turnMotor('phi', j, 'cw'))
+plt.plot(steps, times, '.')
+m, b, _, _, _ = linregress(steps, times)
+plt.plot(steps, m*np.array(steps)+b, '--')
+plt.xscale('log')
+plt.yscale('log')
+plt.figure()
+steps = []
+times = []
+for i in [1, 10, 100, 1000, 10000]:
+    for j in range(i, 10*i, i):
+        steps.append(j)
+        times.append(MD.turnMotor('theta', j, 'cw'))
+plt.plot(steps, times, '.')
+m, b, _, _, _ = linregress(steps, times)
+plt.plot(steps, m*np.array(steps)+b, '--')
+plt.xscale('log')
+plt.yscale('log')

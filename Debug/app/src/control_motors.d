@@ -33,6 +33,7 @@ app/src/control_motors.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_fir
 app/src/control_motors.obj: C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/include/stdbool.h
 app/src/control_motors.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal/headers/io_hal.h
 app/src/control_motors.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/control_motors.h
+app/src/control_motors.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal.h
 app/src/control_motors.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hil/headers/io_interrupts.h
 
 ../app/src/control_motors.c: 
@@ -68,4 +69,5 @@ C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hil/headers/pwm.h:
 C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/include/stdbool.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal/headers/io_hal.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/control_motors.h: 
+C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hil/headers/io_interrupts.h: 

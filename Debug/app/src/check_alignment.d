@@ -13,6 +13,7 @@ app/src/check_alignment.obj: C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2
 app/src/check_alignment.obj: C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/include/machine/_stdint.h
 app/src/check_alignment.obj: C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/include/sys/_stdint.h
 app/src/check_alignment.obj: C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/include/stdbool.h
+app/src/check_alignment.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal.h
 app/src/check_alignment.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal/headers/io_hal.h
 app/src/check_alignment.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/error.h
 app/src/check_alignment.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/FreeRTOS/Source/include/FreeRTOS.h
@@ -49,6 +50,7 @@ C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/include/machine/_types
 C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/include/machine/_stdint.h: 
 C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/include/sys/_stdint.h: 
 C:/ti/ccs1011/ccs/tools/compiler/ti-cgt-msp430_20.2.1.LTS/include/stdbool.h: 
+C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal/headers/io_hal.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/error.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/FreeRTOS/Source/include/FreeRTOS.h: 

@@ -24,6 +24,7 @@ app/src/error.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/dri
 app/src/error.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/driverlib/MSP430F5xx_6xx/inc/hw_memmap.h
 app/src/error.obj: C:/ti/ccs1011/ccs/ccs_base/msp430/include/msp430f5xx_6xxgeneric.h
 app/src/error.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_API/USB_Common/usb.h
+app/src/error.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal.h
 
 ../app/src/error.c: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/app/headers/error.h: 
@@ -49,3 +50,4 @@ C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/driverlib/MSP430F5xx_6
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/driverlib/MSP430F5xx_6xx/inc/hw_memmap.h: 
 C:/ti/ccs1011/ccs/ccs_base/msp430/include/msp430f5xx_6xxgeneric.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/USB_API/USB_Common/usb.h: 
+C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal.h: 

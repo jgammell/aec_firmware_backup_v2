@@ -14,14 +14,11 @@ Probe = MotorDriver(probe_COM)
 
 # Section 2
 
-Test.startTurnMotor('theta', 4499000, 'cw')
-Probe.startTurnMotor('theta', 4499000, 'ccw')
+Test.startTurnMotor('theta', 4494000, 'cw')
+Probe.startTurnMotor('theta', 4494000, 'ccw')
 Test.waitForDone()
 Probe.waitForDone()
 Test.turnMotor('phi', 9142000, 'cw')
-
-
-
 
 
 # Theta motor: roughly 4499000
