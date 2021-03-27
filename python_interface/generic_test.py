@@ -85,7 +85,7 @@ from matplotlib import pyplot as plt
 from scipy.stats import linregress
 import numpy as np
 from motor_driver_interface_v2 import MotorDriver
-COM = r'COM14'#r'COM21'
+COM = r'COM15'
 MD = MotorDriver(COM)
 
 # Assert info should reflect last assert statement
@@ -128,3 +128,17 @@ m, b, _, _, _ = linregress(steps, times)
 plt.plot(steps, m*np.array(steps)+b, '--')
 plt.xscale('log')
 plt.yscale('log')
+
+
+def getData(orientation):
+    return np.sin(2*np.pi*orientation/360)
+
+otp = [[], []]
+for orientation in np.linspace(0, 360, 30):
+    MD.turnMotor('phi', int(9142000/30), 'cw')
+    otp[0].append(orientation)
+    otp[1].append(getData(orientation))
+plt.plot(otp[0], otp[1])
+plt.xlabel('Orientation (degrees)')
+plt.ylabel('Measurement')
+

@@ -238,11 +238,14 @@ static void _turnMotorStepsTask(void * _motor)
         CM_TurnStepsCmd_Struct cmd;
         xQueueReceive(cmd_queue, &cmd, portMAX_DELAY);
         xSemaphoreTake(motor_ownership, portMAX_DELAY);
-        _enableMotor(motor, cmd.dir);
-        _startTurnSteps(motor, cmd.num_steps);
-        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-        _stopTurn(motor);
-        _disableMotor(motor);
+        if(cmd.num_steps != 0)
+        {
+            _enableMotor(motor, cmd.dir);
+            _startTurnSteps(motor, cmd.num_steps);
+            ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+            _stopTurn(motor);
+            _disableMotor(motor);
+        }
         xSemaphoreGive(motor_ownership);
         cmd.handler(cmd.handler_args);
     }
