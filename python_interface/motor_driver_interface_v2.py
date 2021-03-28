@@ -5,6 +5,7 @@ import time
 
 CMDDELIM = '\n'
 ARGDELIM = ':'
+QUERY    = '?'
 ACK      = 'a'
 NACK     = 'nack'
 IDEN     = 'IDEN'
@@ -14,6 +15,7 @@ RSENSOR  = 'RSENSOR'
 RASSERT  = 'RASSERT'
 INVBSL   = 'INVBSL'
 MOVE     = 'MOVE'
+FREQ    = 'FREQ'
 
 
 class MotorDriver:
@@ -95,3 +97,22 @@ class MotorDriver:
         assert self._rxCmd() == ACK
         assert self._rxCmd() == cmd
         return time.time()-t0
+    def getFreq(self, motor):
+        assert motor in ['theta', 'phi']
+        args = [FREQ]
+        args.append(('PHI' if motor=='phi' else 'THETA')+QUERY)
+        cmd = self._txCmd(args)
+        assert self._rxCmd() == ACK
+        rv = self._rxCmd()
+        assert self._rxCmd() == cmd
+        return int(rv)
+    def setFreq(self, motor, freq):
+        assert motor in ['theta', 'phi']
+        assert type(freq) == int
+        assert freq == freq&0xFFFFFFFF
+        args = [FREQ]
+        args.append('PHI' if motor=='phi' else 'THETA')
+        args.append('%d'%(freq))
+        cmd = self._txCmd(args)
+        assert self._rxCmd() == ACK
+        assert self._rxCmd() == cmd

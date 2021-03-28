@@ -17,6 +17,8 @@
 #define IF_CMDDELIM_CHAR   '\n'
 #define IF_ARGDELIM_CHAR   ':'
 #define IF_CMDDELIM_STR    "\n"
+#define IF_QUERY_STR       "?"
+#define IF_QUERY_CHAR      '?'
 
 #define IF_IDEN_PREF       "IDEN"
 #define IF_IDEN_RV_TEST    "TEST"
@@ -41,6 +43,10 @@
 #define IF_MOVE_ARG0_THETA "THETA"
 #define IF_MOVE_ARG1_CW    "CW"
 #define IF_MOVE_ARG1_CCW   "CC"
+
+#define IF_SFREQ_PREF      "FREQ"
+#define IF_SFREQ_ARG0_PHI  "PHI"
+#define IF_SFREQ_ARG0_THETA "THETA"
 
 
 void IF_informRx(void);

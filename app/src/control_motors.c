@@ -31,6 +31,7 @@ typedef struct
     uint8_t               fault_pin;
     IO_Registers_Struct * es_port;
     uint8_t               es_pin;
+    uint32_t              freq;
 } CM_Motor_Struct;
 typedef struct
 {
@@ -45,7 +46,7 @@ typedef struct
     void * handler_args;
 } CM_AlignCmd_Struct;
 
-static const CM_Motor_Struct Theta =
+static CM_Motor_Struct Theta =
 {
  .timer_source = CM_THETA_STEP_TID,
  .timer_output = CM_THETA_STEP_TOP,
@@ -60,9 +61,10 @@ static const CM_Motor_Struct Theta =
  .fault_port   = CM_THETA_FAULT_PORT,
  .fault_pin    = CM_THETA_FAULT_PIN,
  .es_port      = CM_THETA_ES_PORT,
- .es_pin       = CM_THETA_ES_PIN
+ .es_pin       = CM_THETA_ES_PIN,
+ .freq         = CM_STEP_FREQ
 };
-static const CM_Motor_Struct Phi =
+static CM_Motor_Struct Phi =
 {
  .timer_source = CM_PHI_STEP_TID,
  .timer_output = CM_PHI_STEP_TOP,
@@ -77,7 +79,8 @@ static const CM_Motor_Struct Phi =
  .fault_port   = CM_PHI_FAULT_PORT,
  .fault_pin    = CM_PHI_FAULT_PIN,
  .es_port      = CM_PHI_ES_PORT,
- .es_pin       = CM_PHI_ES_PIN
+ .es_pin       = CM_PHI_ES_PIN,
+ .freq         = CM_STEP_FREQ
 };
 
 static SemaphoreHandle_t theta_ownership = NULL;
@@ -185,11 +188,6 @@ void CM_init(void)
     IO_configurePin(Phi.sd_port, Phi.sd_pin, &io_config);
     IO_configurePin(Phi.reset_port, Phi.reset_pin, &io_config);
     IO_configurePin(Phi.dir_port, Phi.dir_pin, &io_config);
-    /*io_config.initial_out = !io_config.initial_out;
-    IO_configurePin(Phi.sd_port, Phi.sd_pin, &io_config);
-    io_config.initial_out = !io_config.initial_out;
-    IO_configurePin(Phi.reset_port, Phi.reset_pin, &io_config);
-    IO_configurePin(Phi.dir_port, Phi.dir_pin, &io_config);*/
     io_config.sel = ioSelPeripheral;
     IO_configurePin(Theta.step_port, Theta.step_pin, &io_config);
     IO_configurePin(Phi.step_port, Phi.step_pin, &io_config);
@@ -204,6 +202,36 @@ void CM_init(void)
     IO_attachInterrupt(Phi.es_port, Phi.es_pin, _eventAlignPhi);
     IO_attachInterrupt(Theta.fault_port, Theta.fault_pin, _faultTheta);
     IO_attachInterrupt(Phi.fault_port, Phi.fault_pin, _faultPhi);
+}
+
+void CM_setFreq(CM_Motor_Enum motor, uint32_t freq)
+{
+    ASSERT(freq > 0);
+    switch(motor)
+    {
+    case theta:
+        Theta.freq = freq;
+        break;
+    case phi:
+        Phi.freq = freq;
+        break;
+    default:
+        ASSERT(false);
+    }
+}
+
+uint32_t CM_getFreq(CM_Motor_Enum motor)
+{
+    switch(motor)
+    {
+    case theta:
+        return Theta.freq;
+    case phi:
+        return Phi.freq;
+    default:
+        ASSERT(false);
+        return 0;
+    }
 }
 
 void CM_turnMotorSteps(CM_Motor_Enum motor, uint32_t num_steps, CM_Dir_Enum dir, void (*handler)(void *), void * handler_args)
@@ -300,7 +328,7 @@ static void _startTurnSteps(CM_Motor_Struct * motor, uint32_t steps)
     {
      .percent_on = CM_STEP_ONPCT,
      .output = motor->timer_output,
-     .freq_hz = CM_STEP_FREQ,
+     .freq_hz = motor->freq,
      .initial_output = CM_PIN_IDLE
     };
     PWM_configure(motor->timer_source, &pwm_config);

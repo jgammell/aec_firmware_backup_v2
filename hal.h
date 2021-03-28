@@ -84,7 +84,7 @@
 #define CA_INTENSITY_AMEN (ADC12_A_MEMORY_0)
 #define CA_INTENSITY_AIFG (ADC12_A_IFG0)
 
-#define DIST_PCB true
+#define DIST_PCB false
 #if DIST_PCB == true
 #define SW2_PORT (P2)
 #define SW2_PIN (IO_PIN4)

@@ -75,6 +75,10 @@ print(MD.readSensor())
 MD.getId()
 MD.getAssertInfo()
 MD.invokeBsl()
+MD.getFreq('theta')
+MD.getFreq('phi')
+MD.setFreq('theta', 6553)
+MD.setFreq('phi', 12345)
 
 #%%
 

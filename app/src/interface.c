@@ -40,6 +40,12 @@ static SemaphoreHandle_t tx_available = NULL;
 
 static TaskHandle_t rx_task = NULL;
 
+typedef struct
+{
+    uint32_t freq;
+    uint8_t  cmd_idx;
+} _Rfreq_Struct;
+
 static void _rxTask(void *);
 static void _parseAndExecuteCmd(char *, uint8_t);
 static void _ack(void);
@@ -49,6 +55,7 @@ static void _iden(void *);
 static void _rsensor(uint16_t, void *);
 static void _rassert(void *);
 static void _invbsl(void *);
+static void _rfreq(void *);
 static void _invbslButton(void);
 static void _toCaps(char *, uint8_t);
 static bool _strEq(const char *, const char *, uint8_t);
@@ -123,6 +130,7 @@ static void _rxTask(void * params)
 
 static void _parseAndExecuteCmd(char * s, uint8_t n)
 {
+    static uint8_t args_mem[64];
     _toCaps(s, n);
     uint8_t pref_len = _strFind(s, IF_ARGDELIM_CHAR, n);
     if(pref_len == n)
@@ -244,6 +252,56 @@ static void _parseAndExecuteCmd(char * s, uint8_t n)
 
         CM_turnMotorSteps(motor, num_steps, dir, _done, (void *)cmd_idx);
     }
+    else if((pref_len==STRLEN_C(IF_SFREQ_PREF)) && _strEq(s, IF_SFREQ_PREF, pref_len))
+    {
+        s += pref_len+1;
+        n -= pref_len+1;
+        uint8_t arg0_len = _strFind(s, IF_ARGDELIM_CHAR, MAX_CMD_LEN);
+        if(arg0_len == MAX_CMD_LEN)
+            arg0_len = _strFind(s, IF_CMDDELIM_CHAR, MAX_CMD_LEN)-1;
+        ASSERT(arg0_len < MAX_CMD_LEN);
+        CM_Motor_Enum motor;
+        if((arg0_len==STRLEN_C(IF_SFREQ_ARG0_PHI)) && _strEq(s, IF_SFREQ_ARG0_PHI, arg0_len))
+            motor = phi;
+        else if((arg0_len==STRLEN_C(IF_SFREQ_ARG0_THETA)) && _strEq(s, IF_SFREQ_ARG0_THETA, arg0_len))
+            motor = theta;
+        else
+        {
+            _rmPendingCmd(cmd_idx);
+            _nack();
+            return;
+        }
+        if(s[arg0_len] == IF_QUERY_CHAR)
+        {
+            wb_handler = _rfreq;
+            ((_Rfreq_Struct *) args_mem)->cmd_idx = cmd_idx;
+            ((_Rfreq_Struct *) args_mem)->freq = CM_getFreq(motor);
+            wb_args = (void *) args_mem;
+        }
+        else
+        {
+            s += arg0_len+1;
+            n -= arg0_len+1;
+            uint8_t arg1_len = _strFind(s, IF_CMDDELIM_CHAR, n);
+            ASSERT(arg1_len < n);
+            uint32_t freq;
+            uint32_t base;
+            uint8_t idx;
+            for(freq=0, base=1, idx=arg1_len-1; idx<0xFF; freq+=base*((uint32_t)(s[idx]-'0')), --idx, base*=10)
+            {
+                if((s[idx] < '0') || (s[idx] > '9'))
+                {
+                    _rmPendingCmd(cmd_idx);
+                    _nack();
+                    return;
+                }
+            }
+
+            CM_setFreq(motor, freq);
+            wb_handler = _done;
+            wb_args = (void *) cmd_idx;
+        }
+    }
     else
     {
         _rmPendingCmd(cmd_idx);
@@ -294,13 +352,31 @@ static void _iden(void * done_args)
 
 static void _rsensor(uint16_t output, void * done_args)
 {
-    static char rv_msg[] = "00000" IF_CMDDELIM_STR;
+    static char rv_msg[5 + STRLEN_C(IF_CMDDELIM_STR)];
     uint8_t i;
     uint16_t base;
-    for(i=0, base=10000; i<5; ++i, base/=10)
+    for(base=1; output/(10*base) != 0; base*=10);
+    for(i=0; base>=1; ++i, base/=10)
         rv_msg[i] = (char)('0'+((output/base)%10));
-    _sendData(rv_msg, STRLEN_C(rv_msg));
+    rv_msg[i] = IF_CMDDELIM_CHAR;
+    ++i;
+    _sendData(rv_msg, i);
     _done(done_args);
+}
+
+static void _rfreq(void * _args)
+{
+    static char rv_msg[10 + STRLEN_C(IF_CMDDELIM_STR)];
+    _Rfreq_Struct * args = (_Rfreq_Struct *) _args;
+    uint8_t i;
+    uint32_t base;
+    for(base=1; args->freq/(10*base) != 0; base*=10);
+    for(i=0; base>= 1; ++i, base/=10)
+        rv_msg[i] = (char)('0'+((args->freq/base)%10));
+    rv_msg[i] = IF_CMDDELIM_CHAR;
+    ++i;
+    _sendData(rv_msg, i);
+    _done((void *)args->cmd_idx);
 }
 
 static void _rassert(void * done_args)
