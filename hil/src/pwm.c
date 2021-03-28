@@ -15,10 +15,14 @@
 #define _PIN(TIMER, OUTPUT) ((TIMER) == timerA0? P1 : P2),\
                             ((TIMER) == timerA0? (OUTPUT)+1 : (TIMER)==timerA1? (OUTPUT)-1 : (OUTPUT)+3)
 
-#define SMCLK_FREQ (UCS_getSMCLK())//(6000000UL)
-
+static uint32_t smclk_freq;
+static uint32_t period_inc;
 static void (*ta0Handler)(void);
-static uint32_t ta0_pending;
+static uint32_t ta0_up_phase;
+static uint32_t ta0_const_phase;
+static uint32_t ta0_down_phase;
+static uint32_t ta0_chfreq_marker;
+static uint32_t ta0_chfreq_increment;
 static void (*ta1Handler)(void);
 static uint32_t ta1_pending;
 static void (*ta2Handler)(void);
@@ -28,7 +32,9 @@ void PWM_configure(PWM_Sources_Enum source, PWM_Config_Struct * config)
 {
     ASSERT(config->percent_on <= 100);
     ASSERT(SMCLK_FREQ/config->freq_hz < 1UL<<16);
-    uint16_t ticks_period = SMCLK_FREQ/config->freq_hz;
+    smclk_freq = UCS_getSMCLK();
+    uint16_t ticks_period = smclk_freq/config->freq_hz;
+    period_inc = (smclk_freq/100000)/100;
     TA_reset(_TAx(source));
     TA_CtlConfig_Struct ctl_config =
     {
@@ -51,8 +57,18 @@ void PWM_configure(PWM_Sources_Enum source, PWM_Config_Struct * config)
     TA_configureCctl(_TAx(source), 0, &cctl_config);
     cctl_config.outmod = taCctlOutmodSetreset;
     TA_configureCctl(_TAx(source), config->output, &cctl_config);
-    TA_setCcr(_TAx(source), 0, ticks_period);
-    TA_setCcr(_TAx(source), config->output, (uint16_t)(((uint32_t) config->percent_on)*ticks_period)/100);
+    if(config->gradual)
+    {
+        TA_setCcr(_TAx(source), 0, period_inc);
+        TA_setCcr(_TAx(source), config->output, (uint16_t)(((uint32_t) config->percent_on)*period_inc)/100);
+        ta0_up_phase =
+    }
+    else
+    {
+        TA_setCcr(_TAx(source), 0, ticks_period);
+        TA_setCcr(_TAx(source), config->output, (uint16_t)(((uint32_t) config->percent_on)*ticks_period)/100);
+        ta0_up_phase = 0;
+    }
     IO_PinConfig_Struct io_config =
     {
      .initial_out = (IO_Out_Enum)config->initial_output,
@@ -114,13 +130,32 @@ void PWM_stop(PWM_Sources_Enum source)
 #pragma vector=TIMER0_A0_VECTOR
 void __attribute__ ((interrupt)) ta0IRQHandler(void)
 {
-    if(ta0_pending == 0)
+    if(ta0_up_phase > 0)
+    {
+        --ta0_up_phase;
+        if(ta0_up_phase == ta0_chfreq_marker)
+        {
+            uint16_t ticks_period = SMCLK_FREQ/config->freq_hz;
+
+            // increase frequency by 1000
+            ta0_chfreq_marker += ta0_chfreq_increment;
+            ta0_chfreq_increment += 1000;
+        }
+    }
+    else if(ta0_const_phase > 0)
+    {
+        --ta0_const_phase;
+    }
+    else if(ta0_down_phase > 0)
+    {
+        --ta0_down_phase;
+    }
+    else
     {
         TA0->CTL &= ~TA_CTL_MC;
         TA0->CCTL[0] &= ~TA_CCTL_CCIE;
         (*ta0Handler)();
     }
-    --ta0_pending;
 }
 
 #pragma vector=TIMER1_A0_VECTOR

@@ -13,6 +13,8 @@ COM = r'COM14'#r'COM21'
 
 MD = MotorDriver(COM)
 
+
+
 #%%
 
 # Motor control

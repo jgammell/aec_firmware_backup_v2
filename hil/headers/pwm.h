@@ -24,6 +24,7 @@ typedef struct
     uint8_t output;
     uint32_t freq_hz;
     bool initial_output;
+    bool gradual;
 } PWM_Config_Struct;
 
 void PWM_configure(PWM_Sources_Enum source, PWM_Config_Struct * config);

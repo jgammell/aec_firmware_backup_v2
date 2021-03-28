@@ -116,3 +116,8 @@ class MotorDriver:
         cmd = self._txCmd(args)
         assert self._rxCmd() == ACK
         assert self._rxCmd() == cmd
+    def findEndSwitch(self, motor, direction):
+        time.sleep(5)
+        return
+    def setAlignedOrientation(self, theta, phi):
+        return
