@@ -45,6 +45,11 @@ typedef struct
     uint32_t freq;
     uint8_t  cmd_idx;
 } _Rfreq_Struct;
+typedef struct
+{
+    int32_t value;
+    uint8_t cmd_idx;
+} _Oinfo_Struct;
 
 static void _rxTask(void *);
 static void _parseAndExecuteCmd(char *, uint8_t);
@@ -56,6 +61,7 @@ static void _rsensor(uint16_t, void *);
 static void _rassert(void *);
 static void _invbsl(void *);
 static void _rfreq(void *);
+static void _roinfo(void *);
 static void _invbslButton(void);
 static void _toCaps(char *, uint8_t);
 static bool _strEq(const char *, const char *, uint8_t);
@@ -317,6 +323,69 @@ static void _parseAndExecuteCmd(char * s, uint8_t n)
             wb_args = (void *) cmd_idx;
         }
     }
+    else if((pref_len==STRLEN_C(IF_OINFO_PREF)) && _strEq(s, IF_OINFO_PREF, pref_len))
+    {
+        s += pref_len+1;
+        n -= pref_len+1;
+        uint8_t arg0_len = _strFind(s, IF_ARGDELIM_CHAR, MAX_CMD_LEN);
+        ASSERT(arg0_len < MAX_CMD_LEN);
+        CM_Motor_Enum motor;
+        if((arg0_len==STRLEN_C(IF_MOVE_ARG0_PHI)) && _strEq(s, IF_MOVE_ARG0_PHI, arg0_len))
+            motor = phi;
+        else if((arg0_len==STRLEN_C(IF_MOVE_ARG0_THETA)) && _strEq(s, IF_MOVE_ARG0_THETA, arg0_len))
+            motor = theta;
+        else
+        {
+            _rmPendingCmd(cmd_idx);
+            _nack();
+            return;
+        }
+        s += arg0_len+1;
+        n -= arg0_len+1;
+        uint8_t arg1_len = _strFind(s, IF_ARGDELIM_CHAR, n);
+        if(arg1_len == n)
+            arg1_len = _strFind(s, IF_QUERY_CHAR, n);
+        ASSERT(arg1_len < n);
+        CM_OrientationInfo_Enum oinfo;
+        if((arg1_len==STRLEN_C(IF_OINFO_ARG1_ALIGNED)) && _strEq(s, IF_OINFO_ARG1_ALIGNED, arg1_len))
+            oinfo = aligned;
+        else if((s[arg1_len] == IF_QUERY_CHAR) && (arg1_len==STRLEN_C(IF_OINFO_ARG1_CURRENT)) && _strEq(s, IF_OINFO_ARG1_CURRENT, arg1_len))
+            oinfo = current;
+        else
+        {
+            _rmPendingCmd(cmd_idx);
+            _nack();
+            return;
+        }
+        if(s[arg1_len] == IF_QUERY_CHAR)
+        {
+            wb_handler = _roinfo;
+            ((_Oinfo_Struct *) args_mem)->cmd_idx = cmd_idx;
+            if(!CM_getOrientationInfo(motor, oinfo, &(((_Oinfo_Struct *) args_mem)->value)))
+            {
+                _rmPendingCmd(cmd_idx);
+                _nack();
+                return;
+            }
+            wb_args = (void *) args_mem;
+        }
+        else
+        {
+            s += arg1_len+1;
+            n -= arg1_len-1;
+            uint8_t arg2_len = _strFind(s, IF_CMDDELIM_CHAR, n);
+            ASSERT(arg2_len < n);
+            int32_t value;
+            int32_t base;
+            uint8_t idx;
+            for(value=0, base=1, idx=arg2_len-1; (('0' <= s[idx]) && (s[idx] <= '9')) && (idx<0xFF); value+=base*((int32_t)(s[idx]-'0')), --idx, base*=10);
+            if(s[idx] == '-')
+                value *= -1;
+            CM_setAlignedInfo(motor, value);
+            wb_handler = _done;
+            wb_args = (void *) cmd_idx;
+        }
+    }
     else
     {
         _rmPendingCmd(cmd_idx);
@@ -388,6 +457,29 @@ static void _rfreq(void * _args)
     for(base=1; args->freq/(10*base) != 0; base*=10);
     for(i=0; base>= 1; ++i, base/=10)
         rv_msg[i] = (char)('0'+((args->freq/base)%10));
+    rv_msg[i] = IF_CMDDELIM_CHAR;
+    ++i;
+    _sendData(rv_msg, i);
+    _done((void *)args->cmd_idx);
+}
+
+static void _roinfo(void * _args)
+{
+    static char rv_msg[11 + STRLEN_C(IF_CMDDELIM_STR)];
+    _Oinfo_Struct * args = (_Oinfo_Struct *) _args;
+    uint8_t i;
+    uint32_t base;
+    for(base=1; args->value/(10*base) != 0; base*=10);
+    if(args->value < 0)
+    {
+        rv_msg[0] = '-';
+        args->value *= -1;
+        i = 1;
+    }
+    else
+        i = 0;
+    for( ; base>=1; ++i, base/=10)
+        rv_msg[i] = (char)('0'+((args->value/base)%10));
     rv_msg[i] = IF_CMDDELIM_CHAR;
     ++i;
     _sendData(rv_msg, i);

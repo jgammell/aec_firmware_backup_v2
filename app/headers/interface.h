@@ -50,6 +50,12 @@
 #define IF_SFREQ_ARG0_PHI  "PHI"
 #define IF_SFREQ_ARG0_THETA "THETA"
 
+#define IF_OINFO_PREF         "ORIENTATION"
+#define IF_OINFO_ARG0_THETA   "THETA"
+#define IF_OINFO_ARG0_PHI     "PHI"
+#define IF_OINFO_ARG1_ALIGNED "ALIGNED"
+#define IF_OINFO_ARG1_CURRENT "CURRENT"
+
 
 void IF_informRx(void);
 
