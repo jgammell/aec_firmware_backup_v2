@@ -330,8 +330,7 @@ static void _startTurnSteps(CM_Motor_Struct * motor, uint32_t steps)
      .output = motor->timer_output,
      .freq_hz = motor->freq,
      .initial_output = CM_PIN_IDLE,
-     .gradual_up = true,
-     .gradual_down = true
+     .gradual = true
     };
     PWM_configure(motor->timer_source, &pwm_config);
     PWM_start(motor->timer_source, steps, motor==&Theta? _eventTurnTheta : _eventTurnPhi);

@@ -15,26 +15,20 @@
 #define _PIN(TIMER, OUTPUT) ((TIMER) == timerA0? P1 : P2),\
                             ((TIMER) == timerA0? (OUTPUT)+1 : (TIMER)==timerA1? (OUTPUT)-1 : (OUTPUT)+3)
 
-static uint32_t smclk_freq;
-static uint32_t period_inc;
-static void (*ta0Handler)(void);
-static uint32_t ta0_up_phase;
-static uint32_t ta0_const_phase;
-static uint32_t ta0_down_phase;
-static uint32_t ta0_chfreq_marker;
-static uint32_t ta0_chfreq_increment;
-static void (*ta1Handler)(void);
-static uint32_t ta1_pending;
-static void (*ta2Handler)(void);
-static uint32_t ta2_pending;
+static void     (*taHandler[3])(void);
+static uint32_t ta_up_phase[3];
+static uint32_t ta_const_phase[3];
+static uint32_t ta_down_phase[3];
+static uint16_t ta_target_period[3];
+static uint8_t  ta_output[3];
+static bool     ta_gradual[3];
 
 void PWM_configure(PWM_Sources_Enum source, PWM_Config_Struct * config)
 {
     ASSERT(config->percent_on <= 100);
-    ASSERT(SMCLK_FREQ/config->freq_hz < 1UL<<16);
-    smclk_freq = UCS_getSMCLK();
+    uint32_t smclk_freq = UCS_getSMCLK();
+    ASSERT(smclk_freq/config->freq_hz < 1UL<<16);
     uint16_t ticks_period = smclk_freq/config->freq_hz;
-    period_inc = (smclk_freq/100000)/100;
     TA_reset(_TAx(source));
     TA_CtlConfig_Struct ctl_config =
     {
@@ -59,16 +53,17 @@ void PWM_configure(PWM_Sources_Enum source, PWM_Config_Struct * config)
     TA_configureCctl(_TAx(source), config->output, &cctl_config);
     if(config->gradual)
     {
-        TA_setCcr(_TAx(source), 0, period_inc);
-        TA_setCcr(_TAx(source), config->output, (uint16_t)(((uint32_t) config->percent_on)*period_inc)/100);
-        ta0_up_phase =
+        TA_setCcr(_TAx(source), 0, 10*ticks_period);
+        TA_setCcr(_TAx(source), config->output, 5*ticks_period);
     }
     else
     {
         TA_setCcr(_TAx(source), 0, ticks_period);
         TA_setCcr(_TAx(source), config->output, (uint16_t)(((uint32_t) config->percent_on)*ticks_period)/100);
-        ta0_up_phase = 0;
     }
+    ta_gradual[source] = config->gradual;
+    ta_output[source] = config->output;
+    ta_target_period[source] = ticks_period;
     IO_PinConfig_Struct io_config =
     {
      .initial_out = (IO_Out_Enum)config->initial_output,
@@ -84,20 +79,23 @@ void PWM_configure(PWM_Sources_Enum source, PWM_Config_Struct * config)
 
 void PWM_start(PWM_Sources_Enum source, uint32_t num_pulses, void (*handler)(void))
 {
-    switch(source)
+    taHandler[source] = handler;
+    if(!ta_gradual[source])
+        ta_const_phase[source] = num_pulses;
+    else
     {
-    case timerA0:
-        ta0Handler = handler;
-        ta0_pending = num_pulses-1;
-        break;
-    case timerA1:
-        ta1Handler = handler;
-        ta1_pending = num_pulses-1;
-        break;
-    case timerA2:
-        ta2Handler = handler;
-        ta2_pending = num_pulses-1;
-        break;
+        if(num_pulses >= 18*(ta_target_period[source]))
+        {
+            ta_up_phase[source] = 9*(ta_target_period[source]);
+            ta_down_phase[source] = 9*(ta_target_period[source]);
+            ta_const_phase[source] = num_pulses - 18*(ta_target_period[source]);
+        }
+        else
+        {
+            ta_up_phase[source] = (num_pulses >> 1) + (num_pulses & 1);
+            ta_down_phase[source] = num_pulses >> 1;
+            ta_const_phase[source] = 0;
+        }
     }
     if(num_pulses != 0)
     {
@@ -109,75 +107,90 @@ void PWM_start(PWM_Sources_Enum source, uint32_t num_pulses, void (*handler)(voi
 void PWM_stop(PWM_Sources_Enum source)
 {
     TA_stop(_TAx(source));
-    switch(source)
-    {
-    case timerA0:
-        ta0Handler = (void *) 0;
-        ta0_pending = 0;
-        break;
-    case timerA1:
-        ta1Handler = (void *) 0;
-        ta1_pending = 0;
-        break;
-    case timerA2:
-        ta2Handler = (void *) 0;
-        ta2_pending = 0;
-        break;
-    }
+    taHandler[source] = (void *) 0;
+    ta_up_phase[source] = 0;
+    ta_down_phase[source] = 0;
+    ta_const_phase[source] = 0;
 }
 
 #include <msp430.h>
 #pragma vector=TIMER0_A0_VECTOR
 void __attribute__ ((interrupt)) ta0IRQHandler(void)
 {
-    if(ta0_up_phase > 0)
+    if(ta_up_phase[0] > 0)
     {
-        --ta0_up_phase;
-        if(ta0_up_phase == ta0_chfreq_marker)
-        {
-            uint16_t ticks_period = SMCLK_FREQ/config->freq_hz;
-
-            // increase frequency by 1000
-            ta0_chfreq_marker += ta0_chfreq_increment;
-            ta0_chfreq_increment += 1000;
-        }
+        --(ta_up_phase[0]);
+        TA0->CCR[0] -= 1;
+        TA0->CCR[ta_output[0]] -= ((ta_up_phase[0]) & 1);
     }
-    else if(ta0_const_phase > 0)
+    else if(ta_const_phase[0] > 0)
     {
-        --ta0_const_phase;
+        --(ta_const_phase[0]);
     }
-    else if(ta0_down_phase > 0)
+    else if(ta_down_phase[0] > 0)
     {
-        --ta0_down_phase;
+        --(ta_down_phase[0]);
+        TA0->CCR[0] += 1;
+        TA0->CCR[ta_output[0]] += ((ta_down_phase[0]) & 1);
     }
     else
     {
         TA0->CTL &= ~TA_CTL_MC;
         TA0->CCTL[0] &= ~TA_CCTL_CCIE;
-        (*ta0Handler)();
+        (taHandler[0])();
     }
 }
 
 #pragma vector=TIMER1_A0_VECTOR
 void __attribute__ ((interrupt)) ta1IRQHandler(void)
 {
-    if(ta1_pending == 0)
+    if(ta_up_phase[1] > 0)
+    {
+        --(ta_up_phase[1]);
+        TA1->CCR[0] -= 1;
+        TA1->CCR[ta_output[1]] -= ((ta_up_phase[1]) & 1);
+    }
+    else if(ta_const_phase[1] > 0)
+    {
+        --(ta_const_phase[1]);
+    }
+    else if(ta_down_phase[1] > 0)
+    {
+        --(ta_down_phase[1]);
+        TA1->CCR[0] += 1;
+        TA1->CCR[ta_output[1]] += ((ta_down_phase[1]) & 1);
+    }
+    else
     {
         TA1->CTL &= ~TA_CTL_MC;
         TA1->CCTL[0] &= ~TA_CCTL_CCIE;
-        (*ta1Handler)();
+        (taHandler[1])();
     }
-    --ta1_pending;
 }
 
 #pragma vector=TIMER2_A0_VECTOR
 void __attribute__ ((interrupt)) ta2IRQHandler(void)
 {
-    if(ta2_pending == 0)
+    if(ta_up_phase[2] > 0)
+    {
+        --(ta_up_phase[2]);
+        TA2->CCR[0] -= 1;
+        TA2->CCR[ta_output[2]] -= ((ta_up_phase[2]) & 1);
+    }
+    else if(ta_const_phase[2] > 0)
+    {
+        --(ta_const_phase[2]);
+    }
+    else if(ta_down_phase[2] > 0)
+    {
+        --(ta_down_phase[2]);
+        TA2->CCR[0] += 1;
+        TA2->CCR[ta_output[2]] += ((ta_down_phase[2]) & 1);
+    }
+    else
     {
         TA2->CTL &= ~TA_CTL_MC;
         TA2->CCTL[0] &= ~TA_CCTL_CCIE;
-        (*ta2Handler)();
+        (taHandler[2])();
     }
-    --ta2_pending;
 }

@@ -13,9 +13,9 @@
 
 typedef enum
 {
-    timerA0,
-    timerA1,
-    timerA2
+    timerA0 = 0,
+    timerA1 = 1,
+    timerA2 = 2
 } PWM_Sources_Enum;
 
 typedef struct

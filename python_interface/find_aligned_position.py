@@ -23,15 +23,20 @@ def _printInstructions(status, increment, sensor_output, test_theta, test_phi, p
     print('\t\tc:     indicate present state as aligned')
     print('\t\tv:     get current sensor output')
     print('\t\tx:     exit')
-    if (test_theta != None) or (test_phi != None) or (probe_phi != None):
-        print('\tCurrent motor orientations:')
-        if test_theta != None:
-            print('\t\tTest-theta:     %d'%(test_theta))
-        if test_phi != None:
-            print('\t\tTest-phi:       %d'%(test_phi))
-        if probe_phi != None:
-            print('\t\tProbe-phi:      %d'%(probe_phi))
-        print('\t\tMCU up to date: %s'%(mcu_updated))
+    print('\tCurrent motor orientations:')
+    if test_theta != None:
+        print('\t\tTest-theta:     %d'%(test_theta))
+    else:
+        print('\t\tTest-theta:     Unknown -- must find end switch.')
+    if test_phi != None:
+        print('\t\tTest-phi:       %d'%(test_phi))
+    else:
+        print('\t\tTest-phi:       Unknown -- must find end switch.')
+    if probe_phi != None:
+        print('\t\tProbe-phi:      %d'%(probe_phi))
+    else:
+        print('\t\tProbe-phi:      Unknown -- must find end switch.')
+    print('\t\tMCU up to date: %s'%(mcu_updated))
     print('\tCurrent steps per press:')
     print('\t\t%d'%(increment))
     if sensor_output != None:
@@ -50,15 +55,6 @@ def findAlignedPosition(MD_test, MD_probe):
     def printInstructions(status):
         _printInstructions(status, increment, sensor_output, test_theta, test_phi, probe_phi, mcu_updated)
     
-    printInstructions('Aligning motors with end switches...')
-    MD_test.findEndSwitch('theta', 'ccw')
-    test_theta = 0
-    printInstructions('Aligning motors with end switches...')
-    MD_test.findEndSwitch('phi', 'ccw')
-    test_phi = 0
-    printInstructions('Aligning motors with end switches...')
-    MD_probe.findEndSwitch('phi', 'ccw')
-    probe_phi = 0
     printInstructions('Ready for next command.')
     
     while True:
@@ -71,7 +67,8 @@ def findAlignedPosition(MD_test, MD_probe):
             else:
                 printInstructions('Rotating test-theta CW...')
                 MD_test.turnMotor('theta', increment, 'ccw')
-                test_theta -= increment
+                if test_theta != None:
+                    test_theta -= increment
             while keyboard.is_pressed('a'):
                 pass
             printInstructions('Ready for next command.')
@@ -85,7 +82,8 @@ def findAlignedPosition(MD_test, MD_probe):
             else:
                 printInstructions('Rotating test-theta CCW...')
                 MD_test.turnMotor('theta', increment, 'cw')
-                test_theta += increment
+                if test_theta != None:
+                    test_theta += increment
             while keyboard.is_pressed('d'):
                 pass
             printInstructions('Ready for next command.')
@@ -99,7 +97,8 @@ def findAlignedPosition(MD_test, MD_probe):
             else:
                 printInstructions('Rotating test-phi CCW...')
                 MD_test.turnMotor('phi', increment, 'ccw')
-                test_phi += increment
+                if test_phi != None:
+                    test_phi += increment
             while keyboard.is_pressed('w'):
                 pass
             printInstructions('Ready for next command.')
@@ -113,7 +112,8 @@ def findAlignedPosition(MD_test, MD_probe):
             else:
                 printInstructions('Rotating test-phi CW...')
                 MD_test.turnMotor('phi', increment, 'cw')
-                test_phi -= increment
+                if test_phi != None:
+                    test_phi -= increment
             while keyboard.is_pressed('s'):
                 pass
             printInstructions('Ready for next command.')
@@ -127,7 +127,8 @@ def findAlignedPosition(MD_test, MD_probe):
             else:
                 printInstructions('Rotating probe-phi CCW...')
                 MD_probe.turnMotor('phi', increment, 'ccw')
-                probe_phi -= increment
+                if probe_phi != None:
+                    probe_phi -= increment
             while keyboard.is_pressed('q'):
                 pass
             printInstructions('Ready for next command.')
@@ -141,7 +142,8 @@ def findAlignedPosition(MD_test, MD_probe):
             else:
                 printInstructions('Rotating probe-phi CW...')
                 MD_probe.turnMotor('phi', increment, 'cw')
-                probe_phi += increment
+                if probe_phi != None:
+                    probe_phi += increment
             while keyboard.is_pressed('e'):
                 pass
             printInstructions('Ready for next command.')
