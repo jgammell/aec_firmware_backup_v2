@@ -15,6 +15,7 @@
 #include "control_motors.h"
 #include "io_interrupts.h"
 #include "flashctl.h"
+#include "hal.h"
 
 #define ORIENTATION_INFO_BASE ((uint8_t *) 0x1800)
 
@@ -297,6 +298,9 @@ void CM_setAlignedInfo(CM_Motor_Enum motor, int32_t value)
         orientation_info.theta_aligned = value;
     else
         orientation_info.phi_aligned = value;
+    orientation_info.aligned_valid = true;
+    _storeOrientationInfo();
+    ASSERT(orientation_info.aligned_valid == true);
     xSemaphoreGive(motor==theta? theta_ownership : phi_ownership);
 }
 
@@ -378,6 +382,7 @@ static void _alignTask(void * _motor)
         _retrieveOrientationInfo();
         orientation_info.current_valid = false;
         _storeOrientationInfo();
+#if DIST_PCB == true
         motor->es_port->IES &= ~motor->es_pin;
         motor->es_port->IFG &= ~motor->es_pin;
         motor->es_port->IE |= motor->es_pin;
@@ -418,6 +423,7 @@ static void _alignTask(void * _motor)
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         motor->es_port->IE &= ~motor->es_pin;
         _disableMotor(motor);
+#endif
         if(orientation_info.aligned_valid == true)
             orientation_info.current_valid = true;
         if(motor == &Theta)
@@ -462,7 +468,8 @@ static void _startTurn(CM_Motor_Struct * motor, uint32_t freq)
      .percent_on = CM_STEP_ONPCT,
      .output = motor->timer_output,
      .freq_hz = freq,
-     .initial_output = CM_PIN_IDLE
+     .initial_output = CM_PIN_IDLE,
+     .gradual = true
     };
     PWM_configure(motor->timer_source, &pwm_config);
     PWM_start(motor->timer_source, 0, NULL);

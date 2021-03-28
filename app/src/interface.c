@@ -468,7 +468,7 @@ static void _roinfo(void * _args)
     static char rv_msg[11 + STRLEN_C(IF_CMDDELIM_STR)];
     _Oinfo_Struct * args = (_Oinfo_Struct *) _args;
     uint8_t i;
-    uint32_t base;
+    int32_t base;
     for(base=1; args->value/(10*base) != 0; base*=10);
     if(args->value < 0)
     {

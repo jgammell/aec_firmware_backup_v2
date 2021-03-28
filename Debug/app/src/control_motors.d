@@ -38,6 +38,7 @@ app/src/control_motors.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_fir
 app/src/control_motors.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/driverlib/MSP430F5xx_6xx/flashctl.h
 app/src/control_motors.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/driverlib/MSP430F5xx_6xx/inc/hw_memmap.h
 app/src/control_motors.obj: C:/ti/ccs1011/ccs/ccs_base/msp430/include/msp430f5xx_6xxgeneric.h
+app/src/control_motors.obj: C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal.h
 
 ../app/src/control_motors.c: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/FreeRTOS/Source/include/FreeRTOS.h: 
@@ -77,3 +78,4 @@ C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hil/headers/io_interru
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/driverlib/MSP430F5xx_6xx/flashctl.h: 
 C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/driverlib/MSP430F5xx_6xx/inc/hw_memmap.h: 
 C:/ti/ccs1011/ccs/ccs_base/msp430/include/msp430f5xx_6xxgeneric.h: 
+C:/Users/jgamm/Desktop/sp2021/ecen_4620/ecen4620_firmware/hal.h: 

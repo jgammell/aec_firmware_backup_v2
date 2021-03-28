@@ -1,10 +1,10 @@
 ******************************************************************************
                   MSP430 Linker PC v20.2.1                     
 ******************************************************************************
->> Linked Sun Mar 28 15:07:12 2021
+>> Linked Sun Mar 28 16:25:04 2021
 
 OUTPUT FILE NAME:   <ecen4620_firmware.out>
-ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 0000480e
+ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 000047de
 
 
 MEMORY CONFIGURATION
@@ -20,7 +20,7 @@ MEMORY CONFIGURATION
   INFOA                 00001980   00000080  00000000  00000080  RWIX
   USBRAM                00001c00   00000800  00000000  00000800  RWIX
   RAM                   00002400   00002000  0000189f  00000761  RWIX
-  FLASH                 00004400   0000bb80  000017da  0000a3a6  RWIX
+  FLASH                 00004400   0000bb80  000017ca  0000a3b6  RWIX
   INT00                 0000ff80   00000002  00000000  00000002  RWIX
   INT01                 0000ff82   00000002  00000000  00000002  RWIX
   INT02                 0000ff84   00000002  00000000  00000002  RWIX
@@ -85,7 +85,7 @@ MEMORY CONFIGURATION
   INT61                 0000fffa   00000002  00000002  00000000  RWIX
   INT62                 0000fffc   00000002  00000002  00000000  RWIX
   RESET                 0000fffe   00000002  00000002  00000000  RWIX
-  FLASH2                00010000   000143f8  00007492  0000cf66  RWIX
+  FLASH2                00010000   000143f8  0000733c  0000d0bc  RWIX
 
 
 SECTION ALLOCATION MAP
@@ -180,71 +180,70 @@ section   page    origin      length       input sections
                   00004364    0000009c     --HOLE--
 
 .text:_isr 
-*          0    00004400    00000442     
+*          0    00004400    00000412     
                   00004400    00000150     UsbIsr.obj (.text:_isr:iUsbInterruptHandler)
-                  00004550    000000a0     pwm.obj (.text:_isr:ta0IRQHandler)
-                  000045f0    000000a0     pwm.obj (.text:_isr:ta1IRQHandler)
-                  00004690    000000a0     pwm.obj (.text:_isr:ta2IRQHandler)
-                  00004730    0000004a     main.obj (.text:_isr:UNMI_ISR)
-                  0000477a    00000040     io_interrupts.obj (.text:_isr:p2_IRQHandler)
-                  000047ba    00000038     io_interrupts.obj (.text:_isr:p1_IRQHandler)
-                  000047f2    0000001c     check_alignment.obj (.text:_isr:ADC12_A_IRQHandler)
-                  0000480e    0000001c     rts430x_lc_rd_eabi.lib : boot.c.obj (.text:_isr:_c_int00_noargs)
-                  0000482a    00000010     port.obj (.text:_isr:vTickISREntry)
-                  0000483a    00000008     rts430x_lc_rd_eabi.lib : isr_trap.asm.obj (.text:_isr:__TI_ISR_TRAP)
+                  00004550    00000090     pwm.obj (.text:_isr:ta0IRQHandler)
+                  000045e0    00000090     pwm.obj (.text:_isr:ta1IRQHandler)
+                  00004670    00000090     pwm.obj (.text:_isr:ta2IRQHandler)
+                  00004700    0000004a     main.obj (.text:_isr:UNMI_ISR)
+                  0000474a    00000040     io_interrupts.obj (.text:_isr:p2_IRQHandler)
+                  0000478a    00000038     io_interrupts.obj (.text:_isr:p1_IRQHandler)
+                  000047c2    0000001c     check_alignment.obj (.text:_isr:ADC12_A_IRQHandler)
+                  000047de    0000001c     rts430x_lc_rd_eabi.lib : boot.c.obj (.text:_isr:_c_int00_noargs)
+                  000047fa    00000010     port.obj (.text:_isr:vTickISREntry)
+                  0000480a    00000008     rts430x_lc_rd_eabi.lib : isr_trap.asm.obj (.text:_isr:__TI_ISR_TRAP)
 
-.cinit     0    00005b62    00000078     
-                  00005b62    00000055     (.cinit..data.load) [load image, compression = lzss]
-                  00005bb7    00000001     --HOLE-- [fill = 0]
-                  00005bb8    0000000c     (__TI_handler_table)
-                  00005bc4    00000006     (.cinit..bss.load) [load image, compression = zero_init]
-                  00005bca    00000010     (__TI_cinit_table)
+.cinit     0    00005b52    00000078     
+                  00005b52    00000055     (.cinit..data.load) [load image, compression = lzss]
+                  00005ba7    00000001     --HOLE-- [fill = 0]
+                  00005ba8    0000000c     (__TI_handler_table)
+                  00005bb4    00000006     (.cinit..bss.load) [load image, compression = zero_init]
+                  00005bba    00000010     (__TI_cinit_table)
 
 .binit     0    00004400    00000000     
 
 .init_array 
 *          0    00004400    00000000     UNINITIALIZED
 
-.const     0    00004842    00001320     
-                  00004842    000003b4     timerb_hal.obj (.const:.string)
-                  00004bf6    0000033c     queue.obj (.const:.string)
-                  00004f32    000002ee     tasks.obj (.const:.string)
-                  00005220    000002a0     control_motors.obj (.const:.string)
-                  000054c0    000001a8     interface.obj (.const:.string)
-                  00005668    00000142     check_alignment.obj (.const:.string)
-                  000057aa    0000010a     descriptors.obj (.const:tUsbRequestList)
-                  000058b4    00000092     descriptors.obj (.const:.string:abromStringDescriptor)
-                  00005946    00000052     pwm.obj (.const:.string)
-                  00005998    00000043     descriptors.obj (.const:abromConfigurationDescriptorGroup)
-                  000059db    00000001     --HOLE-- [fill = 0]
-                  000059dc    0000002c     timera_hal.obj (.const:.string)
-                  00005a08    00000022     io_interrupts.obj (.const:.string)
-                  00005a2a    00000022     usb.obj (.const:.string)
-                  00005a4c    0000001c     gpio.obj (.const:GPIO_PORT_TO_BASE)
-                  00005a68    00000012     descriptors.obj (.const:.string:abromDeviceDescriptor)
-                  00005a7a    00000010     main.obj (.const:.string)
-                  00005a8a    00000010     descriptors.obj (.const:stUsbHandle)
-                  00005a9a    0000000e     control_motors.obj (.const:$P$T0$19)
-                  00005aa8    0000000e     check_alignment.obj (.const:$P$T0$1)
-                  00005ab6    0000000e     led_hil.obj (.const:$P$T0$1)
-                  00005ac4    0000000e     error.obj (.const:$P$T0$3)
-                  00005ad2    0000000e     interface.obj (.const:$P$T0$5)
-                  00005ae0    0000000e     check_alignment.obj (.const:$P$T1$2)
-                  00005aee    0000000e     port.obj (.const:$P$T1$2)
-                  00005afc    0000000e     check_alignment.obj (.const:$P$T2$3)
-                  00005b0a    0000000e     pwm.obj (.const:$P$T2$3)
-                  00005b18    0000000c     port.obj (.const:$P$T0$1)
-                  00005b24    0000000a     usbdma.obj (.const:$P$T0$1)
-                  00005b2e    0000000a     pwm.obj (.const:$P$T1$2)
-                  00005b38    00000008     pwm.obj (.const:$P$T0$1)
-                  00005b40    00000008     control_motors.obj (.const:$P$T1$20)
-                  00005b48    00000008     control_motors.obj (.const:$P$T2$21)
-                  00005b50    00000006     interface.obj (.const:.string:nack_msg$9)
-                  00005b56    00000005     check_alignment.obj (.const:$P$T3$4)
-                  00005b5b    00000001     --HOLE-- [fill = 0]
-                  00005b5c    00000003     interface.obj (.const:.string:ack_msg$8)
-                  00005b5f    00000001     --HOLE-- [fill = 0]
-                  00005b60    00000002     tasks.obj (.const)
+.const     0    00004812    00001340     
+                  00004812    000003b4     timerb_hal.obj (.const:.string)
+                  00004bc6    0000033c     queue.obj (.const:.string)
+                  00004f02    000002ee     tasks.obj (.const:.string)
+                  000051f0    000002c8     control_motors.obj (.const:.string)
+                  000054b8    000001a8     interface.obj (.const:.string)
+                  00005660    00000142     check_alignment.obj (.const:.string)
+                  000057a2    0000010a     descriptors.obj (.const:tUsbRequestList)
+                  000058ac    00000092     descriptors.obj (.const:.string:abromStringDescriptor)
+                  0000593e    00000052     pwm.obj (.const:.string)
+                  00005990    00000043     descriptors.obj (.const:abromConfigurationDescriptorGroup)
+                  000059d3    00000001     --HOLE-- [fill = 0]
+                  000059d4    0000002c     timera_hal.obj (.const:.string)
+                  00005a00    00000022     io_interrupts.obj (.const:.string)
+                  00005a22    00000022     usb.obj (.const:.string)
+                  00005a44    0000001c     gpio.obj (.const:GPIO_PORT_TO_BASE)
+                  00005a60    00000012     descriptors.obj (.const:.string:abromDeviceDescriptor)
+                  00005a72    00000010     main.obj (.const:.string)
+                  00005a82    00000010     descriptors.obj (.const:stUsbHandle)
+                  00005a92    0000000e     control_motors.obj (.const:$P$T0$19)
+                  00005aa0    0000000e     check_alignment.obj (.const:$P$T0$1)
+                  00005aae    0000000e     led_hil.obj (.const:$P$T0$1)
+                  00005abc    0000000e     error.obj (.const:$P$T0$3)
+                  00005aca    0000000e     interface.obj (.const:$P$T0$5)
+                  00005ad8    0000000e     check_alignment.obj (.const:$P$T1$2)
+                  00005ae6    0000000e     port.obj (.const:$P$T1$2)
+                  00005af4    0000000e     check_alignment.obj (.const:$P$T2$3)
+                  00005b02    0000000e     pwm.obj (.const:$P$T2$3)
+                  00005b10    0000000c     port.obj (.const:$P$T0$1)
+                  00005b1c    0000000a     usbdma.obj (.const:$P$T0$1)
+                  00005b26    0000000a     pwm.obj (.const:$P$T1$2)
+                  00005b30    00000008     pwm.obj (.const:$P$T0$1)
+                  00005b38    00000008     control_motors.obj (.const:$P$T1$20)
+                  00005b40    00000006     interface.obj (.const:.string:nack_msg$9)
+                  00005b46    00000005     check_alignment.obj (.const:$P$T3$4)
+                  00005b4b    00000001     --HOLE-- [fill = 0]
+                  00005b4c    00000003     interface.obj (.const:.string:ack_msg$8)
+                  00005b4f    00000001     --HOLE-- [fill = 0]
+                  00005b50    00000002     tasks.obj (.const)
 
 RTC        0    0000ffd2    00000002     
                   0000ffd2    00000002     rts430x_lc_rd_eabi.lib : int41.asm.obj (.int41)
@@ -323,7 +322,7 @@ SYSNMI     0    0000fffc    00000002
 .reset     0    0000fffe    00000002     
                   0000fffe    00000002     rts430x_lc_rd_eabi.lib : boot.c.obj (.reset)
 
-.text      0    00010000    00007492     
+.text      0    00010000    0000733c     
                   00010000    000007e6     interface.obj (.text:_parseAndExecuteCmd)
                   000107e6    000005c8     timerb_hal.obj (.text:TB_unitTest)
                   00010dae    000004cc     control_motors.obj (.text:CM_init)
@@ -332,253 +331,252 @@ SYSNMI     0    0000fffc    00000002
                   000119d0    00000246     UsbCdc.obj (.text:CdcToBufferFromHost)
                   00011c16    00000240     pwm.obj (.text:PWM_configure)
                   00011e56    000001f0     usb.obj (.text:USB_reset)
-                  00012046    000001ec     control_motors.obj (.text:_alignTask)
-                  00012232    000001b6     queue.obj (.text:xQueueGenericSend)
-                  000123e8    0000019a     queue.obj (.text:xQueueReceive)
-                  00012582    0000018c     queue.obj (.text:xQueueSemaphoreTake)
-                  0001270e    00000184     timerb_hal.obj (.text:TB_configureCctl)
-                  00012892    0000016c     timera_hal.obj (.text:TA_configureCctl)
-                  000129fe    0000016a     tasks.obj (.text:xTaskGenericNotify)
-                  00012b68    00000140     interface.obj (.text:IF_init)
-                  00012ca8    00000140     usb.obj (.text:USB_enable)
-                  00012de8    00000140     check_alignment.obj (.text:_initProbe)
-                  00012f28    0000013e     pwm.obj (.text:PWM_start)
-                  00013066    00000110     ucs.obj (.text:privateUCSSourceClockFromDCO)
-                  00013176    0000010a     UsbCdc.obj (.text:CopyUsbToBuff)
-                  00013280    00000106     tasks.obj (.text:xTaskIncrementTick)
-                  00013386    000000fe     usb.obj (.text:USB_InitSerialStringDescriptor)
-                  00013484    000000fe     control_motors.obj (.text:_turnMotorStepsTask)
-                  00013582    000000fa     check_alignment.obj (.text:_initTest)
-                  0001367c    000000fa     tasks.obj (.text:ulTaskGenericNotifyTake)
-                  00013776    000000f6     tasks.obj (.text:xTaskResumeAll)
-                  0001386c    000000ec     UsbCdc.obj (.text:USBCDC_getInterfaceStatus)
-                  00013958    000000ec     usb.obj (.text:USB_determineFreq)
-                  00013a44    000000ec     tasks.obj (.text:prvInitialiseNewTask)
-                  00013b30    000000e6     ucs.obj (.text:privateUCSComputeCLKFrequency)
-                  00013c16    000000e2     ucs.obj (.text:UCS_initFLL)
-                  00013cf8    000000e0     io_hal.obj (.text:IO_configurePin)
-                  00013dd8    000000e0     pmm.obj (.text:PMM_setVCoreUp)
-                  00013eb8    000000d8     control_motors.obj (.text:CM_getOrientationInfo)
-                  00013f90    000000d8     tasks.obj (.text:vTaskGenericNotifyGiveFromISR)
-                  00014068    000000d0     interface.obj (.text:_roinfo)
-                  00014138    000000ca     UsbCdc.obj (.text:USBCDC_getBytesInUSBBuffer)
-                  00014202    000000ca     interface.obj (.text:_rassert)
-                  000142cc    000000c0     check_alignment.obj (.text:_measureSensorTask)
-                  0001438c    000000ba     usb.obj (.text:USB_determineXT2Freq)
-                  00014446    000000ba     usb.obj (.text:USB_init)
-                  00014500    000000b6     queue.obj (.text:xQueueGenericReset)
-                  000145b6    000000b4     tasks.obj (.text:xTaskCreateStatic)
-                  0001466a    000000b2     UsbCdc.obj (.text:usbGetLineCoding)
-                  0001471c    000000ae     interface.obj (.text:_rfreq)
-                  000147ca    000000ae     queue.obj (.text:xQueueGiveFromISR)
-                  00014878    000000ac     queue.obj (.text:prvUnlockQueue)
-                  00014924    000000aa     tasks.obj (.text:prvAddNewTaskToReadyList)
-                  000149ce    000000a8     usb.obj (.text:usbGetEndpointStatus)
-                  00014a76    000000a6     ucs.obj (.text:UCS_initClockSignal)
-                  00014b1c    000000a6     UsbCdc.obj (.text:USBCDC_sendData)
-                  00014bc2    000000a6     portext.obj (.text)
-                  00014c68    000000a4     queue.obj (.text:xQueueGenericCreateStatic)
-                  00014d0c    000000a2     pmm.obj (.text:PMM_setVCoreDown)
-                  00014dae    000000a2     tasks.obj (.text:vTaskStartScheduler)
-                  00014e50    0000009e     error.obj (.text:_updateLastAssertInfo)
-                  00014eee    0000009c     usb.obj (.text:usbClearEndpointFeature)
-                  00014f8a    0000009a     error.obj (.text:_assert_failure)
-                  00015024    0000009a     tasks.obj (.text:xTaskCheckForTimeOut)
-                  000150be    00000090     usb.obj (.text:usbDecodeAndProcessUsbRequest)
-                  0001514e    0000008e     usb.obj (.text:usbSendNextPacketOnIEP0)
-                  000151dc    0000008e     tasks.obj (.text:xTaskRemoveFromEventList)
-                  0001526a    00000088     UsbCdc.obj (.text:Handler_SetLineCoding)
-                  000152f2    00000088     tasks.obj (.text:vTaskSwitchContext)
-                  0001537a    00000086     UsbIsr.obj (.text:PWRVBUSoffHandler)
-                  00015400    00000082     dma.obj (.text:DMA_init)
-                  00015482    00000080     interface.obj (.text:_rsensor)
-                  00015502    00000080     queue.obj (.text:prvCopyDataToQueue)
-                  00015582    0000007e     error.obj (.text:ERROR_lastAssertInfo)
-                  00015600    00000078     interface.obj (.text:_storePendingCmd)
-                  00015678    00000076     rts430x_lc_rd_eabi.lib : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
-                  000156ee    00000074     UsbIsr.obj (.text:PWRVBUSonHandler)
-                  00015762    00000074     timerb_hal.obj (.text:TB_configureCtl)
-                  000157d6    00000074     main.obj (.text:init)
-                  0001584a    00000074     tasks.obj (.text:prvAddCurrentTaskToDelayedList)
-                  000158be    00000074     port.obj (.text:vPortSetupTimerInterrupt)
-                  00015932    00000070     control_motors.obj (.text:CM_setAlignedInfo)
-                  000159a2    0000006e     usbConstructs.obj (.text:USBCDC_sendDataInBackground)
-                  00015a10    0000006e     interface.obj (.text:_rxTask)
-                  00015a7e    00000064     usbdma.obj (.text:memcpyDMA)
-                  00015ae2    00000062     control_motors.obj (.text:_startTurnSteps)
-                  00015b44    00000060     check_alignment.obj (.text:_laserControlTask)
-                  00015ba4    00000060     usb.obj (.text:usbGetStringDescriptor)
-                  00015c04    00000060     usb.obj (.text:usbReceiveNextPacketOnOEP0)
-                  00015c64    0000005c     usbdma.obj (.text:USB_initMemcpy)
-                  00015cc0    0000005c     interface.obj (.text:_done)
-                  00015d1c    0000005c     tasks.obj (.text:prvInitialiseTaskLists)
-                  00015d78    00000058     control_motors.obj (.text:CM_setFreq)
-                  00015dd0    00000058     UsbIsr.obj (.text:SetupPacketInterruptHandler)
-                  00015e28    00000058     rts430x_lc_rd_eabi.lib : div32u.asm.obj (.text)
-                  00015e80    00000056     io_interrupts.obj (.text:IO_attachInterrupt)
-                  00015ed6    00000056     usbConstructs.obj (.text:USBCDC_receiveDataInBuffer)
-                  00015f2c    00000054     rts430x_lc_rd_eabi.lib : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit_hold_wdt:__TI_auto_init_nobinit_nopinit_hold_wdt)
-                  00015f80    00000052     check_alignment.obj (.text:CA_writeLaser)
-                  00015fd2    00000052     pmm.obj (.text:PMM_setVCore)
-                  00016024    00000052     tasks.obj (.text:prvCheckTasksWaitingTermination)
-                  00016076    00000052     usb.obj (.text:usbSetEndpointFeature)
-                  000160c8    00000050     adc12_a.obj (.text:ADC12_A_init)
-                  00016118    00000050     timera_hal.obj (.text:TA_configureCtl)
-                  00016168    00000050     tlv.obj (.text:TLV_getInfo)
-                  000161b8    00000050     interface.obj (.text:_iden)
-                  00016208    0000004e     timera_hal.obj (.text:TA_reset)
-                  00016256    0000004e     timerb_hal.obj (.text:TB_reset)
-                  000162a4    0000004c     control_motors.obj (.text:_startTurn)
-                  000162f0    0000004c     interface.obj (.text:_toCaps)
-                  0001633c    0000004a     check_alignment.obj (.text:CA_init)
-                  00016386    0000004a     check_alignment.obj (.text:CA_measureSensor)
-                  000163d0    0000004a     pwm.obj (.text:PWM_stop)
-                  0001641a    00000044     UsbIsr.obj (.text:OEP0InterruptHandler)
-                  0001645e    00000042     control_motors.obj (.text:CM_turnMotorSteps)
-                  000164a0    00000042     usb.obj (.text:USB_lookUpPll)
-                  000164e2    00000040     adc12_a.obj (.text:ADC12_A_disableInterrupt)
-                  00016522    00000040     adc12_a.obj (.text:ADC12_A_enableInterrupt)
-                  00016562    00000040     UsbCdc.obj (.text:CdcResetData)
-                  000165a2    00000040     interface.obj (.text:_strEq)
-                  000165e2    00000040     rts430x_lc_rd_eabi.lib : div32s.asm.obj (.text)
-                  00016622    00000040     list.obj (.text:vListInsert)
-                  00016662    0000003e     hal.obj (.text:USBHAL_initClocks)
-                  000166a0    0000003e     usb.obj (.text:USB_suspend)
-                  000166de    0000003e     rts430x_lc_rd_eabi.lib : lsl32.asm.obj (.text:l_lsl_const)
-                  0001671c    0000003e                            : lsr32.asm.obj (.text:l_lsr_const)
-                  0001675a    0000003c     control_motors.obj (.text:CM_getFreq)
-                  00016796    0000003a     ucs.obj (.text:UCS_turnOnXT2WithTimeout)
-                  000167d0    0000003a     usb.obj (.text:USB_setup)
-                  0001680a    0000003a     list.obj (.text:uxListRemove)
-                  00016844    00000038     usb.obj (.text:USB_getConnectionInformation)
-                  0001687c    00000038     interface.obj (.text:_strCpy)
-                  000168b4    00000036     ucs.obj (.text:UCS_initFLLSettle)
-                  000168ea    00000036     control_motors.obj (.text:_enableMotor)
-                  00016920    00000036     tasks.obj (.text:vTaskPlaceOnEventList)
-                  00016956    00000034     queue.obj (.text:prvIsQueueFull)
-                  0001698a    00000034     usb.obj (.text:usbGetDeviceStatus)
-                  000169be    00000032     adc12_a.obj (.text:ADC12_A_startConversion)
-                  000169f0    00000032     led_hil.obj (.text:LEDI_init)
-                  00016a22    00000032     interface.obj (.text:_invbsl)
-                  00016a54    00000032     interface.obj (.text:_strFind)
-                  00016a86    00000032     queue.obj (.text:prvCopyDataFromQueue)
-                  00016ab8    00000032     queue.obj (.text:prvIsQueueEmpty)
-                  00016aea    00000030     dma.obj (.text:DMA_setDstAddress)
-                  00016b1a    00000030     flashctl.obj (.text:FlashCtl_write8)
-                  00016b4a    0000002e     control_motors.obj (.text:CM_align)
-                  00016b78    0000002e     dma.obj (.text:DMA_setSrcAddress)
-                  00016ba6    0000002e     usb.obj (.text:USB_disable)
-                  00016bd4    0000002e     usb.obj (.text:usbSetConfiguration)
-                  00016c02    0000002c     rts430x_lc_rd_eabi.lib : div16s.asm.obj (.text)
-                  00016c2e    0000002c     usb.obj (.text:usbSendDataPacketOnEP0)
-                  00016c5a    00000028     check_alignment.obj (.text:CA_idProbe)
-                  00016c82    00000028     gpio.obj (.text:GPIO_setAsPeripheralModuleFunctionOutputPin)
-                  00016caa    00000028     interface.obj (.text:_sendData)
-                  00016cd2    00000028     usb.obj (.text:usbDisableInEndpointInterrupt)
-                  00016cfa    00000028     usb.obj (.text:usbDisableOutEndpointInterrupt)
-                  00016d22    00000028     list.obj (.text:vListInitialise)
-                  00016d4a    00000026     adc12_a.obj (.text:ADC12_A_configureMemory)
-                  00016d70    00000026     adc12_a.obj (.text:ADC12_A_setupSamplingTimer)
-                  00016d96    00000026     list.obj (.text:vListInsertEnd)
-                  00016dbc    00000024     flashctl.obj (.text:FlashCtl_eraseSegment)
-                  00016de0    00000024     UsbIsr.obj (.text:IEP0InterruptHandler)
-                  00016e04    00000024     interface.obj (.text:_rmPendingCmd)
-                  00016e28    00000024     control_motors.obj (.text:_storeOrientationInfo)
-                  00016e4c    00000024     rts430x_lc_rd_eabi.lib : copy_zero_init.c.obj (.text:decompress:ZI:__TI_zero_init)
-                  00016e70    00000024     port.obj (.text:pxPortInitialiseStack)
-                  00016e94    00000024     rts430x_lc_rd_eabi.lib : mult32_f5hw.asm.obj (.text)
-                  00016eb8    00000024     usb.obj (.text:usbGetInterface)
-                  00016edc    00000024     usb.obj (.text:usbGetInterfaceStatus)
-                  00016f00    00000024     usb.obj (.text:usbSetAddress)
-                  00016f24    00000022     io_hal.obj (.text:IO_reset)
-                  00016f46    00000022     usb.obj (.text:USB_connect)
-                  00016f68    00000022     usbdma.obj (.text:memcpyV)
-                  00016f8a    00000022     tasks.obj (.text:prvResetNextTaskUnblockTime)
-                  00016fac    00000020     wdt_a.obj (.text:WDT_A_hold)
-                  00016fcc    00000020     main.obj (.text:main)
-                  00016fec    00000020     queue.obj (.text:prvInitialiseNewQueue)
-                  0001700c    0000001e     ucs.obj (.text:UCS_getACLK)
-                  0001702a    0000001e     usb.obj (.text:USB_resume)
-                  00017048    0000001e     control_motors.obj (.text:_retrieveOrientationInfo)
-                  00017066    0000001c     usb.obj (.text:usbClearDeviceFeature)
-                  00017082    0000001c     usb.obj (.text:usbSetDeviceFeature)
-                  0001709e    0000001c     tasks.obj (.text:xTaskGetSchedulerState)
-                  000170ba    0000001a     UsbCdc.obj (.text:CdcIsReceiveInProgress)
-                  000170d4    0000001a     ucs.obj (.text:UCS_getSMCLK)
-                  000170ee    0000001a     main.obj (.text:vApplicationGetIdleTaskMemory)
-                  00017108    00000018     control_motors.obj (.text:_eventAlignPhi)
-                  00017120    00000018     control_motors.obj (.text:_eventAlignTheta)
-                  00017138    00000018     rts430x_lc_rd_eabi.lib : mult16_f5hw.asm.obj (.text)
-                  00017150    00000018     usb.obj (.text:usbGetConfigurationDescriptor)
-                  00017168    00000018     usb.obj (.text:usbGetDeviceDescriptor)
-                  00017180    00000018     usb.obj (.text:usbReceiveDataPacketOnEP0)
-                  00017198    00000018     UsbCdc.obj (.text:usbSetControlLineState)
-                  000171b0    00000016     rts430x_lc_rd_eabi.lib : memset.c.obj (.text:memset)
-                  000171c6    00000016                            : div16u.asm.obj (.text)
-                  000171dc    00000016     usb.obj (.text:usbGetConfiguration)
-                  000171f2    00000014     usbEventHandling.obj (.text:USB_handleVbusOnEvent)
-                  00017206    00000014     control_motors.obj (.text:_disableMotor)
-                  0001721a    00000014     rts430x_lc_rd_eabi.lib : memcpy.c.obj (.text:memcpy)
-                  0001722e    00000014     tasks.obj (.text:prvIdleTask)
-                  00017242    00000014     usb.obj (.text:usbSendZeroLengthPacketOnIEP0)
-                  00017256    00000014     usb.obj (.text:usbSetInterface)
-                  0001726a    00000012     io_interrupts.obj (.text:_defaultHandler)
-                  0001727c    00000012     control_motors.obj (.text:_faultPhi)
-                  0001728e    00000012     control_motors.obj (.text:_faultTheta)
-                  000172a0    00000012     rts430x_lc_rd_eabi.lib : copy_decompress_none.c.obj (.text:decompress:none:__TI_decompress_none)
-                  000172b2    00000012     tasks.obj (.text:vTaskInternalSetTimeOutState)
-                  000172c4    00000010     adc12_a.obj (.text:ADC12_A_getResults)
-                  000172d4    00000010     dma.obj (.text:DMA_disableTransfers)
-                  000172e4    00000010     dma.obj (.text:DMA_enableTransfers)
-                  000172f4    00000010     usb.obj (.text:usbInvalidRequest)
-                  00017304    0000000e     dma.obj (.text:DMA_getInterruptStatus)
-                  00017312    0000000e     dma.obj (.text:DMA_startTransfer)
-                  00017320    0000000e     control_motors.obj (.text:_eventTurnPhi)
-                  0001732e    0000000e     control_motors.obj (.text:_eventTurnTheta)
-                  0001733c    0000000e     interface.obj (.text:_nack)
-                  0001734a    0000000e     usb.obj (.text:usbStallEndpoint0)
-                  00017358    0000000c     adc12_a.obj (.text:ADC12_A_clearInterrupt)
-                  00017364    0000000c     dma.obj (.text:DMA_setTransferSize)
-                  00017370    0000000c     interface.obj (.text:IF_informRx)
-                  0001737c    0000000c     interface.obj (.text:IF_informTx)
-                  00017388    0000000c     interface.obj (.text:_ack)
-                  00017394    0000000c     UsbCdc.obj (.text:usbSetLineCoding)
-                  000173a0    0000000a     usb.obj (.text:USB_setEnabledEvents)
-                  000173aa    0000000a     rts430x_lc_rd_eabi.lib : lsl16.asm.obj (.text)
-                  000173b4    0000000a                            : lsr16.asm.obj (.text)
-                  000173be    0000000a     main.obj (.text:test)
-                  000173c8    00000008     adc12_a.obj (.text:ADC12_A_disable)
-                  000173d0    00000008     adc12_a.obj (.text:ADC12_A_enable)
-                  000173d8    00000008     flashctl.obj (.text:FlashCtl_getStatus)
-                  000173e0    00000008     ucs.obj (.text:UCS_turnOffXT2)
-                  000173e8    00000008     usbEventHandling.obj (.text:USBCDC_handleDataReceived)
-                  000173f0    00000008     usbEventHandling.obj (.text:USBCDC_handleSendCompleted)
-                  000173f8    00000008     usbEventHandling.obj (.text:USB_handleVbusOffEvent)
-                  00017400    00000008     interface.obj (.text:_invbslButton)
-                  00017408    00000008     control_motors.obj (.text:_stopTurn)
-                  00017410    00000008     usb.obj (.text:usbClearOEP0ByteCount)
-                  00017418    00000008     usb.obj (.text:usbRestoreInEndpointInterrupt)
-                  00017420    00000008     usb.obj (.text:usbRestoreOutEndpointInterrupt)
-                  00017428    00000008     usb.obj (.text:usbStallOEP0)
-                  00017430    00000008     list.obj (.text:vListInitialiseItem)
-                  00017438    00000008     tasks.obj (.text:vTaskMissedYield)
-                  00017440    00000008     tasks.obj (.text:vTaskSuspendAll)
-                  00017448    00000006     dma.obj (.text:DMA_disableTransferDuringReadModifyWrite)
-                  0001744e    00000006     dma.obj (.text:DMA_enableTransferDuringReadModifyWrite)
-                  00017454    00000006     sfr.obj (.text:SFR_clearInterrupt)
-                  0001745a    00000006     ucs.obj (.text:UCS_clearFaultFlag)
-                  00017460    00000006     usb.obj (.text:USB_getVersion)
-                  00017466    00000006     rts430x_lc_rd_eabi.lib : exit.c.obj (.text:abort)
-                  0001746c    00000004     usbEventHandling.obj (.text:USBCDC_handleReceiveCompleted)
-                  00017470    00000004     usbEventHandling.obj (.text:USBCDC_handleSetControlLineState)
-                  00017474    00000004     usbEventHandling.obj (.text:USBCDC_handleSetLineCoding)
-                  00017478    00000004     usbEventHandling.obj (.text:USB_handleClockEvent)
-                  0001747c    00000004     usbEventHandling.obj (.text:USB_handleEnumerationCompleteEvent)
-                  00017480    00000004     usbEventHandling.obj (.text:USB_handleResetEvent)
-                  00017484    00000004     usbEventHandling.obj (.text:USB_handleResumeEvent)
-                  00017488    00000004     usbEventHandling.obj (.text:USB_handleSuspendEvent)
-                  0001748c    00000004     rts430x_lc_rd_eabi.lib : pre_init.c.obj (.text:_system_pre_init)
-                  00017490    00000002                            : startup.c.obj (.text:_system_post_cinit)
+                  00012046    000001b6     queue.obj (.text:xQueueGenericSend)
+                  000121fc    0000019a     queue.obj (.text:xQueueReceive)
+                  00012396    0000018c     queue.obj (.text:xQueueSemaphoreTake)
+                  00012522    00000184     timerb_hal.obj (.text:TB_configureCctl)
+                  000126a6    0000016c     timera_hal.obj (.text:TA_configureCctl)
+                  00012812    0000016a     tasks.obj (.text:xTaskGenericNotify)
+                  0001297c    00000140     interface.obj (.text:IF_init)
+                  00012abc    00000140     usb.obj (.text:USB_enable)
+                  00012bfc    00000140     check_alignment.obj (.text:_initProbe)
+                  00012d3c    0000013e     pwm.obj (.text:PWM_start)
+                  00012e7a    00000110     ucs.obj (.text:privateUCSSourceClockFromDCO)
+                  00012f8a    0000010a     UsbCdc.obj (.text:CopyUsbToBuff)
+                  00013094    00000106     tasks.obj (.text:xTaskIncrementTick)
+                  0001319a    000000fe     usb.obj (.text:USB_InitSerialStringDescriptor)
+                  00013298    000000fe     control_motors.obj (.text:_turnMotorStepsTask)
+                  00013396    000000fa     check_alignment.obj (.text:_initTest)
+                  00013490    000000fa     tasks.obj (.text:ulTaskGenericNotifyTake)
+                  0001358a    000000f6     tasks.obj (.text:xTaskResumeAll)
+                  00013680    000000ec     UsbCdc.obj (.text:USBCDC_getInterfaceStatus)
+                  0001376c    000000ec     usb.obj (.text:USB_determineFreq)
+                  00013858    000000ec     tasks.obj (.text:prvInitialiseNewTask)
+                  00013944    000000e6     ucs.obj (.text:privateUCSComputeCLKFrequency)
+                  00013a2a    000000e2     ucs.obj (.text:UCS_initFLL)
+                  00013b0c    000000e0     io_hal.obj (.text:IO_configurePin)
+                  00013bec    000000e0     pmm.obj (.text:PMM_setVCoreUp)
+                  00013ccc    000000d8     control_motors.obj (.text:CM_getOrientationInfo)
+                  00013da4    000000d8     tasks.obj (.text:vTaskGenericNotifyGiveFromISR)
+                  00013e7c    000000d4     interface.obj (.text:_roinfo)
+                  00013f50    000000ca     UsbCdc.obj (.text:USBCDC_getBytesInUSBBuffer)
+                  0001401a    000000ca     interface.obj (.text:_rassert)
+                  000140e4    000000c0     check_alignment.obj (.text:_measureSensorTask)
+                  000141a4    000000bc     control_motors.obj (.text:_alignTask)
+                  00014260    000000ba     usb.obj (.text:USB_determineXT2Freq)
+                  0001431a    000000ba     usb.obj (.text:USB_init)
+                  000143d4    000000b6     queue.obj (.text:xQueueGenericReset)
+                  0001448a    000000b4     tasks.obj (.text:xTaskCreateStatic)
+                  0001453e    000000b2     UsbCdc.obj (.text:usbGetLineCoding)
+                  000145f0    000000ae     interface.obj (.text:_rfreq)
+                  0001469e    000000ae     queue.obj (.text:xQueueGiveFromISR)
+                  0001474c    000000ac     queue.obj (.text:prvUnlockQueue)
+                  000147f8    000000aa     tasks.obj (.text:prvAddNewTaskToReadyList)
+                  000148a2    000000a8     usb.obj (.text:usbGetEndpointStatus)
+                  0001494a    000000a6     ucs.obj (.text:UCS_initClockSignal)
+                  000149f0    000000a6     UsbCdc.obj (.text:USBCDC_sendData)
+                  00014a96    000000a6     portext.obj (.text)
+                  00014b3c    000000a4     queue.obj (.text:xQueueGenericCreateStatic)
+                  00014be0    000000a2     pmm.obj (.text:PMM_setVCoreDown)
+                  00014c82    000000a2     tasks.obj (.text:vTaskStartScheduler)
+                  00014d24    0000009e     error.obj (.text:_updateLastAssertInfo)
+                  00014dc2    0000009c     usb.obj (.text:usbClearEndpointFeature)
+                  00014e5e    0000009a     error.obj (.text:_assert_failure)
+                  00014ef8    0000009a     tasks.obj (.text:xTaskCheckForTimeOut)
+                  00014f92    00000092     control_motors.obj (.text:CM_setAlignedInfo)
+                  00015024    00000090     usb.obj (.text:usbDecodeAndProcessUsbRequest)
+                  000150b4    0000008e     usb.obj (.text:usbSendNextPacketOnIEP0)
+                  00015142    0000008e     tasks.obj (.text:xTaskRemoveFromEventList)
+                  000151d0    00000088     UsbCdc.obj (.text:Handler_SetLineCoding)
+                  00015258    00000088     tasks.obj (.text:vTaskSwitchContext)
+                  000152e0    00000086     UsbIsr.obj (.text:PWRVBUSoffHandler)
+                  00015366    00000082     dma.obj (.text:DMA_init)
+                  000153e8    00000080     interface.obj (.text:_rsensor)
+                  00015468    00000080     queue.obj (.text:prvCopyDataToQueue)
+                  000154e8    0000007e     error.obj (.text:ERROR_lastAssertInfo)
+                  00015566    00000078     interface.obj (.text:_storePendingCmd)
+                  000155de    00000076     rts430x_lc_rd_eabi.lib : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
+                  00015654    00000074     UsbIsr.obj (.text:PWRVBUSonHandler)
+                  000156c8    00000074     timerb_hal.obj (.text:TB_configureCtl)
+                  0001573c    00000074     main.obj (.text:init)
+                  000157b0    00000074     tasks.obj (.text:prvAddCurrentTaskToDelayedList)
+                  00015824    00000074     port.obj (.text:vPortSetupTimerInterrupt)
+                  00015898    0000006e     usbConstructs.obj (.text:USBCDC_sendDataInBackground)
+                  00015906    0000006e     interface.obj (.text:_rxTask)
+                  00015974    00000064     usbdma.obj (.text:memcpyDMA)
+                  000159d8    00000062     control_motors.obj (.text:_startTurnSteps)
+                  00015a3a    00000060     check_alignment.obj (.text:_laserControlTask)
+                  00015a9a    00000060     usb.obj (.text:usbGetStringDescriptor)
+                  00015afa    00000060     usb.obj (.text:usbReceiveNextPacketOnOEP0)
+                  00015b5a    0000005c     usbdma.obj (.text:USB_initMemcpy)
+                  00015bb6    0000005c     interface.obj (.text:_done)
+                  00015c12    0000005c     tasks.obj (.text:prvInitialiseTaskLists)
+                  00015c6e    00000058     control_motors.obj (.text:CM_setFreq)
+                  00015cc6    00000058     UsbIsr.obj (.text:SetupPacketInterruptHandler)
+                  00015d1e    00000058     rts430x_lc_rd_eabi.lib : div32u.asm.obj (.text)
+                  00015d76    00000056     io_interrupts.obj (.text:IO_attachInterrupt)
+                  00015dcc    00000056     usbConstructs.obj (.text:USBCDC_receiveDataInBuffer)
+                  00015e22    00000054     rts430x_lc_rd_eabi.lib : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit_hold_wdt:__TI_auto_init_nobinit_nopinit_hold_wdt)
+                  00015e76    00000052     check_alignment.obj (.text:CA_writeLaser)
+                  00015ec8    00000052     pmm.obj (.text:PMM_setVCore)
+                  00015f1a    00000052     tasks.obj (.text:prvCheckTasksWaitingTermination)
+                  00015f6c    00000052     usb.obj (.text:usbSetEndpointFeature)
+                  00015fbe    00000050     adc12_a.obj (.text:ADC12_A_init)
+                  0001600e    00000050     timera_hal.obj (.text:TA_configureCtl)
+                  0001605e    00000050     tlv.obj (.text:TLV_getInfo)
+                  000160ae    00000050     interface.obj (.text:_iden)
+                  000160fe    0000004e     timera_hal.obj (.text:TA_reset)
+                  0001614c    0000004e     timerb_hal.obj (.text:TB_reset)
+                  0001619a    0000004c     interface.obj (.text:_toCaps)
+                  000161e6    0000004a     check_alignment.obj (.text:CA_init)
+                  00016230    0000004a     check_alignment.obj (.text:CA_measureSensor)
+                  0001627a    0000004a     pwm.obj (.text:PWM_stop)
+                  000162c4    00000044     UsbIsr.obj (.text:OEP0InterruptHandler)
+                  00016308    00000042     control_motors.obj (.text:CM_turnMotorSteps)
+                  0001634a    00000042     usb.obj (.text:USB_lookUpPll)
+                  0001638c    00000040     adc12_a.obj (.text:ADC12_A_disableInterrupt)
+                  000163cc    00000040     adc12_a.obj (.text:ADC12_A_enableInterrupt)
+                  0001640c    00000040     UsbCdc.obj (.text:CdcResetData)
+                  0001644c    00000040     interface.obj (.text:_strEq)
+                  0001648c    00000040     rts430x_lc_rd_eabi.lib : div32s.asm.obj (.text)
+                  000164cc    00000040     list.obj (.text:vListInsert)
+                  0001650c    0000003e     hal.obj (.text:USBHAL_initClocks)
+                  0001654a    0000003e     usb.obj (.text:USB_suspend)
+                  00016588    0000003e     rts430x_lc_rd_eabi.lib : lsl32.asm.obj (.text:l_lsl_const)
+                  000165c6    0000003e                            : lsr32.asm.obj (.text:l_lsr_const)
+                  00016604    0000003c     control_motors.obj (.text:CM_getFreq)
+                  00016640    0000003a     ucs.obj (.text:UCS_turnOnXT2WithTimeout)
+                  0001667a    0000003a     usb.obj (.text:USB_setup)
+                  000166b4    0000003a     list.obj (.text:uxListRemove)
+                  000166ee    00000038     usb.obj (.text:USB_getConnectionInformation)
+                  00016726    00000038     interface.obj (.text:_strCpy)
+                  0001675e    00000036     ucs.obj (.text:UCS_initFLLSettle)
+                  00016794    00000036     control_motors.obj (.text:_enableMotor)
+                  000167ca    00000036     tasks.obj (.text:vTaskPlaceOnEventList)
+                  00016800    00000034     queue.obj (.text:prvIsQueueFull)
+                  00016834    00000034     usb.obj (.text:usbGetDeviceStatus)
+                  00016868    00000032     adc12_a.obj (.text:ADC12_A_startConversion)
+                  0001689a    00000032     led_hil.obj (.text:LEDI_init)
+                  000168cc    00000032     interface.obj (.text:_invbsl)
+                  000168fe    00000032     interface.obj (.text:_strFind)
+                  00016930    00000032     queue.obj (.text:prvCopyDataFromQueue)
+                  00016962    00000032     queue.obj (.text:prvIsQueueEmpty)
+                  00016994    00000030     dma.obj (.text:DMA_setDstAddress)
+                  000169c4    00000030     flashctl.obj (.text:FlashCtl_write8)
+                  000169f4    0000002e     control_motors.obj (.text:CM_align)
+                  00016a22    0000002e     dma.obj (.text:DMA_setSrcAddress)
+                  00016a50    0000002e     usb.obj (.text:USB_disable)
+                  00016a7e    0000002e     usb.obj (.text:usbSetConfiguration)
+                  00016aac    0000002c     rts430x_lc_rd_eabi.lib : div16s.asm.obj (.text)
+                  00016ad8    0000002c     usb.obj (.text:usbSendDataPacketOnEP0)
+                  00016b04    00000028     check_alignment.obj (.text:CA_idProbe)
+                  00016b2c    00000028     gpio.obj (.text:GPIO_setAsPeripheralModuleFunctionOutputPin)
+                  00016b54    00000028     interface.obj (.text:_sendData)
+                  00016b7c    00000028     usb.obj (.text:usbDisableInEndpointInterrupt)
+                  00016ba4    00000028     usb.obj (.text:usbDisableOutEndpointInterrupt)
+                  00016bcc    00000028     list.obj (.text:vListInitialise)
+                  00016bf4    00000026     adc12_a.obj (.text:ADC12_A_configureMemory)
+                  00016c1a    00000026     adc12_a.obj (.text:ADC12_A_setupSamplingTimer)
+                  00016c40    00000026     list.obj (.text:vListInsertEnd)
+                  00016c66    00000024     flashctl.obj (.text:FlashCtl_eraseSegment)
+                  00016c8a    00000024     UsbIsr.obj (.text:IEP0InterruptHandler)
+                  00016cae    00000024     interface.obj (.text:_rmPendingCmd)
+                  00016cd2    00000024     control_motors.obj (.text:_storeOrientationInfo)
+                  00016cf6    00000024     rts430x_lc_rd_eabi.lib : copy_zero_init.c.obj (.text:decompress:ZI:__TI_zero_init)
+                  00016d1a    00000024     port.obj (.text:pxPortInitialiseStack)
+                  00016d3e    00000024     rts430x_lc_rd_eabi.lib : mult32_f5hw.asm.obj (.text)
+                  00016d62    00000024     usb.obj (.text:usbGetInterface)
+                  00016d86    00000024     usb.obj (.text:usbGetInterfaceStatus)
+                  00016daa    00000024     usb.obj (.text:usbSetAddress)
+                  00016dce    00000022     io_hal.obj (.text:IO_reset)
+                  00016df0    00000022     usb.obj (.text:USB_connect)
+                  00016e12    00000022     usbdma.obj (.text:memcpyV)
+                  00016e34    00000022     tasks.obj (.text:prvResetNextTaskUnblockTime)
+                  00016e56    00000020     wdt_a.obj (.text:WDT_A_hold)
+                  00016e76    00000020     main.obj (.text:main)
+                  00016e96    00000020     queue.obj (.text:prvInitialiseNewQueue)
+                  00016eb6    0000001e     ucs.obj (.text:UCS_getACLK)
+                  00016ed4    0000001e     usb.obj (.text:USB_resume)
+                  00016ef2    0000001e     control_motors.obj (.text:_retrieveOrientationInfo)
+                  00016f10    0000001c     usb.obj (.text:usbClearDeviceFeature)
+                  00016f2c    0000001c     usb.obj (.text:usbSetDeviceFeature)
+                  00016f48    0000001c     tasks.obj (.text:xTaskGetSchedulerState)
+                  00016f64    0000001a     UsbCdc.obj (.text:CdcIsReceiveInProgress)
+                  00016f7e    0000001a     ucs.obj (.text:UCS_getSMCLK)
+                  00016f98    0000001a     main.obj (.text:vApplicationGetIdleTaskMemory)
+                  00016fb2    00000018     control_motors.obj (.text:_eventAlignPhi)
+                  00016fca    00000018     control_motors.obj (.text:_eventAlignTheta)
+                  00016fe2    00000018     rts430x_lc_rd_eabi.lib : mult16_f5hw.asm.obj (.text)
+                  00016ffa    00000018     usb.obj (.text:usbGetConfigurationDescriptor)
+                  00017012    00000018     usb.obj (.text:usbGetDeviceDescriptor)
+                  0001702a    00000018     usb.obj (.text:usbReceiveDataPacketOnEP0)
+                  00017042    00000018     UsbCdc.obj (.text:usbSetControlLineState)
+                  0001705a    00000016     rts430x_lc_rd_eabi.lib : memset.c.obj (.text:memset)
+                  00017070    00000016                            : div16u.asm.obj (.text)
+                  00017086    00000016     usb.obj (.text:usbGetConfiguration)
+                  0001709c    00000014     usbEventHandling.obj (.text:USB_handleVbusOnEvent)
+                  000170b0    00000014     control_motors.obj (.text:_disableMotor)
+                  000170c4    00000014     rts430x_lc_rd_eabi.lib : memcpy.c.obj (.text:memcpy)
+                  000170d8    00000014     tasks.obj (.text:prvIdleTask)
+                  000170ec    00000014     usb.obj (.text:usbSendZeroLengthPacketOnIEP0)
+                  00017100    00000014     usb.obj (.text:usbSetInterface)
+                  00017114    00000012     io_interrupts.obj (.text:_defaultHandler)
+                  00017126    00000012     control_motors.obj (.text:_faultPhi)
+                  00017138    00000012     control_motors.obj (.text:_faultTheta)
+                  0001714a    00000012     rts430x_lc_rd_eabi.lib : copy_decompress_none.c.obj (.text:decompress:none:__TI_decompress_none)
+                  0001715c    00000012     tasks.obj (.text:vTaskInternalSetTimeOutState)
+                  0001716e    00000010     adc12_a.obj (.text:ADC12_A_getResults)
+                  0001717e    00000010     dma.obj (.text:DMA_disableTransfers)
+                  0001718e    00000010     dma.obj (.text:DMA_enableTransfers)
+                  0001719e    00000010     usb.obj (.text:usbInvalidRequest)
+                  000171ae    0000000e     dma.obj (.text:DMA_getInterruptStatus)
+                  000171bc    0000000e     dma.obj (.text:DMA_startTransfer)
+                  000171ca    0000000e     control_motors.obj (.text:_eventTurnPhi)
+                  000171d8    0000000e     control_motors.obj (.text:_eventTurnTheta)
+                  000171e6    0000000e     interface.obj (.text:_nack)
+                  000171f4    0000000e     usb.obj (.text:usbStallEndpoint0)
+                  00017202    0000000c     adc12_a.obj (.text:ADC12_A_clearInterrupt)
+                  0001720e    0000000c     dma.obj (.text:DMA_setTransferSize)
+                  0001721a    0000000c     interface.obj (.text:IF_informRx)
+                  00017226    0000000c     interface.obj (.text:IF_informTx)
+                  00017232    0000000c     interface.obj (.text:_ack)
+                  0001723e    0000000c     UsbCdc.obj (.text:usbSetLineCoding)
+                  0001724a    0000000a     usb.obj (.text:USB_setEnabledEvents)
+                  00017254    0000000a     rts430x_lc_rd_eabi.lib : lsl16.asm.obj (.text)
+                  0001725e    0000000a                            : lsr16.asm.obj (.text)
+                  00017268    0000000a     main.obj (.text:test)
+                  00017272    00000008     adc12_a.obj (.text:ADC12_A_disable)
+                  0001727a    00000008     adc12_a.obj (.text:ADC12_A_enable)
+                  00017282    00000008     flashctl.obj (.text:FlashCtl_getStatus)
+                  0001728a    00000008     ucs.obj (.text:UCS_turnOffXT2)
+                  00017292    00000008     usbEventHandling.obj (.text:USBCDC_handleDataReceived)
+                  0001729a    00000008     usbEventHandling.obj (.text:USBCDC_handleSendCompleted)
+                  000172a2    00000008     usbEventHandling.obj (.text:USB_handleVbusOffEvent)
+                  000172aa    00000008     interface.obj (.text:_invbslButton)
+                  000172b2    00000008     control_motors.obj (.text:_stopTurn)
+                  000172ba    00000008     usb.obj (.text:usbClearOEP0ByteCount)
+                  000172c2    00000008     usb.obj (.text:usbRestoreInEndpointInterrupt)
+                  000172ca    00000008     usb.obj (.text:usbRestoreOutEndpointInterrupt)
+                  000172d2    00000008     usb.obj (.text:usbStallOEP0)
+                  000172da    00000008     list.obj (.text:vListInitialiseItem)
+                  000172e2    00000008     tasks.obj (.text:vTaskMissedYield)
+                  000172ea    00000008     tasks.obj (.text:vTaskSuspendAll)
+                  000172f2    00000006     dma.obj (.text:DMA_disableTransferDuringReadModifyWrite)
+                  000172f8    00000006     dma.obj (.text:DMA_enableTransferDuringReadModifyWrite)
+                  000172fe    00000006     sfr.obj (.text:SFR_clearInterrupt)
+                  00017304    00000006     ucs.obj (.text:UCS_clearFaultFlag)
+                  0001730a    00000006     usb.obj (.text:USB_getVersion)
+                  00017310    00000006     rts430x_lc_rd_eabi.lib : exit.c.obj (.text:abort)
+                  00017316    00000004     usbEventHandling.obj (.text:USBCDC_handleReceiveCompleted)
+                  0001731a    00000004     usbEventHandling.obj (.text:USBCDC_handleSetControlLineState)
+                  0001731e    00000004     usbEventHandling.obj (.text:USBCDC_handleSetLineCoding)
+                  00017322    00000004     usbEventHandling.obj (.text:USB_handleClockEvent)
+                  00017326    00000004     usbEventHandling.obj (.text:USB_handleEnumerationCompleteEvent)
+                  0001732a    00000004     usbEventHandling.obj (.text:USB_handleResetEvent)
+                  0001732e    00000004     usbEventHandling.obj (.text:USB_handleResumeEvent)
+                  00017332    00000004     usbEventHandling.obj (.text:USB_handleSuspendEvent)
+                  00017336    00000004     rts430x_lc_rd_eabi.lib : pre_init.c.obj (.text:_system_pre_init)
+                  0001733a    00000002                            : startup.c.obj (.text:_system_post_cinit)
 
 MODULE SUMMARY
 
@@ -627,12 +625,12 @@ MODULE SUMMARY
        Total:                       778     515       0      
                                                              
     .\app\src\
-       control_motors.obj           2996    702       2972   
-       interface.obj                3886    447       1290   
+       control_motors.obj           2650    734       2972   
+       interface.obj                3890    447       1290   
        check_alignment.obj          1156    371       694    
        error.obj                    438     14        140    
     +--+----------------------------+-------+---------+---------+
-       Total:                       8476    1534      5096   
+       Total:                       8134    1566      5096   
                                                              
     .\driverlib\MSP430F5xx_6xx\
        ucs.obj                      1076    0         8      
@@ -655,11 +653,11 @@ MODULE SUMMARY
        Total:                       2842    992       0      
                                                              
     .\hil\src\
-       pwm.obj                      1448    120       62     
+       pwm.obj                      1400    120       62     
        io_interrupts.obj            224     38        64     
        led_hil.obj                  50      14        0      
     +--+----------------------------+-------+---------+---------+
-       Total:                       1722    172       126    
+       Total:                       1674    172       126    
                                                              
     C:\ti\ccs1011\ccs\tools\compiler\ti-cgt-msp430_20.2.1.LTS\lib\rts430x_lc_rd_eabi.lib
        copy_decompress_lzss.c.obj   118     0         0      
@@ -702,19 +700,19 @@ MODULE SUMMARY
        Stack:                       0       0         160    
        Linker Generated:            0       119       0      
     +--+----------------------------+-------+---------+---------+
-       Grand Total:                 30932   5058      6303   
+       Grand Total:                 30542   5090      6303   
 
 
 LINKER GENERATED COPY TABLES
 
-__TI_cinit_table @ 00005bca records: 2, size/record: 8, table size: 16
-	.data: load addr=00005b62, load size=00000055 bytes, run addr=00003a5a, run size=000001a6 bytes, compression=lzss
-	.bss: load addr=00005bc4, load size=00000006 bytes, run addr=00002400, run size=00001659 bytes, compression=zero_init
+__TI_cinit_table @ 00005bba records: 2, size/record: 8, table size: 16
+	.data: load addr=00005b52, load size=00000055 bytes, run addr=00003a5a, run size=000001a6 bytes, compression=lzss
+	.bss: load addr=00005bb4, load size=00000006 bytes, run addr=00002400, run size=00001659 bytes, compression=zero_init
 
 
 LINKER GENERATED HANDLER TABLE
 
-__TI_handler_table @ 00005bb8 records: 3, size/record: 4, table size: 12
+__TI_handler_table @ 00005ba8 records: 3, size/record: 4, table size: 12
 	index: 0, handler: __TI_zero_init
 	index: 1, handler: __TI_decompress_lzss
 	index: 2, handler: __TI_decompress_none
@@ -806,22 +804,22 @@ address   name
 00000732  ADC12MEM9                                  
 00000733  ADC12MEM9_H                                
 00000732  ADC12MEM9_L                                
-000047f2  ADC12_A_IRQHandler                         
-00017358  ADC12_A_clearInterrupt                     
-00016d4a  ADC12_A_configureMemory                    
-000173c8  ADC12_A_disable                            
-000164e2  ADC12_A_disableInterrupt                   
-000173d0  ADC12_A_enable                             
-00016522  ADC12_A_enableInterrupt                    
-000172c4  ADC12_A_getResults                         
-000160c8  ADC12_A_init                               
-00016d70  ADC12_A_setupSamplingTimer                 
-000169be  ADC12_A_startConversion                    
-00017466  C$$EXIT                                    
-00016c5a  CA_idProbe                                 
-0001633c  CA_init                                    
-00016386  CA_measureSensor                           
-00015f80  CA_writeLaser                              
+000047c2  ADC12_A_IRQHandler                         
+00017202  ADC12_A_clearInterrupt                     
+00016bf4  ADC12_A_configureMemory                    
+00017272  ADC12_A_disable                            
+0001638c  ADC12_A_disableInterrupt                   
+0001727a  ADC12_A_enable                             
+000163cc  ADC12_A_enableInterrupt                    
+0001716e  ADC12_A_getResults                         
+00015fbe  ADC12_A_init                               
+00016c1a  ADC12_A_setupSamplingTimer                 
+00016868  ADC12_A_startConversion                    
+00017310  C$$EXIT                                    
+00016b04  CA_idProbe                                 
+000161e6  CA_init                                    
+00016230  CA_measureSensor                           
+00015e76  CA_writeLaser                              
 000008c0  CBCTL0                                     
 000008c1  CBCTL0_H                                   
 000008c0  CBCTL0_L                                   
@@ -838,13 +836,13 @@ address   name
 000008cd  CBINT_H                                    
 000008cc  CBINT_L                                    
 000008ce  CBIV                                       
-00016b4a  CM_align                                   
-0001675a  CM_getFreq                                 
-00013eb8  CM_getOrientationInfo                      
+000169f4  CM_align                                   
+00016604  CM_getFreq                                 
+00013ccc  CM_getOrientationInfo                      
 00010dae  CM_init                                    
-00015932  CM_setAlignedInfo                          
-00015d78  CM_setFreq                                 
-0001645e  CM_turnMotorSteps                          
+00014f92  CM_setAlignedInfo                          
+00015c6e  CM_setFreq                                 
+00016308  CM_turnMotorSteps                          
 00000150  CRCDI                                      
 00000152  CRCDIRB                                    
 00000153  CRCDIRB_H                                  
@@ -857,13 +855,13 @@ address   name
 00000156  CRCRESR                                    
 00000157  CRCRESR_H                                  
 00000156  CRCRESR_L                                  
-000170ba  CdcIsReceiveInProgress                     
+00016f64  CdcIsReceiveInProgress                     
 000038fc  CdcReadCtrl                                
-00016562  CdcResetData                               
+0001640c  CdcResetData                               
 000119d0  CdcToBufferFromHost                        
 000116f2  CdcToHostFromBuffer                        
 000039e6  CdcWriteCtrl                               
-00013176  CopyUsbToBuff                              
+00012f8a  CopyUsbToBuff                              
 00000510  DMA0CTL                                    
 00000516  DMA0DA                                     
 00000518  DMA0DAH                                    
@@ -894,17 +892,17 @@ address   name
 00000506  DMACTL3                                    
 00000508  DMACTL4                                    
 0000050e  DMAIV                                      
-00017448  DMA_disableTransferDuringReadModifyWrite   
-000172d4  DMA_disableTransfers                       
-0001744e  DMA_enableTransferDuringReadModifyWrite    
-000172e4  DMA_enableTransfers                        
-00017304  DMA_getInterruptStatus                     
-00015400  DMA_init                                   
-00016aea  DMA_setDstAddress                          
-00016b78  DMA_setSrcAddress                          
-00017364  DMA_setTransferSize                        
-00017312  DMA_startTransfer                          
-00015582  ERROR_lastAssertInfo                       
+000172f2  DMA_disableTransferDuringReadModifyWrite   
+0001717e  DMA_disableTransfers                       
+000172f8  DMA_enableTransferDuringReadModifyWrite    
+0001718e  DMA_enableTransfers                        
+000171ae  DMA_getInterruptStatus                     
+00015366  DMA_init                                   
+00016994  DMA_setDstAddress                          
+00016a22  DMA_setSrcAddress                          
+0001720e  DMA_setTransferSize                        
+000171bc  DMA_startTransfer                          
+000154e8  ERROR_lastAssertInfo                       
 00000140  FCTL1                                      
 00000141  FCTL1_H                                    
 00000140  FCTL1_L                                    
@@ -914,19 +912,19 @@ address   name
 00000146  FCTL4                                      
 00000147  FCTL4_H                                    
 00000146  FCTL4_L                                    
-00016dbc  FlashCtl_eraseSegment                      
-000173d8  FlashCtl_getStatus                         
-00016b1a  FlashCtl_write8                            
-00016c82  GPIO_setAsPeripheralModuleFunctionOutputPin
-0001526a  Handler_SetLineCoding                      
-00016de0  IEP0InterruptHandler                       
-00017370  IF_informRx                                
-0001737c  IF_informTx                                
-00012b68  IF_init                                    
-00015e80  IO_attachInterrupt                         
-00013cf8  IO_configurePin                            
-00016f24  IO_reset                                   
-000169f0  LEDI_init                                  
+00016c66  FlashCtl_eraseSegment                      
+00017282  FlashCtl_getStatus                         
+000169c4  FlashCtl_write8                            
+00016b2c  GPIO_setAsPeripheralModuleFunctionOutputPin
+000151d0  Handler_SetLineCoding                      
+00016c8a  IEP0InterruptHandler                       
+0001721a  IF_informRx                                
+00017226  IF_informTx                                
+0001297c  IF_init                                    
+00015d76  IO_attachInterrupt                         
+00013b0c  IO_configurePin                            
+00016dce  IO_reset                                   
+0001689a  LEDI_init                                  
 000004c4  MAC                                        
 000004da  MAC32H                                     
 000004db  MAC32H_H                                   
@@ -966,7 +964,7 @@ address   name
 000004c2  MPYS_L                                     
 000004c1  MPY_H                                      
 000004c0  MPY_L                                      
-0001641a  OEP0InterruptHandler                       
+000162c4  OEP0InterruptHandler                       
 000004c8  OP2                                        
 000004e2  OP2H                                       
 000004e3  OP2H_H                                     
@@ -1107,14 +1105,14 @@ address   name
 0000012e  PMMRIE                                     
 0000012f  PMMRIE_H                                   
 0000012e  PMMRIE_L                                   
-00015fd2  PMM_setVCore                               
-00014d0c  PMM_setVCoreDown                           
-00013dd8  PMM_setVCoreUp                             
+00015ec8  PMM_setVCore                               
+00014be0  PMM_setVCoreDown                           
+00013bec  PMM_setVCoreUp                             
 00011c16  PWM_configure                              
-00012f28  PWM_start                                  
-000163d0  PWM_stop                                   
-0001537a  PWRVBUSoffHandler                          
-000156ee  PWRVBUSonHandler                           
+00012d3c  PWM_start                                  
+0001627a  PWM_stop                                   
+000152e0  PWRVBUSoffHandler                          
+00015654  PWRVBUSonHandler                           
 00000158  RCCTL0                                     
 00000159  RCCTL0_H                                   
 00000158  RCCTL0_L                                   
@@ -1182,7 +1180,7 @@ address   name
 00000104  SFRRPCR                                    
 00000105  SFRRPCR_H                                  
 00000104  SFRRPCR_L                                  
-00017454  SFR_clearInterrupt                         
+000172fe  SFR_clearInterrupt                         
 000004ce  SUMEXT                                     
 000004cf  SUMEXT_H                                   
 000004ce  SUMEXT_L                                   
@@ -1228,7 +1226,7 @@ address   name
 0000019a  SYSUNIV                                    
 0000019b  SYSUNIV_H                                  
 0000019a  SYSUNIV_L                                  
-00015dd0  SetupPacketInterruptHandler                
+00015cc6  SetupPacketInterruptHandler                
 00000352  TA0CCR0                                    
 00000354  TA0CCR1                                    
 00000356  TA0CCR2                                    
@@ -1263,9 +1261,9 @@ address   name
 00000420  TA2EX0                                     
 0000042e  TA2IV                                      
 00000410  TA2R                                       
-00012892  TA_configureCctl                           
-00016118  TA_configureCtl                            
-00016208  TA_reset                                   
+000126a6  TA_configureCctl                           
+0001600e  TA_configureCtl                            
+000160fe  TA_reset                                   
 000003d2  TB0CCR0                                    
 000003d4  TB0CCR1                                    
 000003d6  TB0CCR2                                    
@@ -1284,11 +1282,11 @@ address   name
 000003e0  TB0EX0                                     
 000003ee  TB0IV                                      
 000003d0  TB0R                                       
-0001270e  TB_configureCctl                           
-00015762  TB_configureCtl                            
-00016256  TB_reset                                   
+00012522  TB_configureCctl                           
+000156c8  TB_configureCtl                            
+0001614c  TB_reset                                   
 000107e6  TB_unitTest                                
-00016168  TLV_getInfo                                
+0001605e  TLV_getInfo                                
 000005d0  UCA0ABCTL                                  
 000005c6  UCA0BRW                                    
 000005c7  UCA0BRW_H                                  
@@ -1390,26 +1388,26 @@ address   name
 00000170  UCSCTL8                                    
 00000171  UCSCTL8_H                                  
 00000170  UCSCTL8_L                                  
-0001745a  UCS_clearFaultFlag                         
-0001700c  UCS_getACLK                                
-000170d4  UCS_getSMCLK                               
-00014a76  UCS_initClockSignal                        
-00013c16  UCS_initFLL                                
-000168b4  UCS_initFLLSettle                          
-000173e0  UCS_turnOffXT2                             
-00016796  UCS_turnOnXT2WithTimeout                   
-00004730  UNMI_ISR                                   
-00014138  USBCDC_getBytesInUSBBuffer                 
-0001386c  USBCDC_getInterfaceStatus                  
-000173e8  USBCDC_handleDataReceived                  
-0001746c  USBCDC_handleReceiveCompleted              
-000173f0  USBCDC_handleSendCompleted                 
-00017470  USBCDC_handleSetControlLineState           
-00017474  USBCDC_handleSetLineCoding                 
+00017304  UCS_clearFaultFlag                         
+00016eb6  UCS_getACLK                                
+00016f7e  UCS_getSMCLK                               
+0001494a  UCS_initClockSignal                        
+00013a2a  UCS_initFLL                                
+0001675e  UCS_initFLLSettle                          
+0001728a  UCS_turnOffXT2                             
+00016640  UCS_turnOnXT2WithTimeout                   
+00004700  UNMI_ISR                                   
+00013f50  USBCDC_getBytesInUSBBuffer                 
+00013680  USBCDC_getInterfaceStatus                  
+00017292  USBCDC_handleDataReceived                  
+00017316  USBCDC_handleReceiveCompleted              
+0001729a  USBCDC_handleSendCompleted                 
+0001731a  USBCDC_handleSetControlLineState           
+0001731e  USBCDC_handleSetLineCoding                 
 0001127a  USBCDC_receiveData                         
-00015ed6  USBCDC_receiveDataInBuffer                 
-00014b1c  USBCDC_sendData                            
-000159a2  USBCDC_sendDataInBackground                
+00015dcc  USBCDC_receiveDataInBuffer                 
+000149f0  USBCDC_sendData                            
+00015898  USBCDC_sendDataInBackground                
 00000902  USBCNF                                     
 00000903  USBCNF_H                                   
 00000902  USBCNF_L                                   
@@ -1418,7 +1416,7 @@ address   name
 0000093b  USBFN_H                                    
 0000093a  USBFN_L                                    
 0000093f  USBFUNADR                                  
-00016662  USBHAL_initClocks                          
+0001650c  USBHAL_initClocks                          
 0000093d  USBIE                                      
 00002378  USBIEP0BUF                                 
 000023c9  USBIEPBBAX_1                               
@@ -1545,46 +1543,46 @@ address   name
 00000932  USBVECINT                                  
 00000933  USBVECINT_H                                
 00000932  USBVECINT_L                                
-00013386  USB_InitSerialStringDescriptor             
+0001319a  USB_InitSerialStringDescriptor             
 00003a4a  USB_RX_memcpy                              
 00003a4e  USB_TX_memcpy                              
-00016f46  USB_connect                                
-00013958  USB_determineFreq                          
-0001438c  USB_determineXT2Freq                       
-00016ba6  USB_disable                                
-00012ca8  USB_enable                                 
-00016844  USB_getConnectionInformation               
-00017460  USB_getVersion                             
-00017478  USB_handleClockEvent                       
-0001747c  USB_handleEnumerationCompleteEvent         
-00017480  USB_handleResetEvent                       
-00017484  USB_handleResumeEvent                      
-00017488  USB_handleSuspendEvent                     
-000173f8  USB_handleVbusOffEvent                     
-000171f2  USB_handleVbusOnEvent                      
-00014446  USB_init                                   
-00015c64  USB_initMemcpy                             
-000164a0  USB_lookUpPll                              
+00016df0  USB_connect                                
+0001376c  USB_determineFreq                          
+00014260  USB_determineXT2Freq                       
+00016a50  USB_disable                                
+00012abc  USB_enable                                 
+000166ee  USB_getConnectionInformation               
+0001730a  USB_getVersion                             
+00017322  USB_handleClockEvent                       
+00017326  USB_handleEnumerationCompleteEvent         
+0001732a  USB_handleResetEvent                       
+0001732e  USB_handleResumeEvent                      
+00017332  USB_handleSuspendEvent                     
+000172a2  USB_handleVbusOffEvent                     
+0001709c  USB_handleVbusOnEvent                      
+0001431a  USB_init                                   
+00015b5a  USB_initMemcpy                             
+0001634a  USB_lookUpPll                              
 00011e56  USB_reset                                  
-0001702a  USB_resume                                 
-000173a0  USB_setEnabledEvents                       
-000167d0  USB_setup                                  
-000166a0  USB_suspend                                
+00016ed4  USB_resume                                 
+0001724a  USB_setEnabledEvents                       
+0001667a  USB_setup                                  
+0001654a  USB_suspend                                
 00003bf6  VERSION                                    
 0000015c  WDTCTL                                     
 0000015d  WDTCTL_H                                   
 0000015c  WDTCTL_L                                   
-00016fac  WDT_A_hold                                 
+00016e56  WDT_A_hold                                 
 00004400  __STACK_END                                
 000000a0  __STACK_SIZE                               
-00005bca  __TI_CINIT_Base                            
-00005bda  __TI_CINIT_Limit                           
-00005bb8  __TI_Handler_Table_Base                    
-00005bc4  __TI_Handler_Table_Limit                   
-0000483a  __TI_ISR_TRAP                              
-00015f2c  __TI_auto_init_nobinit_nopinit_hold_wdt    
-00015678  __TI_decompress_lzss                       
-000172a0  __TI_decompress_none                       
+00005bba  __TI_CINIT_Base                            
+00005bca  __TI_CINIT_Limit                           
+00005ba8  __TI_Handler_Table_Base                    
+00005bb4  __TI_Handler_Table_Limit                   
+0000480a  __TI_ISR_TRAP                              
+00015e22  __TI_auto_init_nobinit_nopinit_hold_wdt    
+000155de  __TI_decompress_lzss                       
+0001714a  __TI_decompress_none                       
 0000ffd2  __TI_int41                                 
 0000ffd4  __TI_int42                                 
 0000ffd6  __TI_int43                                 
@@ -1610,77 +1608,77 @@ address   name
 ffffffff  __TI_pprof_out_hndl                        
 ffffffff  __TI_prof_data_size                        
 ffffffff  __TI_prof_data_start                       
-00016e4c  __TI_zero_init                             
+00016cf6  __TI_zero_init                             
 ffffffff  __c_args__                                 
-00016c02  __mspabi_divi                              
-000165e2  __mspabi_divli                             
-000171c6  __mspabi_divu                              
-00015e28  __mspabi_divul                             
-00017138  __mspabi_mpyi_f5hw                         
-00016e94  __mspabi_mpyl_f5hw                         
-00016c02  __mspabi_remi                              
-000165e2  __mspabi_remli                             
-000171c6  __mspabi_remu                              
-00015e28  __mspabi_remul                             
-000173aa  __mspabi_slli                              
-00016716  __mspabi_slll_1                            
-000166f2  __mspabi_slll_10                           
-000166ee  __mspabi_slll_11                           
-000166ea  __mspabi_slll_12                           
-000166e6  __mspabi_slll_13                           
-000166e2  __mspabi_slll_14                           
-000166de  __mspabi_slll_15                           
-00016712  __mspabi_slll_2                            
-0001670e  __mspabi_slll_3                            
-0001670a  __mspabi_slll_4                            
-00016706  __mspabi_slll_5                            
-00016702  __mspabi_slll_6                            
-000166fe  __mspabi_slll_7                            
-000166fa  __mspabi_slll_8                            
-000166f6  __mspabi_slll_9                            
-000173b4  __mspabi_srli                              
-00016754  __mspabi_srll_1                            
-00016730  __mspabi_srll_10                           
-0001672c  __mspabi_srll_11                           
-00016728  __mspabi_srll_12                           
-00016724  __mspabi_srll_13                           
-00016720  __mspabi_srll_14                           
-0001671c  __mspabi_srll_15                           
-00016750  __mspabi_srll_2                            
-0001674c  __mspabi_srll_3                            
-00016748  __mspabi_srll_4                            
-00016744  __mspabi_srll_5                            
-00016740  __mspabi_srll_6                            
-0001673c  __mspabi_srll_7                            
-00016738  __mspabi_srll_8                            
-00016734  __mspabi_srll_9                            
-00014f8a  _assert_failure                            
-0000480e  _c_int00_noargs                            
+00016aac  __mspabi_divi                              
+0001648c  __mspabi_divli                             
+00017070  __mspabi_divu                              
+00015d1e  __mspabi_divul                             
+00016fe2  __mspabi_mpyi_f5hw                         
+00016d3e  __mspabi_mpyl_f5hw                         
+00016aac  __mspabi_remi                              
+0001648c  __mspabi_remli                             
+00017070  __mspabi_remu                              
+00015d1e  __mspabi_remul                             
+00017254  __mspabi_slli                              
+000165c0  __mspabi_slll_1                            
+0001659c  __mspabi_slll_10                           
+00016598  __mspabi_slll_11                           
+00016594  __mspabi_slll_12                           
+00016590  __mspabi_slll_13                           
+0001658c  __mspabi_slll_14                           
+00016588  __mspabi_slll_15                           
+000165bc  __mspabi_slll_2                            
+000165b8  __mspabi_slll_3                            
+000165b4  __mspabi_slll_4                            
+000165b0  __mspabi_slll_5                            
+000165ac  __mspabi_slll_6                            
+000165a8  __mspabi_slll_7                            
+000165a4  __mspabi_slll_8                            
+000165a0  __mspabi_slll_9                            
+0001725e  __mspabi_srli                              
+000165fe  __mspabi_srll_1                            
+000165da  __mspabi_srll_10                           
+000165d6  __mspabi_srll_11                           
+000165d2  __mspabi_srll_12                           
+000165ce  __mspabi_srll_13                           
+000165ca  __mspabi_srll_14                           
+000165c6  __mspabi_srll_15                           
+000165fa  __mspabi_srll_2                            
+000165f6  __mspabi_srll_3                            
+000165f2  __mspabi_srll_4                            
+000165ee  __mspabi_srll_5                            
+000165ea  __mspabi_srll_6                            
+000165e6  __mspabi_srll_7                            
+000165e2  __mspabi_srll_8                            
+000165de  __mspabi_srll_9                            
+00014e5e  _assert_failure                            
+000047de  _c_int00_noargs                            
 0000fffe  _reset_vector                              
 00004360  _stack                                     
-00017490  _system_post_cinit                         
-0001748c  _system_pre_init                           
+0001733a  _system_post_cinit                         
+00017336  _system_pre_init                           
 00002378  abIEP0Buffer                               
 00002370  abOEP0Buffer                               
 00003a20  abUsbRequestIncomingData                   
 00003a28  abUsbRequestReturnData                     
-00017466  abort                                      
+00017310  abort                                      
 000038da  abramSerialStringDescriptor                
-00005998  abromConfigurationDescriptorGroup          
-00005a68  abromDeviceDescriptor                      
-000058b4  abromStringDescriptor                      
+00005990  abromConfigurationDescriptorGroup          
+00005a60  abromDeviceDescriptor                      
+000058ac  abromStringDescriptor                      
 00003bf4  bEnumerationStatus                         
 00003bf3  bFunctionSuspended                         
 00003a58  bStatusAction                              
 00004400  iUsbInterruptHandler                       
-000157d6  init                                       
-00016fcc  main                                       
-0001721a  memcpy                                     
-00015a7e  memcpyDMA                                  
-00016f68  memcpyV                                    
-000171b0  memset                                     
-000047ba  p1_IRQHandler                              
-0000477a  p2_IRQHandler                              
+0001573c  init                                       
+00016e76  main                                       
+000170c4  memcpy                                     
+00015974  memcpyDMA                                  
+00016e12  memcpyV                                    
+0001705a  memset                                     
+0000478a  p1_IRQHandler                              
+0000474a  p2_IRQHandler                              
 00001c00  pbXBufferAddressEp1                        
 00001d00  pbXBufferAddressEp2                        
 00001e00  pbXBufferAddressEp3                        
@@ -1710,87 +1708,87 @@ ffffffff  __c_args__
 000021c0  pbYBufferAddressEp86                       
 000022c0  pbYBufferAddressEp87                       
 00003b9a  pxCurrentTCB                               
-00016e70  pxPortInitialiseStack                      
-00005a8a  stUsbHandle                                
+00016d1a  pxPortInitialiseStack                      
+00005a82  stUsbHandle                                
 00000920  tEndPoint0DescriptorBlock                  
 000023c8  tInputEndPointDescriptorBlock              
 00002388  tOutputEndPointDescriptorBlock             
 00002380  tSetupPacket                               
-000057aa  tUsbRequestList                            
+000057a2  tUsbRequestList                            
 00004550  ta0IRQHandler                              
-000045f0  ta1IRQHandler                              
-00004690  ta2IRQHandler                              
-000173be  test                                       
-0001367c  ulTaskGenericNotifyTake                    
+000045e0  ta1IRQHandler                              
+00004670  ta2IRQHandler                              
+00017268  test                                       
+00013490  ulTaskGenericNotifyTake                    
 00003bfe  usCriticalNesting                          
-00017066  usbClearDeviceFeature                      
-00014eee  usbClearEndpointFeature                    
-00017410  usbClearOEP0ByteCount                      
-000150be  usbDecodeAndProcessUsbRequest              
-00016cd2  usbDisableInEndpointInterrupt              
-00016cfa  usbDisableOutEndpointInterrupt             
-000171dc  usbGetConfiguration                        
-00017150  usbGetConfigurationDescriptor              
-00017168  usbGetDeviceDescriptor                     
-0001698a  usbGetDeviceStatus                         
-000149ce  usbGetEndpointStatus                       
-00016eb8  usbGetInterface                            
-00016edc  usbGetInterfaceStatus                      
-0001466a  usbGetLineCoding                           
-00015ba4  usbGetStringDescriptor                     
-000172f4  usbInvalidRequest                          
-00017180  usbReceiveDataPacketOnEP0                  
-00015c04  usbReceiveNextPacketOnOEP0                 
-00017418  usbRestoreInEndpointInterrupt              
-00017420  usbRestoreOutEndpointInterrupt             
-00016c2e  usbSendDataPacketOnEP0                     
-0001514e  usbSendNextPacketOnIEP0                    
-00017242  usbSendZeroLengthPacketOnIEP0              
-00016f00  usbSetAddress                              
-00016bd4  usbSetConfiguration                        
-00017198  usbSetControlLineState                     
-00017082  usbSetDeviceFeature                        
-00016076  usbSetEndpointFeature                      
-00017256  usbSetInterface                            
-00017394  usbSetLineCoding                           
-0001734a  usbStallEndpoint0                          
-00017428  usbStallOEP0                               
-0001680a  uxListRemove                               
-00005b60  uxTopUsedPriority                          
-000170ee  vApplicationGetIdleTaskMemory              
-00016d22  vListInitialise                            
-00017430  vListInitialiseItem                        
-00016622  vListInsert                                
-00016d96  vListInsertEnd                             
-00014bf2  vPortCooperativeTickISR                    
-00014bc2  vPortPreemptiveTickISR                     
-000158be  vPortSetupTimerInterrupt                   
-00014c1e  vPortYield                                 
-00013f90  vTaskGenericNotifyGiveFromISR              
-000172b2  vTaskInternalSetTimeOutState               
-00017438  vTaskMissedYield                           
-00016920  vTaskPlaceOnEventList                      
-00014dae  vTaskStartScheduler                        
-00017440  vTaskSuspendAll                            
-000152f2  vTaskSwitchContext                         
-0000482a  vTickISREntry                              
+00016f10  usbClearDeviceFeature                      
+00014dc2  usbClearEndpointFeature                    
+000172ba  usbClearOEP0ByteCount                      
+00015024  usbDecodeAndProcessUsbRequest              
+00016b7c  usbDisableInEndpointInterrupt              
+00016ba4  usbDisableOutEndpointInterrupt             
+00017086  usbGetConfiguration                        
+00016ffa  usbGetConfigurationDescriptor              
+00017012  usbGetDeviceDescriptor                     
+00016834  usbGetDeviceStatus                         
+000148a2  usbGetEndpointStatus                       
+00016d62  usbGetInterface                            
+00016d86  usbGetInterfaceStatus                      
+0001453e  usbGetLineCoding                           
+00015a9a  usbGetStringDescriptor                     
+0001719e  usbInvalidRequest                          
+0001702a  usbReceiveDataPacketOnEP0                  
+00015afa  usbReceiveNextPacketOnOEP0                 
+000172c2  usbRestoreInEndpointInterrupt              
+000172ca  usbRestoreOutEndpointInterrupt             
+00016ad8  usbSendDataPacketOnEP0                     
+000150b4  usbSendNextPacketOnIEP0                    
+000170ec  usbSendZeroLengthPacketOnIEP0              
+00016daa  usbSetAddress                              
+00016a7e  usbSetConfiguration                        
+00017042  usbSetControlLineState                     
+00016f2c  usbSetDeviceFeature                        
+00015f6c  usbSetEndpointFeature                      
+00017100  usbSetInterface                            
+0001723e  usbSetLineCoding                           
+000171f4  usbStallEndpoint0                          
+000172d2  usbStallOEP0                               
+000166b4  uxListRemove                               
+00005b50  uxTopUsedPriority                          
+00016f98  vApplicationGetIdleTaskMemory              
+00016bcc  vListInitialise                            
+000172da  vListInitialiseItem                        
+000164cc  vListInsert                                
+00016c40  vListInsertEnd                             
+00014ac6  vPortCooperativeTickISR                    
+00014a96  vPortPreemptiveTickISR                     
+00015824  vPortSetupTimerInterrupt                   
+00014af2  vPortYield                                 
+00013da4  vTaskGenericNotifyGiveFromISR              
+0001715c  vTaskInternalSetTimeOutState               
+000172e2  vTaskMissedYield                           
+000167ca  vTaskPlaceOnEventList                      
+00014c82  vTaskStartScheduler                        
+000172ea  vTaskSuspendAll                            
+00015258  vTaskSwitchContext                         
+000047fa  vTickISREntry                              
 00003a52  wBytesRemainingOnIEP0                      
 00003a54  wBytesRemainingOnOEP0                      
 00003a56  wUsbEventMask                              
-00014c4e  xPortStartScheduler                        
-00014c68  xQueueGenericCreateStatic                  
-00014500  xQueueGenericReset                         
-00012232  xQueueGenericSend                          
-000147ca  xQueueGiveFromISR                          
-000123e8  xQueueReceive                              
-00012582  xQueueSemaphoreTake                        
-00015024  xTaskCheckForTimeOut                       
-000145b6  xTaskCreateStatic                          
-000129fe  xTaskGenericNotify                         
-0001709e  xTaskGetSchedulerState                     
-00013280  xTaskIncrementTick                         
-000151dc  xTaskRemoveFromEventList                   
-00013776  xTaskResumeAll                             
+00014b22  xPortStartScheduler                        
+00014b3c  xQueueGenericCreateStatic                  
+000143d4  xQueueGenericReset                         
+00012046  xQueueGenericSend                          
+0001469e  xQueueGiveFromISR                          
+000121fc  xQueueReceive                              
+00012396  xQueueSemaphoreTake                        
+00014ef8  xTaskCheckForTimeOut                       
+0001448a  xTaskCreateStatic                          
+00012812  xTaskGenericNotify                         
+00016f48  xTaskGetSchedulerState                     
+00013094  xTaskIncrementTick                         
+00015142  xTaskRemoveFromEventList                   
+0001358a  xTaskResumeAll                             
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -2582,25 +2580,25 @@ address   name
 00004400  __STACK_END                                
 00004400  iUsbInterruptHandler                       
 00004550  ta0IRQHandler                              
-000045f0  ta1IRQHandler                              
-00004690  ta2IRQHandler                              
-00004730  UNMI_ISR                                   
-0000477a  p2_IRQHandler                              
-000047ba  p1_IRQHandler                              
-000047f2  ADC12_A_IRQHandler                         
-0000480e  _c_int00_noargs                            
-0000482a  vTickISREntry                              
-0000483a  __TI_ISR_TRAP                              
-000057aa  tUsbRequestList                            
-000058b4  abromStringDescriptor                      
-00005998  abromConfigurationDescriptorGroup          
-00005a68  abromDeviceDescriptor                      
-00005a8a  stUsbHandle                                
-00005b60  uxTopUsedPriority                          
-00005bb8  __TI_Handler_Table_Base                    
-00005bc4  __TI_Handler_Table_Limit                   
-00005bca  __TI_CINIT_Base                            
-00005bda  __TI_CINIT_Limit                           
+000045e0  ta1IRQHandler                              
+00004670  ta2IRQHandler                              
+00004700  UNMI_ISR                                   
+0000474a  p2_IRQHandler                              
+0000478a  p1_IRQHandler                              
+000047c2  ADC12_A_IRQHandler                         
+000047de  _c_int00_noargs                            
+000047fa  vTickISREntry                              
+0000480a  __TI_ISR_TRAP                              
+000057a2  tUsbRequestList                            
+000058ac  abromStringDescriptor                      
+00005990  abromConfigurationDescriptorGroup          
+00005a60  abromDeviceDescriptor                      
+00005a82  stUsbHandle                                
+00005b50  uxTopUsedPriority                          
+00005ba8  __TI_Handler_Table_Base                    
+00005bb4  __TI_Handler_Table_Limit                   
+00005bba  __TI_CINIT_Base                            
+00005bca  __TI_CINIT_Limit                           
 0000ffd2  __TI_int41                                 
 0000ffd4  __TI_int42                                 
 0000ffd6  __TI_int43                                 
@@ -2631,235 +2629,235 @@ address   name
 000119d0  CdcToBufferFromHost                        
 00011c16  PWM_configure                              
 00011e56  USB_reset                                  
-00012232  xQueueGenericSend                          
-000123e8  xQueueReceive                              
-00012582  xQueueSemaphoreTake                        
-0001270e  TB_configureCctl                           
-00012892  TA_configureCctl                           
-000129fe  xTaskGenericNotify                         
-00012b68  IF_init                                    
-00012ca8  USB_enable                                 
-00012f28  PWM_start                                  
-00013176  CopyUsbToBuff                              
-00013280  xTaskIncrementTick                         
-00013386  USB_InitSerialStringDescriptor             
-0001367c  ulTaskGenericNotifyTake                    
-00013776  xTaskResumeAll                             
-0001386c  USBCDC_getInterfaceStatus                  
-00013958  USB_determineFreq                          
-00013c16  UCS_initFLL                                
-00013cf8  IO_configurePin                            
-00013dd8  PMM_setVCoreUp                             
-00013eb8  CM_getOrientationInfo                      
-00013f90  vTaskGenericNotifyGiveFromISR              
-00014138  USBCDC_getBytesInUSBBuffer                 
-0001438c  USB_determineXT2Freq                       
-00014446  USB_init                                   
-00014500  xQueueGenericReset                         
-000145b6  xTaskCreateStatic                          
-0001466a  usbGetLineCoding                           
-000147ca  xQueueGiveFromISR                          
-000149ce  usbGetEndpointStatus                       
-00014a76  UCS_initClockSignal                        
-00014b1c  USBCDC_sendData                            
-00014bc2  vPortPreemptiveTickISR                     
-00014bf2  vPortCooperativeTickISR                    
-00014c1e  vPortYield                                 
-00014c4e  xPortStartScheduler                        
-00014c68  xQueueGenericCreateStatic                  
-00014d0c  PMM_setVCoreDown                           
-00014dae  vTaskStartScheduler                        
-00014eee  usbClearEndpointFeature                    
-00014f8a  _assert_failure                            
-00015024  xTaskCheckForTimeOut                       
-000150be  usbDecodeAndProcessUsbRequest              
-0001514e  usbSendNextPacketOnIEP0                    
-000151dc  xTaskRemoveFromEventList                   
-0001526a  Handler_SetLineCoding                      
-000152f2  vTaskSwitchContext                         
-0001537a  PWRVBUSoffHandler                          
-00015400  DMA_init                                   
-00015582  ERROR_lastAssertInfo                       
-00015678  __TI_decompress_lzss                       
-000156ee  PWRVBUSonHandler                           
-00015762  TB_configureCtl                            
-000157d6  init                                       
-000158be  vPortSetupTimerInterrupt                   
-00015932  CM_setAlignedInfo                          
-000159a2  USBCDC_sendDataInBackground                
-00015a7e  memcpyDMA                                  
-00015ba4  usbGetStringDescriptor                     
-00015c04  usbReceiveNextPacketOnOEP0                 
-00015c64  USB_initMemcpy                             
-00015d78  CM_setFreq                                 
-00015dd0  SetupPacketInterruptHandler                
-00015e28  __mspabi_divul                             
-00015e28  __mspabi_remul                             
-00015e80  IO_attachInterrupt                         
-00015ed6  USBCDC_receiveDataInBuffer                 
-00015f2c  __TI_auto_init_nobinit_nopinit_hold_wdt    
-00015f80  CA_writeLaser                              
-00015fd2  PMM_setVCore                               
-00016076  usbSetEndpointFeature                      
-000160c8  ADC12_A_init                               
-00016118  TA_configureCtl                            
-00016168  TLV_getInfo                                
-00016208  TA_reset                                   
-00016256  TB_reset                                   
-0001633c  CA_init                                    
-00016386  CA_measureSensor                           
-000163d0  PWM_stop                                   
-0001641a  OEP0InterruptHandler                       
-0001645e  CM_turnMotorSteps                          
-000164a0  USB_lookUpPll                              
-000164e2  ADC12_A_disableInterrupt                   
-00016522  ADC12_A_enableInterrupt                    
-00016562  CdcResetData                               
-000165e2  __mspabi_divli                             
-000165e2  __mspabi_remli                             
-00016622  vListInsert                                
-00016662  USBHAL_initClocks                          
-000166a0  USB_suspend                                
-000166de  __mspabi_slll_15                           
-000166e2  __mspabi_slll_14                           
-000166e6  __mspabi_slll_13                           
-000166ea  __mspabi_slll_12                           
-000166ee  __mspabi_slll_11                           
-000166f2  __mspabi_slll_10                           
-000166f6  __mspabi_slll_9                            
-000166fa  __mspabi_slll_8                            
-000166fe  __mspabi_slll_7                            
-00016702  __mspabi_slll_6                            
-00016706  __mspabi_slll_5                            
-0001670a  __mspabi_slll_4                            
-0001670e  __mspabi_slll_3                            
-00016712  __mspabi_slll_2                            
-00016716  __mspabi_slll_1                            
-0001671c  __mspabi_srll_15                           
-00016720  __mspabi_srll_14                           
-00016724  __mspabi_srll_13                           
-00016728  __mspabi_srll_12                           
-0001672c  __mspabi_srll_11                           
-00016730  __mspabi_srll_10                           
-00016734  __mspabi_srll_9                            
-00016738  __mspabi_srll_8                            
-0001673c  __mspabi_srll_7                            
-00016740  __mspabi_srll_6                            
-00016744  __mspabi_srll_5                            
-00016748  __mspabi_srll_4                            
-0001674c  __mspabi_srll_3                            
-00016750  __mspabi_srll_2                            
-00016754  __mspabi_srll_1                            
-0001675a  CM_getFreq                                 
-00016796  UCS_turnOnXT2WithTimeout                   
-000167d0  USB_setup                                  
-0001680a  uxListRemove                               
-00016844  USB_getConnectionInformation               
-000168b4  UCS_initFLLSettle                          
-00016920  vTaskPlaceOnEventList                      
-0001698a  usbGetDeviceStatus                         
-000169be  ADC12_A_startConversion                    
-000169f0  LEDI_init                                  
-00016aea  DMA_setDstAddress                          
-00016b1a  FlashCtl_write8                            
-00016b4a  CM_align                                   
-00016b78  DMA_setSrcAddress                          
-00016ba6  USB_disable                                
-00016bd4  usbSetConfiguration                        
-00016c02  __mspabi_divi                              
-00016c02  __mspabi_remi                              
-00016c2e  usbSendDataPacketOnEP0                     
-00016c5a  CA_idProbe                                 
-00016c82  GPIO_setAsPeripheralModuleFunctionOutputPin
-00016cd2  usbDisableInEndpointInterrupt              
-00016cfa  usbDisableOutEndpointInterrupt             
-00016d22  vListInitialise                            
-00016d4a  ADC12_A_configureMemory                    
-00016d70  ADC12_A_setupSamplingTimer                 
-00016d96  vListInsertEnd                             
-00016dbc  FlashCtl_eraseSegment                      
-00016de0  IEP0InterruptHandler                       
-00016e4c  __TI_zero_init                             
-00016e70  pxPortInitialiseStack                      
-00016e94  __mspabi_mpyl_f5hw                         
-00016eb8  usbGetInterface                            
-00016edc  usbGetInterfaceStatus                      
-00016f00  usbSetAddress                              
-00016f24  IO_reset                                   
-00016f46  USB_connect                                
-00016f68  memcpyV                                    
-00016fac  WDT_A_hold                                 
-00016fcc  main                                       
-0001700c  UCS_getACLK                                
-0001702a  USB_resume                                 
-00017066  usbClearDeviceFeature                      
-00017082  usbSetDeviceFeature                        
-0001709e  xTaskGetSchedulerState                     
-000170ba  CdcIsReceiveInProgress                     
-000170d4  UCS_getSMCLK                               
-000170ee  vApplicationGetIdleTaskMemory              
-00017138  __mspabi_mpyi_f5hw                         
-00017150  usbGetConfigurationDescriptor              
-00017168  usbGetDeviceDescriptor                     
-00017180  usbReceiveDataPacketOnEP0                  
-00017198  usbSetControlLineState                     
-000171b0  memset                                     
-000171c6  __mspabi_divu                              
-000171c6  __mspabi_remu                              
-000171dc  usbGetConfiguration                        
-000171f2  USB_handleVbusOnEvent                      
-0001721a  memcpy                                     
-00017242  usbSendZeroLengthPacketOnIEP0              
-00017256  usbSetInterface                            
-000172a0  __TI_decompress_none                       
-000172b2  vTaskInternalSetTimeOutState               
-000172c4  ADC12_A_getResults                         
-000172d4  DMA_disableTransfers                       
-000172e4  DMA_enableTransfers                        
-000172f4  usbInvalidRequest                          
-00017304  DMA_getInterruptStatus                     
-00017312  DMA_startTransfer                          
-0001734a  usbStallEndpoint0                          
-00017358  ADC12_A_clearInterrupt                     
-00017364  DMA_setTransferSize                        
-00017370  IF_informRx                                
-0001737c  IF_informTx                                
-00017394  usbSetLineCoding                           
-000173a0  USB_setEnabledEvents                       
-000173aa  __mspabi_slli                              
-000173b4  __mspabi_srli                              
-000173be  test                                       
-000173c8  ADC12_A_disable                            
-000173d0  ADC12_A_enable                             
-000173d8  FlashCtl_getStatus                         
-000173e0  UCS_turnOffXT2                             
-000173e8  USBCDC_handleDataReceived                  
-000173f0  USBCDC_handleSendCompleted                 
-000173f8  USB_handleVbusOffEvent                     
-00017410  usbClearOEP0ByteCount                      
-00017418  usbRestoreInEndpointInterrupt              
-00017420  usbRestoreOutEndpointInterrupt             
-00017428  usbStallOEP0                               
-00017430  vListInitialiseItem                        
-00017438  vTaskMissedYield                           
-00017440  vTaskSuspendAll                            
-00017448  DMA_disableTransferDuringReadModifyWrite   
-0001744e  DMA_enableTransferDuringReadModifyWrite    
-00017454  SFR_clearInterrupt                         
-0001745a  UCS_clearFaultFlag                         
-00017460  USB_getVersion                             
-00017466  C$$EXIT                                    
-00017466  abort                                      
-0001746c  USBCDC_handleReceiveCompleted              
-00017470  USBCDC_handleSetControlLineState           
-00017474  USBCDC_handleSetLineCoding                 
-00017478  USB_handleClockEvent                       
-0001747c  USB_handleEnumerationCompleteEvent         
-00017480  USB_handleResetEvent                       
-00017484  USB_handleResumeEvent                      
-00017488  USB_handleSuspendEvent                     
-0001748c  _system_pre_init                           
-00017490  _system_post_cinit                         
+00012046  xQueueGenericSend                          
+000121fc  xQueueReceive                              
+00012396  xQueueSemaphoreTake                        
+00012522  TB_configureCctl                           
+000126a6  TA_configureCctl                           
+00012812  xTaskGenericNotify                         
+0001297c  IF_init                                    
+00012abc  USB_enable                                 
+00012d3c  PWM_start                                  
+00012f8a  CopyUsbToBuff                              
+00013094  xTaskIncrementTick                         
+0001319a  USB_InitSerialStringDescriptor             
+00013490  ulTaskGenericNotifyTake                    
+0001358a  xTaskResumeAll                             
+00013680  USBCDC_getInterfaceStatus                  
+0001376c  USB_determineFreq                          
+00013a2a  UCS_initFLL                                
+00013b0c  IO_configurePin                            
+00013bec  PMM_setVCoreUp                             
+00013ccc  CM_getOrientationInfo                      
+00013da4  vTaskGenericNotifyGiveFromISR              
+00013f50  USBCDC_getBytesInUSBBuffer                 
+00014260  USB_determineXT2Freq                       
+0001431a  USB_init                                   
+000143d4  xQueueGenericReset                         
+0001448a  xTaskCreateStatic                          
+0001453e  usbGetLineCoding                           
+0001469e  xQueueGiveFromISR                          
+000148a2  usbGetEndpointStatus                       
+0001494a  UCS_initClockSignal                        
+000149f0  USBCDC_sendData                            
+00014a96  vPortPreemptiveTickISR                     
+00014ac6  vPortCooperativeTickISR                    
+00014af2  vPortYield                                 
+00014b22  xPortStartScheduler                        
+00014b3c  xQueueGenericCreateStatic                  
+00014be0  PMM_setVCoreDown                           
+00014c82  vTaskStartScheduler                        
+00014dc2  usbClearEndpointFeature                    
+00014e5e  _assert_failure                            
+00014ef8  xTaskCheckForTimeOut                       
+00014f92  CM_setAlignedInfo                          
+00015024  usbDecodeAndProcessUsbRequest              
+000150b4  usbSendNextPacketOnIEP0                    
+00015142  xTaskRemoveFromEventList                   
+000151d0  Handler_SetLineCoding                      
+00015258  vTaskSwitchContext                         
+000152e0  PWRVBUSoffHandler                          
+00015366  DMA_init                                   
+000154e8  ERROR_lastAssertInfo                       
+000155de  __TI_decompress_lzss                       
+00015654  PWRVBUSonHandler                           
+000156c8  TB_configureCtl                            
+0001573c  init                                       
+00015824  vPortSetupTimerInterrupt                   
+00015898  USBCDC_sendDataInBackground                
+00015974  memcpyDMA                                  
+00015a9a  usbGetStringDescriptor                     
+00015afa  usbReceiveNextPacketOnOEP0                 
+00015b5a  USB_initMemcpy                             
+00015c6e  CM_setFreq                                 
+00015cc6  SetupPacketInterruptHandler                
+00015d1e  __mspabi_divul                             
+00015d1e  __mspabi_remul                             
+00015d76  IO_attachInterrupt                         
+00015dcc  USBCDC_receiveDataInBuffer                 
+00015e22  __TI_auto_init_nobinit_nopinit_hold_wdt    
+00015e76  CA_writeLaser                              
+00015ec8  PMM_setVCore                               
+00015f6c  usbSetEndpointFeature                      
+00015fbe  ADC12_A_init                               
+0001600e  TA_configureCtl                            
+0001605e  TLV_getInfo                                
+000160fe  TA_reset                                   
+0001614c  TB_reset                                   
+000161e6  CA_init                                    
+00016230  CA_measureSensor                           
+0001627a  PWM_stop                                   
+000162c4  OEP0InterruptHandler                       
+00016308  CM_turnMotorSteps                          
+0001634a  USB_lookUpPll                              
+0001638c  ADC12_A_disableInterrupt                   
+000163cc  ADC12_A_enableInterrupt                    
+0001640c  CdcResetData                               
+0001648c  __mspabi_divli                             
+0001648c  __mspabi_remli                             
+000164cc  vListInsert                                
+0001650c  USBHAL_initClocks                          
+0001654a  USB_suspend                                
+00016588  __mspabi_slll_15                           
+0001658c  __mspabi_slll_14                           
+00016590  __mspabi_slll_13                           
+00016594  __mspabi_slll_12                           
+00016598  __mspabi_slll_11                           
+0001659c  __mspabi_slll_10                           
+000165a0  __mspabi_slll_9                            
+000165a4  __mspabi_slll_8                            
+000165a8  __mspabi_slll_7                            
+000165ac  __mspabi_slll_6                            
+000165b0  __mspabi_slll_5                            
+000165b4  __mspabi_slll_4                            
+000165b8  __mspabi_slll_3                            
+000165bc  __mspabi_slll_2                            
+000165c0  __mspabi_slll_1                            
+000165c6  __mspabi_srll_15                           
+000165ca  __mspabi_srll_14                           
+000165ce  __mspabi_srll_13                           
+000165d2  __mspabi_srll_12                           
+000165d6  __mspabi_srll_11                           
+000165da  __mspabi_srll_10                           
+000165de  __mspabi_srll_9                            
+000165e2  __mspabi_srll_8                            
+000165e6  __mspabi_srll_7                            
+000165ea  __mspabi_srll_6                            
+000165ee  __mspabi_srll_5                            
+000165f2  __mspabi_srll_4                            
+000165f6  __mspabi_srll_3                            
+000165fa  __mspabi_srll_2                            
+000165fe  __mspabi_srll_1                            
+00016604  CM_getFreq                                 
+00016640  UCS_turnOnXT2WithTimeout                   
+0001667a  USB_setup                                  
+000166b4  uxListRemove                               
+000166ee  USB_getConnectionInformation               
+0001675e  UCS_initFLLSettle                          
+000167ca  vTaskPlaceOnEventList                      
+00016834  usbGetDeviceStatus                         
+00016868  ADC12_A_startConversion                    
+0001689a  LEDI_init                                  
+00016994  DMA_setDstAddress                          
+000169c4  FlashCtl_write8                            
+000169f4  CM_align                                   
+00016a22  DMA_setSrcAddress                          
+00016a50  USB_disable                                
+00016a7e  usbSetConfiguration                        
+00016aac  __mspabi_divi                              
+00016aac  __mspabi_remi                              
+00016ad8  usbSendDataPacketOnEP0                     
+00016b04  CA_idProbe                                 
+00016b2c  GPIO_setAsPeripheralModuleFunctionOutputPin
+00016b7c  usbDisableInEndpointInterrupt              
+00016ba4  usbDisableOutEndpointInterrupt             
+00016bcc  vListInitialise                            
+00016bf4  ADC12_A_configureMemory                    
+00016c1a  ADC12_A_setupSamplingTimer                 
+00016c40  vListInsertEnd                             
+00016c66  FlashCtl_eraseSegment                      
+00016c8a  IEP0InterruptHandler                       
+00016cf6  __TI_zero_init                             
+00016d1a  pxPortInitialiseStack                      
+00016d3e  __mspabi_mpyl_f5hw                         
+00016d62  usbGetInterface                            
+00016d86  usbGetInterfaceStatus                      
+00016daa  usbSetAddress                              
+00016dce  IO_reset                                   
+00016df0  USB_connect                                
+00016e12  memcpyV                                    
+00016e56  WDT_A_hold                                 
+00016e76  main                                       
+00016eb6  UCS_getACLK                                
+00016ed4  USB_resume                                 
+00016f10  usbClearDeviceFeature                      
+00016f2c  usbSetDeviceFeature                        
+00016f48  xTaskGetSchedulerState                     
+00016f64  CdcIsReceiveInProgress                     
+00016f7e  UCS_getSMCLK                               
+00016f98  vApplicationGetIdleTaskMemory              
+00016fe2  __mspabi_mpyi_f5hw                         
+00016ffa  usbGetConfigurationDescriptor              
+00017012  usbGetDeviceDescriptor                     
+0001702a  usbReceiveDataPacketOnEP0                  
+00017042  usbSetControlLineState                     
+0001705a  memset                                     
+00017070  __mspabi_divu                              
+00017070  __mspabi_remu                              
+00017086  usbGetConfiguration                        
+0001709c  USB_handleVbusOnEvent                      
+000170c4  memcpy                                     
+000170ec  usbSendZeroLengthPacketOnIEP0              
+00017100  usbSetInterface                            
+0001714a  __TI_decompress_none                       
+0001715c  vTaskInternalSetTimeOutState               
+0001716e  ADC12_A_getResults                         
+0001717e  DMA_disableTransfers                       
+0001718e  DMA_enableTransfers                        
+0001719e  usbInvalidRequest                          
+000171ae  DMA_getInterruptStatus                     
+000171bc  DMA_startTransfer                          
+000171f4  usbStallEndpoint0                          
+00017202  ADC12_A_clearInterrupt                     
+0001720e  DMA_setTransferSize                        
+0001721a  IF_informRx                                
+00017226  IF_informTx                                
+0001723e  usbSetLineCoding                           
+0001724a  USB_setEnabledEvents                       
+00017254  __mspabi_slli                              
+0001725e  __mspabi_srli                              
+00017268  test                                       
+00017272  ADC12_A_disable                            
+0001727a  ADC12_A_enable                             
+00017282  FlashCtl_getStatus                         
+0001728a  UCS_turnOffXT2                             
+00017292  USBCDC_handleDataReceived                  
+0001729a  USBCDC_handleSendCompleted                 
+000172a2  USB_handleVbusOffEvent                     
+000172ba  usbClearOEP0ByteCount                      
+000172c2  usbRestoreInEndpointInterrupt              
+000172ca  usbRestoreOutEndpointInterrupt             
+000172d2  usbStallOEP0                               
+000172da  vListInitialiseItem                        
+000172e2  vTaskMissedYield                           
+000172ea  vTaskSuspendAll                            
+000172f2  DMA_disableTransferDuringReadModifyWrite   
+000172f8  DMA_enableTransferDuringReadModifyWrite    
+000172fe  SFR_clearInterrupt                         
+00017304  UCS_clearFaultFlag                         
+0001730a  USB_getVersion                             
+00017310  C$$EXIT                                    
+00017310  abort                                      
+00017316  USBCDC_handleReceiveCompleted              
+0001731a  USBCDC_handleSetControlLineState           
+0001731e  USBCDC_handleSetLineCoding                 
+00017322  USB_handleClockEvent                       
+00017326  USB_handleEnumerationCompleteEvent         
+0001732a  USB_handleResetEvent                       
+0001732e  USB_handleResumeEvent                      
+00017332  USB_handleSuspendEvent                     
+00017336  _system_pre_init                           
+0001733a  _system_post_cinit                         
 ffffffff  __TI_pprof_out_hndl                        
 ffffffff  __TI_prof_data_size                        
 ffffffff  __TI_prof_data_start                       

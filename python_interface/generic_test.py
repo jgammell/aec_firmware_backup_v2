@@ -81,6 +81,17 @@ MD.getFreq('theta')
 MD.getFreq('phi')
 MD.setFreq('theta', 6553)
 MD.setFreq('phi', 12345)
+MD.setAlignedOrientation(321, 123)
+MD.getOrientation('theta', 'aligned')
+MD.getOrientation('phi', 'aligned')
+MD.getOrientation('theta', 'current')
+MD.getOrientation('phi', 'current')
+MD.findEndSwitch('theta', 'cw')
+MD.findEndSwitch('phi', 'cw')
+MD.turnMotor('theta', 1000, 'cw')
+MD.turnMotor('phi', 1000, 'cw')
+MD.turnMotor('theta', 1000, 'ccw')
+MD.turnMotor('phi', 1000, 'ccw')
 
 #%%
 

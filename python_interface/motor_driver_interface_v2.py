@@ -15,7 +15,8 @@ RSENSOR  = 'RSENSOR'
 RASSERT  = 'RASSERT'
 INVBSL   = 'INVBSL'
 MOVE     = 'MOVE'
-FREQ    = 'FREQ'
+FREQ     = 'FREQ'
+ORIENT   = 'ORIENTATION'
 
 
 class MotorDriver:
@@ -128,4 +129,35 @@ class MotorDriver:
         assert self._rxCmd() == ACK
         assert self._rxCmd() == cmd
     def setAlignedOrientation(self, theta, phi):
-        return
+        assert type(theta) == int
+        assert 0 <= abs(theta) < 0xFFFFFFFF
+        assert type(phi) == int
+        assert 0 <= abs(phi) < 0xFFFFFFFF
+        args = [ORIENT]
+        args.append('THETA')
+        args.append('ALIGNED')
+        args.append('%d'%(theta))
+        cmd = self._txCmd(args)
+        assert self._rxCmd() == ACK
+        assert self._rxCmd() == cmd
+        args = [ORIENT]
+        args.append('PHI')
+        args.append('ALIGNED')
+        args.append('%d'%(phi))
+        cmd = self._txCmd(args)
+        assert self._rxCmd() == ACK
+        assert self._rxCmd() == cmd
+    def getOrientation(self, motor, info):
+        assert motor in ['theta', 'phi']
+        assert info in ['aligned', 'current']
+        args = [ORIENT]
+        args.append('THETA' if motor=='theta' else 'PHI')
+        args.append(('ALIGNED' if info=='aligned' else 'CURRENT')+QUERY)
+        cmd = self._txCmd(args)
+        rv = self._rxCmd()
+        if rv == NACK:
+            return None
+        assert rv == ACK
+        rv = self._rxCmd()
+        assert self._rxCmd() == cmd
+        return int(rv)

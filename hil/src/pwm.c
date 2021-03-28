@@ -84,11 +84,11 @@ void PWM_start(PWM_Sources_Enum source, uint32_t num_pulses, void (*handler)(voi
         ta_const_phase[source] = num_pulses;
     else
     {
-        if(num_pulses >= 18*(ta_target_period[source]))
+        if(num_pulses >= 9*(ta_target_period[source]))
         {
-            ta_up_phase[source] = 9*(ta_target_period[source]);
-            ta_down_phase[source] = 9*(ta_target_period[source]);
-            ta_const_phase[source] = num_pulses - 18*(ta_target_period[source]);
+            ta_up_phase[source] = (9*(ta_target_period[source]))/2 + (9*(ta_target_period[source]))&1;
+            ta_down_phase[source] = (9*(ta_target_period[source]))/2;
+            ta_const_phase[source] = num_pulses - 9*(ta_target_period[source]);
         }
         else
         {
@@ -120,8 +120,8 @@ void __attribute__ ((interrupt)) ta0IRQHandler(void)
     if(ta_up_phase[0] > 0)
     {
         --(ta_up_phase[0]);
-        TA0->CCR[0] -= 1;
-        TA0->CCR[ta_output[0]] -= ((ta_up_phase[0]) & 1);
+        TA0->CCR[0] -= 2;
+        TA0->CCR[ta_output[0]] -= 1;
     }
     else if(ta_const_phase[0] > 0)
     {
@@ -130,8 +130,8 @@ void __attribute__ ((interrupt)) ta0IRQHandler(void)
     else if(ta_down_phase[0] > 0)
     {
         --(ta_down_phase[0]);
-        TA0->CCR[0] += 1;
-        TA0->CCR[ta_output[0]] += ((ta_down_phase[0]) & 1);
+        TA0->CCR[0] += 2;
+        TA0->CCR[ta_output[0]] += 1;
     }
     else
     {
@@ -147,8 +147,8 @@ void __attribute__ ((interrupt)) ta1IRQHandler(void)
     if(ta_up_phase[1] > 0)
     {
         --(ta_up_phase[1]);
-        TA1->CCR[0] -= 1;
-        TA1->CCR[ta_output[1]] -= ((ta_up_phase[1]) & 1);
+        TA1->CCR[0] -= 2;
+        TA1->CCR[ta_output[1]] -= 1;
     }
     else if(ta_const_phase[1] > 0)
     {
@@ -157,8 +157,8 @@ void __attribute__ ((interrupt)) ta1IRQHandler(void)
     else if(ta_down_phase[1] > 0)
     {
         --(ta_down_phase[1]);
-        TA1->CCR[0] += 1;
-        TA1->CCR[ta_output[1]] += ((ta_down_phase[1]) & 1);
+        TA1->CCR[0] += 2;
+        TA1->CCR[ta_output[1]] += 1;
     }
     else
     {
@@ -174,8 +174,8 @@ void __attribute__ ((interrupt)) ta2IRQHandler(void)
     if(ta_up_phase[2] > 0)
     {
         --(ta_up_phase[2]);
-        TA2->CCR[0] -= 1;
-        TA2->CCR[ta_output[2]] -= ((ta_up_phase[2]) & 1);
+        TA2->CCR[0] -= 2;
+        TA2->CCR[ta_output[2]] -= 1;
     }
     else if(ta_const_phase[2] > 0)
     {
@@ -184,8 +184,8 @@ void __attribute__ ((interrupt)) ta2IRQHandler(void)
     else if(ta_down_phase[2] > 0)
     {
         --(ta_down_phase[2]);
-        TA2->CCR[0] += 1;
-        TA2->CCR[ta_output[2]] += ((ta_down_phase[2]) & 1);
+        TA2->CCR[0] += 2;
+        TA2->CCR[ta_output[2]] += 1;
     }
     else
     {
