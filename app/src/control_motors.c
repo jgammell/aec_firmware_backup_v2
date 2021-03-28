@@ -14,24 +14,27 @@
 #include "error.h"
 #include "control_motors.h"
 #include "io_interrupts.h"
+#include "flashctl.h"
+
+#define ORIENTATION_INFO_BASE ((uint8_t *) 0x1800)
 
 typedef struct
 {
-    PWM_Sources_Enum      timer_source;
-    uint8_t               timer_output;
-    IO_Registers_Struct * step_port;
-    uint8_t               step_pin;
-    IO_Registers_Struct * sd_port;
-    uint8_t               sd_pin;
-    IO_Registers_Struct * reset_port;
-    uint8_t               reset_pin;
-    IO_Registers_Struct * dir_port;
-    uint8_t               dir_pin;
-    IO_Registers_Struct * fault_port;
-    uint8_t               fault_pin;
-    IO_Registers_Struct * es_port;
-    uint8_t               es_pin;
-    uint32_t              freq;
+    const PWM_Sources_Enum      timer_source;
+    const uint8_t               timer_output;
+    IO_Registers_Struct * const step_port;
+    const uint8_t               step_pin;
+    IO_Registers_Struct * const sd_port;
+    const uint8_t               sd_pin;
+    IO_Registers_Struct * const reset_port;
+    const uint8_t               reset_pin;
+    IO_Registers_Struct * const dir_port;
+    const uint8_t               dir_pin;
+    IO_Registers_Struct * const fault_port;
+    const uint8_t               fault_pin;
+    IO_Registers_Struct * const es_port;
+    const uint8_t               es_pin;
+    uint32_t                    freq;
 } CM_Motor_Struct;
 typedef struct
 {
@@ -46,7 +49,27 @@ typedef struct
     void (*handler)(void *);
     void * handler_args;
 } CM_AlignCmd_Struct;
+typedef struct
+{
+    const uint8_t mem_valid;
+    int32_t theta_current;
+    int32_t phi_current;
+    int32_t theta_aligned;
+    int32_t phi_aligned;
+    bool current_valid;
+    bool aligned_valid;
+} CM_OrientationInfo_Struct;
 
+static CM_OrientationInfo_Struct  orientation_info =
+{
+ .mem_valid = 0,
+ .theta_current = 0,
+ .phi_current = 0,
+ .theta_aligned = 0,
+ .phi_aligned = 0,
+ .current_valid = false,
+ .aligned_valid = false
+};
 static CM_Motor_Struct Theta =
 {
  .timer_source = CM_THETA_STEP_TID,
@@ -110,6 +133,8 @@ static void _eventAlignTheta(void);
 static void _eventAlignPhi(void);
 static void _faultTheta(void);
 static void _faultPhi(void);
+static void _storeOrientationInfo(void);
+static void _retrieveOrientationInfo(void);
 
 void CM_init(void)
 {
@@ -203,6 +228,11 @@ void CM_init(void)
     IO_attachInterrupt(Phi.es_port, Phi.es_pin, _eventAlignPhi);
     IO_attachInterrupt(Theta.fault_port, Theta.fault_pin, _faultTheta);
     IO_attachInterrupt(Phi.fault_port, Phi.fault_pin, _faultPhi);
+
+    if(((CM_OrientationInfo_Struct *) ORIENTATION_INFO_BASE)->mem_valid != 0)
+        _storeOrientationInfo();
+    else
+        _retrieveOrientationInfo();
 }
 
 void CM_setFreq(CM_Motor_Enum motor, uint32_t freq)
@@ -258,6 +288,50 @@ void CM_align(CM_Motor_Enum motor, CM_Dir_Enum dir, void (*handler)(void *), voi
     xQueueSend(motor==theta? theta_align_command : phi_align_command, &cmd, portMAX_DELAY);
 }
 
+void CM_setAlignedInfo(CM_Motor_Enum motor, int32_t value)
+{
+    ASSERT((motor==theta) || (motor==phi));
+    xSemaphoreTake(motor==theta? theta_ownership : phi_ownership, portMAX_DELAY);
+    _retrieveOrientationInfo();
+    if(motor==theta)
+        orientation_info.theta_aligned = value;
+    else
+        orientation_info.phi_aligned = value;
+    xSemaphoreGive(motor==theta? theta_ownership : phi_ownership);
+}
+
+bool CM_getOrientationInfo(CM_Motor_Enum motor, CM_OrientationInfo_Enum info, int32_t * dest)
+{
+    ASSERT((motor==theta) || (motor==phi));
+    bool rv;
+    xSemaphoreTake(motor==theta? theta_ownership : phi_ownership, portMAX_DELAY);
+    _retrieveOrientationInfo();
+    if(info == aligned)
+    {
+        if(!orientation_info.aligned_valid)
+            rv = false;
+        else
+        {
+            *dest = motor==theta? orientation_info.theta_aligned : orientation_info.phi_aligned;
+            rv = true;
+        }
+    }
+    else if(info == current)
+    {
+        if(!orientation_info.current_valid)
+            rv = false;
+        else
+        {
+            *dest = motor==theta? orientation_info.theta_current : orientation_info.phi_current;
+            rv = true;
+        }
+    }
+    else
+        ASSERT(false);
+    xSemaphoreGive(motor==theta? theta_ownership : phi_ownership);
+    return rv;
+}
+
 static void _turnMotorStepsTask(void * _motor)
 {
     CM_Motor_Struct * motor = (CM_Motor_Struct *)_motor;
@@ -268,6 +342,10 @@ static void _turnMotorStepsTask(void * _motor)
         CM_TurnStepsCmd_Struct cmd;
         xQueueReceive(cmd_queue, &cmd, portMAX_DELAY);
         xSemaphoreTake(motor_ownership, portMAX_DELAY);
+        _retrieveOrientationInfo();
+        bool orig_state = orientation_info.current_valid;
+        orientation_info.current_valid = false;
+        _storeOrientationInfo();
         if(cmd.num_steps != 0)
         {
             _enableMotor(motor, cmd.dir);
@@ -276,6 +354,12 @@ static void _turnMotorStepsTask(void * _motor)
             _stopTurn(motor);
             _disableMotor(motor);
         }
+        orientation_info.current_valid = orig_state;
+        if(motor == &Theta)
+            orientation_info.theta_current += (cmd.dir == counterclockwise? -1 : 1)*cmd.num_steps;
+        else
+            orientation_info.phi_current += (cmd.dir == counterclockwise? -1 : 1)*cmd.num_steps;
+        _storeOrientationInfo();
         xSemaphoreGive(motor_ownership);
         cmd.handler(cmd.handler_args);
     }
@@ -291,6 +375,9 @@ static void _alignTask(void * _motor)
         CM_AlignCmd_Struct cmd;
         xQueueReceive(cmd_queue, &cmd, portMAX_DELAY);
         xSemaphoreTake(motor_ownership, portMAX_DELAY);
+        _retrieveOrientationInfo();
+        orientation_info.current_valid = false;
+        _storeOrientationInfo();
         motor->es_port->IES &= ~motor->es_pin;
         motor->es_port->IFG &= ~motor->es_pin;
         motor->es_port->IE |= motor->es_pin;
@@ -331,6 +418,13 @@ static void _alignTask(void * _motor)
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         motor->es_port->IE &= ~motor->es_pin;
         _disableMotor(motor);
+        if(orientation_info.aligned_valid == true)
+            orientation_info.current_valid = true;
+        if(motor == &Theta)
+            orientation_info.theta_current = -1*orientation_info.theta_aligned;
+        else
+            orientation_info.phi_current = -1*orientation_info.phi_aligned;
+        _storeOrientationInfo();
         xSemaphoreGive(motor_ownership);
         cmd.handler(cmd.handler_args);
     }
@@ -409,5 +503,18 @@ static void _faultTheta(void)
 static void _faultPhi(void)
 {
     ASSERT(false);
+}
+
+static void _storeOrientationInfo(void)
+{
+    FlashCtl_eraseSegment(ORIENTATION_INFO_BASE);
+    FlashCtl_write8((uint8_t *) &orientation_info, ORIENTATION_INFO_BASE, sizeof(CM_OrientationInfo_Struct));
+    while(FlashCtl_getStatus(FLASHCTL_BUSY));
+}
+static void _retrieveOrientationInfo(void)
+{
+    uint8_t idx;
+    for(idx=0; idx<sizeof(CM_OrientationInfo_Struct); ++idx)
+        ((uint8_t *) &orientation_info)[idx] = ORIENTATION_INFO_BASE[idx];
 }
 
