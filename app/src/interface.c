@@ -149,7 +149,7 @@ static void _parseAndExecuteCmd(char * s, uint8_t n)
     else if((pref_len==STRLEN_C(IF_ALIGN_PREF)) && _strEq(s, IF_ALIGN_PREF, pref_len))
     {
         s += pref_len+1;
-        uint8_t arg0_len = _strFind(s, IF_CMDDELIM_CHAR, n);
+        uint8_t arg0_len = _strFind(s, IF_ARGDELIM_CHAR, n);
         ASSERT(arg0_len < n);
         CM_Motor_Enum motor;
         if((arg0_len==STRLEN_C(IF_ALIGN_ARG0_PHI)) && _strEq(s, IF_ALIGN_ARG0_PHI, arg0_len))
@@ -162,7 +162,22 @@ static void _parseAndExecuteCmd(char * s, uint8_t n)
             _nack();
             return;
         }
-        CM_align(motor, _done, (void *)cmd_idx);
+        s += arg0_len+1;
+        n -= arg0_len+1;
+        uint8_t arg1_len = _strFind(s, IF_CMDDELIM_CHAR, n);
+        ASSERT(arg1_len < n);
+        CM_Dir_Enum dir;
+        if((arg1_len==STRLEN_C(IF_ALIGN_ARG1_CW)) && _strEq(s, IF_ALIGN_ARG1_CW, arg1_len))
+            dir = clockwise;
+        else if((arg1_len==STRLEN_C(IF_ALIGN_ARG1_CCW)) && _strEq(s, IF_ALIGN_ARG1_CCW, arg1_len))
+            dir = counterclockwise;
+        else
+        {
+            _rmPendingCmd(cmd_idx);
+            _nack();
+            return;
+        }
+        CM_align(motor, dir, _done, (void *)cmd_idx);
     }
     else if((pref_len==STRLEN_C(IF_WLASER_PREF)) && _strEq(s, IF_WLASER_PREF, pref_len))
     {

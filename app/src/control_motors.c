@@ -42,6 +42,7 @@ typedef struct
 } CM_TurnStepsCmd_Struct;
 typedef struct
 {
+    CM_Dir_Enum dir;
     void (*handler)(void *);
     void * handler_args;
 } CM_AlignCmd_Struct;
@@ -246,10 +247,11 @@ void CM_turnMotorSteps(CM_Motor_Enum motor, uint32_t num_steps, CM_Dir_Enum dir,
     xQueueSend(motor==theta? theta_turnsteps_command : phi_turnsteps_command, &cmd, portMAX_DELAY);
 }
 
-void CM_align(CM_Motor_Enum motor, void (*handler)(void *), void * handler_args)
+void CM_align(CM_Motor_Enum motor, CM_Dir_Enum dir, void (*handler)(void *), void * handler_args)
 {
     CM_AlignCmd_Struct cmd =
     {
+     .dir = dir,
      .handler = handler,
      .handler_args = handler_args
     };
@@ -295,13 +297,36 @@ static void _alignTask(void * _motor)
         if(IO_readPin(motor->es_port, motor->es_pin) != 0)
         {
             motor->es_port->IES |= motor->es_pin;
-            _enableMotor(motor, clockwise);
+            _enableMotor(motor, cmd.dir);
             _startTurn(motor, CM_STEP_FREQ);
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+            if(cmd.dir == counterclockwise)
+            {
+                motor->es_port->IES &= ~motor->es_pin;
+                motor->es_port->IFG &= ~motor->es_pin;
+                _enableMotor(motor, counterclockwise);
+                _startTurn(motor, CM_STEP_FREQ);
+                ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+            }
         }
-        motor->es_port->IES &= ~motor->es_pin;
+        else
+        {
+            motor->es_port->IES &= ~motor->es_pin;
+            _enableMotor(motor, cmd.dir);
+            _startTurn(motor, CM_STEP_FREQ);
+            ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+            if(cmd.dir == clockwise)
+            {
+                motor->es_port->IES |= motor->es_pin;
+                motor->es_port->IFG &= ~motor->es_pin;
+                _enableMotor(motor, clockwise);
+                _startTurn(motor, CM_STEP_FREQ);
+                ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+            }
+        }
+        motor->es_port->IES ^= motor->es_pin;
         motor->es_port->IFG &= ~motor->es_pin;
-        _enableMotor(motor, counterclockwise);
+        _enableMotor(motor, cmd.dir==clockwise? counterclockwise : clockwise);
         _startTurn(motor, CM_STEP_FREQ>>3);
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         motor->es_port->IE &= ~motor->es_pin;

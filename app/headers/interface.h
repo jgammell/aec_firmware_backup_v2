@@ -27,6 +27,8 @@
 #define IF_ALIGN_PREF      "ALIGN"
 #define IF_ALIGN_ARG0_PHI  "PHI"
 #define IF_ALIGN_ARG0_THETA "THETA"
+#define IF_ALIGN_ARG1_CW    "CW"
+#define IF_ALIGN_ARG1_CCW   "CC"
 
 #define IF_WLASER_PREF     "WLASER"
 #define IF_WLASER_ARG0_ON  "ON"

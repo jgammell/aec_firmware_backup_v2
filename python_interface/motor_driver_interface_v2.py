@@ -97,6 +97,17 @@ class MotorDriver:
         assert self._rxCmd() == ACK
         assert self._rxCmd() == cmd
         return time.time()-t0
+    def findEndSwitch(self, motor, direction):
+        assert motor in ['theta', 'phi']
+        assert direction in ['cw', 'ccw']
+        args = [ALIGN]
+        args.append('PHI' if motor=='phi' else 'THETA')
+        args.append('CW' if direction=='cw' else 'CC')
+        cmd = self._txCmd(args)
+        t0 = time.time()
+        assert self._rxCmd() == ACK
+        assert self._rxCmd() == cmd
+        return time.time()-t0
     def getFreq(self, motor):
         assert motor in ['theta', 'phi']
         args = [FREQ]
@@ -116,8 +127,5 @@ class MotorDriver:
         cmd = self._txCmd(args)
         assert self._rxCmd() == ACK
         assert self._rxCmd() == cmd
-    def findEndSwitch(self, motor, direction):
-        time.sleep(5)
-        return
     def setAlignedOrientation(self, theta, phi):
         return

@@ -37,6 +37,6 @@ uint32_t CM_getFreq(CM_Motor_Enum motor);
 
 void CM_turnMotorSteps(CM_Motor_Enum motor, uint32_t num_steps, CM_Dir_Enum dir, void (*handler)(void *), void * handler_args);
 
-void CM_align(CM_Motor_Enum motor, void (*handler)(void *), void * handler_args);
+void CM_align(CM_Motor_Enum motor, CM_Dir_Enum dir, void (*handler)(void *), void * handler_args);
 
 #endif /* APP_HEADERS_CONTROL_MOTORS_H_ */
