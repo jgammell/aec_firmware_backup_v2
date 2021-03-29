@@ -12,7 +12,7 @@ def flush_input():
         while msvcrt.kbhit():
             msvcrt.getch()
 
-def _printInstructions(status, increment, sensor_output, test_theta, test_phi, probe_phi, mcu_updated):
+def _printInstructions(status, increment, sensor_output, test_theta, test_phi, probe_phi, mcu_updated, laser_state):
     os.system('cls' if os.name == 'nt' else 'clear')
     print('Calibration routine')
     print('\tControls:')
@@ -22,6 +22,7 @@ def _printInstructions(status, increment, sensor_output, test_theta, test_phi, p
     print('\t\tz:     set steps per press')
     print('\t\tc:     indicate present state as aligned')
     print('\t\tv:     get current sensor output')
+    print('\t\tb:     toggle laser state')
     print('\t\tx:     exit')
     print('\tCurrent motor orientations:')
     if test_theta != None:
@@ -39,21 +40,24 @@ def _printInstructions(status, increment, sensor_output, test_theta, test_phi, p
     print('\t\tMCU up to date: %s'%(mcu_updated))
     print('\tCurrent steps per press:')
     print('\t\t%d'%(increment))
+    print('\tCurrent laser state:')
+    print('\t\t%s'%(laser_state))
     if sensor_output != None:
         print('\tLast sensor reading:')
         print('\t\t%d'%(sensor_output))
     print('\n\t%s'%(status))
 
 def findAlignedPosition(MD_test, MD_probe):
-    increment = 1000
+    increment = 100000
     sensor_output = None
     test_theta = None
     test_phi = None
     probe_phi = None
     mcu_updated = False
+    laser_state = False
     
     def printInstructions(status):
-        _printInstructions(status, increment, sensor_output, test_theta, test_phi, probe_phi, mcu_updated)
+        _printInstructions(status, increment, sensor_output, test_theta, test_phi, probe_phi, mcu_updated, laser_state)
     
     printInstructions('Ready for next command.')
     
@@ -168,8 +172,10 @@ def findAlignedPosition(MD_test, MD_probe):
         
         if keyboard.is_pressed('c'):
             printInstructions('Updating aligned orientation on MCU...')
-            MD_test.setAlignedOrientation(test_theta, test_phi)
-            MD_probe.setAlignedOrientation(0, probe_phi)
+            if (test_theta != None) and (test_phi != None):
+                MD_test.setAlignedOrientation(test_theta, test_phi)
+            if probe_phi != None:
+                MD_probe.setAlignedOrientation(0, probe_phi)
             mcu_updated = True
             while keyboard.is_pressed('c'):
                 pass
@@ -180,7 +186,13 @@ def findAlignedPosition(MD_test, MD_probe):
             MD_test.writeLaser(True)
             time.sleep(.1)
             sensor_output = MD_probe.readSensor()
-            MD_test.writeLaser(False)
+            MD_test.writeLaser(laser_state)
+            printInstructions('Ready for next command.')
+        
+        if keyboard.is_pressed('b'):
+            printInstructions('Toggling laser state...')
+            MD_test.writeLaser(not laser_state)
+            laser_state = not laser_state
             printInstructions('Ready for next command.')
                 
         if keyboard.is_pressed('x'): # Exit function

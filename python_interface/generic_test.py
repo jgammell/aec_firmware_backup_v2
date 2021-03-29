@@ -9,7 +9,7 @@ def degreesToSteps(degrees):
 
 from motor_driver_interface_v2 import MotorDriver
 
-COM = r'COM14'#r'COM21'
+COM = r'COM16'#r'COM11'
 
 MD = MotorDriver(COM)
 
@@ -88,10 +88,10 @@ MD.getOrientation('theta', 'current')
 MD.getOrientation('phi', 'current')
 MD.findEndSwitch('theta', 'cw')
 MD.findEndSwitch('phi', 'cw')
-MD.turnMotor('theta', 100000, 'cw')
-MD.turnMotor('phi', 100000, 'cw')
-MD.turnMotor('theta', 1000, 'ccw')
-MD.turnMotor('phi', 1000, 'ccw')
+MD.turnMotor('theta', 50000, 'cw')
+MD.turnMotor('phi',   100000, 'cw')
+MD.turnMotor('theta', 50000, 'ccw')
+MD.turnMotor('phi',   100000, 'ccw')
 
 #%%
 

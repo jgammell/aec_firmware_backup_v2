@@ -90,9 +90,9 @@ void PWM_start(PWM_Sources_Enum source, uint32_t num_pulses, void (*handler)(voi
     {
         if(num_pulses >= 9*(ta_target_period[source]))
         {
-            ta_up_phase[source] = (9*(ta_target_period[source]))>>1 + (9*(ta_target_period[source]))&1;
-            ta_down_phase[source] = (9*(ta_target_period[source]))>>1;
-            ta_const_phase[source] = num_pulses - 9*(ta_target_period[source]);
+            ta_up_phase[source] = ((9*(ta_target_period[source]))>>1) + ((9*(ta_target_period[source])>>1)&1);
+            ta_down_phase[source] = (9*(ta_target_period[source])>>1);
+            ta_const_phase[source] = num_pulses - (9*(ta_target_period[source]));
         }
         else
         {

@@ -54,6 +54,6 @@ void __attribute__ ((interrupt)) p2_IRQHandler(void)
     uint8_t flags = P2->IFG & P2->IE;
     P2->IFG = 0;
     for(i=7; i<8; --i)
-        if(flags&(1<<i) != 0)
+        if((flags&(1<<i)) != 0)
             (*p2_handlers[i])();
 }
