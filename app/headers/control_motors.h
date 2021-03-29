@@ -41,9 +41,9 @@ void CM_setFreq(CM_Motor_Enum motor, uint32_t freq);
 
 uint32_t CM_getFreq(CM_Motor_Enum motor);
 
-void CM_turnMotorSteps(CM_Motor_Enum motor, uint32_t num_steps, CM_Dir_Enum dir, void (*handler)(void *), void * handler_args);
+void CM_turnMotorSteps(CM_Motor_Enum motor, uint32_t num_steps, CM_Dir_Enum dir, bool gradual, void (*handler)(void *), void * handler_args);
 
-void CM_align(CM_Motor_Enum motor, CM_Dir_Enum dir, void (*handler)(void *), void * handler_args);
+void CM_align(CM_Motor_Enum motor, CM_Dir_Enum dir, bool gradual, void (*handler)(void *), void * handler_args);
 
 void CM_setAlignedInfo(CM_Motor_Enum motor, int32_t value);
 

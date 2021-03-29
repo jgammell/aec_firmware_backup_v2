@@ -84,26 +84,30 @@ class MotorDriver:
         rv = self._rxCmd()
         assert self._rxCmd() == cmd
         return int(rv)
-    def turnMotor(self, motor, num_steps, direction):
+    def turnMotor(self, motor, num_steps, direction, gradual=False):
         assert motor in ['theta', 'phi']
         assert type(num_steps) == int
         assert num_steps == num_steps&0xFFFFFFFF
         assert direction in ['cw', 'ccw']
+        assert type(gradual) == bool
         args = [MOVE]
         args.append('PHI' if motor=='phi' else 'THETA')
         args.append('CW' if direction=='cw' else 'CC')
+        args.append('GRADUAL' if gradual else 'JUMP')
         args.append('%d'%(num_steps))
         cmd = self._txCmd(args)
         t0 = time.time()
         assert self._rxCmd() == ACK
         assert self._rxCmd() == cmd
         return time.time()-t0
-    def findEndSwitch(self, motor, direction):
+    def findEndSwitch(self, motor, direction, gradual=False):
         assert motor in ['theta', 'phi']
         assert direction in ['cw', 'ccw']
+        assert type(gradual) == bool
         args = [ALIGN]
         args.append('PHI' if motor=='phi' else 'THETA')
         args.append('CW' if direction=='cw' else 'CC')
+        args.append('GRADUAL' if gradual else 'JUMP')
         cmd = self._txCmd(args)
         t0 = time.time()
         assert self._rxCmd() == ACK

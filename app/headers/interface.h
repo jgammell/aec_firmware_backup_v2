@@ -29,6 +29,8 @@
 #define IF_ALIGN_ARG0_THETA "THETA"
 #define IF_ALIGN_ARG1_CW    "CW"
 #define IF_ALIGN_ARG1_CCW   "CC"
+#define IF_ALIGN_ARG2_JUMP  "JUMP"
+#define IF_ALIGN_ARG2_GRAD  "GRADUAL"
 
 #define IF_WLASER_PREF     "WLASER"
 #define IF_WLASER_ARG0_ON  "ON"
@@ -45,6 +47,8 @@
 #define IF_MOVE_ARG0_THETA "THETA"
 #define IF_MOVE_ARG1_CW    "CW"
 #define IF_MOVE_ARG1_CCW   "CC"
+#define IF_MOVE_ARG2_JUMP  "JUMP"
+#define IF_MOVE_ARG2_GRAD  "GRADUAL"
 
 #define IF_SFREQ_PREF      "FREQ"
 #define IF_SFREQ_ARG0_PHI  "PHI"

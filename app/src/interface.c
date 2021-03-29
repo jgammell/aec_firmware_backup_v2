@@ -170,7 +170,7 @@ static void _parseAndExecuteCmd(char * s, uint8_t n)
         }
         s += arg0_len+1;
         n -= arg0_len+1;
-        uint8_t arg1_len = _strFind(s, IF_CMDDELIM_CHAR, n);
+        uint8_t arg1_len = _strFind(s, IF_ARGDELIM_CHAR, n);
         ASSERT(arg1_len < n);
         CM_Dir_Enum dir;
         if((arg1_len==STRLEN_C(IF_ALIGN_ARG1_CW)) && _strEq(s, IF_ALIGN_ARG1_CW, arg1_len))
@@ -183,7 +183,22 @@ static void _parseAndExecuteCmd(char * s, uint8_t n)
             _nack();
             return;
         }
-        CM_align(motor, dir, _done, (void *)cmd_idx);
+        s += arg1_len+1;
+        n -= arg1_len+1;
+        uint8_t arg2_len = _strFind(s, IF_CMDDELIM_CHAR, n);
+        ASSERT(arg2_len < n);
+        bool gradual;
+        if((arg2_len==STRLEN_C(IF_ALIGN_ARG2_JUMP)) && _strEq(s, IF_ALIGN_ARG2_JUMP, arg2_len))
+            gradual = false;
+        else if((arg2_len==STRLEN_C(IF_ALIGN_ARG2_GRAD)) && _strEq(s, IF_ALIGN_ARG2_GRAD, arg2_len))
+            gradual = true;
+        else
+        {
+            _rmPendingCmd(cmd_idx);
+            _nack();
+            return;
+        }
+        CM_align(motor, dir, gradual, _done, (void *)cmd_idx);
     }
     else if((pref_len==STRLEN_C(IF_WLASER_PREF)) && _strEq(s, IF_WLASER_PREF, pref_len))
     {
@@ -263,15 +278,30 @@ static void _parseAndExecuteCmd(char * s, uint8_t n)
             return;
         }
         s += arg1_len+1;
-        n -= arg1_len-1;
-        uint8_t arg2_len = _strFind(s, IF_CMDDELIM_CHAR, n);
+        n -= arg1_len+1;
+        uint8_t arg2_len = _strFind(s, IF_ARGDELIM_CHAR, n);
         ASSERT(arg2_len < n);
+        bool gradual;
+        if((arg2_len==STRLEN_C(IF_MOVE_ARG2_JUMP)) && _strEq(s, IF_MOVE_ARG2_JUMP, arg2_len))
+            gradual = false;
+        else if((arg2_len==STRLEN_C(IF_MOVE_ARG2_GRAD)) && _strEq(s, IF_MOVE_ARG2_GRAD, arg2_len))
+            gradual = true;
+        else
+        {
+            _rmPendingCmd(cmd_idx);
+            _nack();
+            return;
+        }
+        s += arg2_len+1;
+        n -= arg2_len+1;
+        uint8_t arg3_len = _strFind(s, IF_CMDDELIM_CHAR, n);
+        ASSERT(arg3_len < n);
         uint32_t num_steps;
         uint32_t base;
         uint8_t idx;
-        for(num_steps=0, base=1, idx=arg2_len-1; idx<0xFF; num_steps+=base*((uint32_t)(s[idx]-'0')), --idx, base*=10);
+        for(num_steps=0, base=1, idx=arg3_len-1; idx<0xFF; num_steps+=base*((uint32_t)(s[idx]-'0')), --idx, base*=10);
 
-        CM_turnMotorSteps(motor, num_steps, dir, _done, (void *)cmd_idx);
+        CM_turnMotorSteps(motor, num_steps, dir, gradual, _done, (void *)cmd_idx);
     }
     else if((pref_len==STRLEN_C(IF_SFREQ_PREF)) && _strEq(s, IF_SFREQ_PREF, pref_len))
     {

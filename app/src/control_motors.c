@@ -41,12 +41,14 @@ typedef struct
 {
     uint32_t    num_steps;
     CM_Dir_Enum dir;
+    bool        gradual;
     void      (*handler)(void *);
     void * handler_args;
 } CM_TurnStepsCmd_Struct;
 typedef struct
 {
     CM_Dir_Enum dir;
+    bool        gradual;
     void (*handler)(void *);
     void * handler_args;
 } CM_AlignCmd_Struct;
@@ -125,8 +127,8 @@ static void _turnMotorStepsTask(void *);
 static void _alignTask(void *);
 static void _enableMotor(CM_Motor_Struct * motor, CM_Dir_Enum dir);
 static void _disableMotor(CM_Motor_Struct * motor);
-static void _startTurnSteps(CM_Motor_Struct * motor, uint32_t steps);
-static void _startTurn(CM_Motor_Struct * motor, uint32_t freq);
+static void _startTurnSteps(CM_Motor_Struct * motor, uint32_t steps, bool gradual);
+static void _startTurn(CM_Motor_Struct * motor, uint32_t freq, bool gradual);
 static void _stopTurn(CM_Motor_Struct * motor);
 static void _eventTurnTheta(void);
 static void _eventTurnPhi(void);
@@ -266,23 +268,25 @@ uint32_t CM_getFreq(CM_Motor_Enum motor)
     }
 }
 
-void CM_turnMotorSteps(CM_Motor_Enum motor, uint32_t num_steps, CM_Dir_Enum dir, void (*handler)(void *), void * handler_args)
+void CM_turnMotorSteps(CM_Motor_Enum motor, uint32_t num_steps, CM_Dir_Enum dir, bool gradual, void (*handler)(void *), void * handler_args)
 {
     CM_TurnStepsCmd_Struct cmd =
     {
      .num_steps = num_steps,
      .dir = dir,
+     .gradual = gradual,
      .handler = handler,
      .handler_args = handler_args
     };
     xQueueSend(motor==theta? theta_turnsteps_command : phi_turnsteps_command, &cmd, portMAX_DELAY);
 }
 
-void CM_align(CM_Motor_Enum motor, CM_Dir_Enum dir, void (*handler)(void *), void * handler_args)
+void CM_align(CM_Motor_Enum motor, CM_Dir_Enum dir, bool gradual, void (*handler)(void *), void * handler_args)
 {
     CM_AlignCmd_Struct cmd =
     {
      .dir = dir,
+     .gradual = gradual,
      .handler = handler,
      .handler_args = handler_args
     };
@@ -353,7 +357,7 @@ static void _turnMotorStepsTask(void * _motor)
         if(cmd.num_steps != 0)
         {
             _enableMotor(motor, cmd.dir);
-            _startTurnSteps(motor, cmd.num_steps);
+            _startTurnSteps(motor, cmd.num_steps, cmd.gradual);
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
             _stopTurn(motor);
             _disableMotor(motor);
@@ -390,14 +394,14 @@ static void _alignTask(void * _motor)
         {
             motor->es_port->IES |= motor->es_pin;
             _enableMotor(motor, cmd.dir);
-            _startTurn(motor, CM_STEP_FREQ);
+            _startTurn(motor, CM_STEP_FREQ, cmd.gradual);
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
             if(cmd.dir == counterclockwise)
             {
                 motor->es_port->IES &= ~motor->es_pin;
                 motor->es_port->IFG &= ~motor->es_pin;
                 _enableMotor(motor, counterclockwise);
-                _startTurn(motor, CM_STEP_FREQ);
+                _startTurn(motor, CM_STEP_FREQ, cmd.gradual);
                 ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
             }
         }
@@ -405,21 +409,21 @@ static void _alignTask(void * _motor)
         {
             motor->es_port->IES &= ~motor->es_pin;
             _enableMotor(motor, cmd.dir);
-            _startTurn(motor, CM_STEP_FREQ);
+            _startTurn(motor, CM_STEP_FREQ, cmd.gradual);
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
             if(cmd.dir == clockwise)
             {
                 motor->es_port->IES |= motor->es_pin;
                 motor->es_port->IFG &= ~motor->es_pin;
                 _enableMotor(motor, clockwise);
-                _startTurn(motor, CM_STEP_FREQ);
+                _startTurn(motor, CM_STEP_FREQ, cmd.gradual);
                 ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
             }
         }
         motor->es_port->IES ^= motor->es_pin;
         motor->es_port->IFG &= ~motor->es_pin;
         _enableMotor(motor, cmd.dir==clockwise? counterclockwise : clockwise);
-        _startTurn(motor, CM_STEP_FREQ>>3);
+        _startTurn(motor, CM_STEP_FREQ>>3, cmd.gradual);
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         motor->es_port->IE &= ~motor->es_pin;
         _disableMotor(motor);
@@ -447,7 +451,7 @@ static void _disableMotor(CM_Motor_Struct * motor)
     IO_writePin(motor->sd_port, motor->sd_pin, (IO_Out_Enum)!CM_PIN_IDLE);
 }
 
-static void _startTurnSteps(CM_Motor_Struct * motor, uint32_t steps)
+static void _startTurnSteps(CM_Motor_Struct * motor, uint32_t steps, bool gradual)
 {
     PWM_Config_Struct pwm_config =
     {
@@ -455,13 +459,13 @@ static void _startTurnSteps(CM_Motor_Struct * motor, uint32_t steps)
      .output = motor->timer_output,
      .freq_hz = motor->freq,
      .initial_output = CM_PIN_IDLE,
-     .gradual = true
+     .gradual = gradual
     };
     PWM_configure(motor->timer_source, &pwm_config);
     PWM_start(motor->timer_source, steps, motor==&Theta? _eventTurnTheta : _eventTurnPhi);
 }
 
-static void _startTurn(CM_Motor_Struct * motor, uint32_t freq)
+static void _startTurn(CM_Motor_Struct * motor, uint32_t freq, bool gradual)
 {
     PWM_Config_Struct pwm_config =
     {
@@ -469,7 +473,7 @@ static void _startTurn(CM_Motor_Struct * motor, uint32_t freq)
      .output = motor->timer_output,
      .freq_hz = freq,
      .initial_output = CM_PIN_IDLE,
-     .gradual = true
+     .gradual = gradual
     };
     PWM_configure(motor->timer_source, &pwm_config);
     PWM_start(motor->timer_source, 0, NULL);
