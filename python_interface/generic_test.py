@@ -9,7 +9,7 @@ def degreesToSteps(degrees):
 
 from motor_driver_interface_v2 import MotorDriver
 
-COM = r'COM16'#r'COM11'
+COM = r'COM15'#r'COM11'
 
 MD = MotorDriver(COM)
 

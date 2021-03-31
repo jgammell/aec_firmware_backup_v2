@@ -304,6 +304,7 @@ void CM_setAlignedInfo(CM_Motor_Enum motor, int32_t value)
         orientation_info.phi_aligned = value;
     orientation_info.aligned_valid = true;
     _storeOrientationInfo();
+    _retrieveOrientationInfo();
     ASSERT(orientation_info.aligned_valid == true);
     xSemaphoreGive(motor==theta? theta_ownership : phi_ownership);
 }
@@ -387,53 +388,33 @@ static void _alignTask(void * _motor)
         orientation_info.current_valid = false;
         _storeOrientationInfo();
 #if DIST_PCB == true
-        motor->es_port->IES &= ~motor->es_pin;
+        if(IO_readPin(motor->es_port, motor->es_pin) == 0)
+        {
+            motor->es_port->IE &= ~motor->es_pin;
+            motor->es_port->IES &= ~motor->es_pin;
+            motor->es_port->IFG &= ~motor->es_pin;
+            motor->es_port->IE |= motor->es_pin;
+            _enableMotor(motor, cmd.dir);
+            _startTurn(motor, CM_STEP_FREQ, cmd.gradual);
+            ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+        }
+        ASSERT(IO_readPin(motor->es_port, motor->es_pin) == 1);
+        motor->es_port->IE &= ~motor->es_pin;
+        motor->es_port->IES |= motor->es_pin;
         motor->es_port->IFG &= ~motor->es_pin;
         motor->es_port->IE |= motor->es_pin;
-        if(IO_readPin(motor->es_port, motor->es_pin) != 0)
-        {
-            motor->es_port->IES |= motor->es_pin;
-            _enableMotor(motor, cmd.dir);
-            _startTurn(motor, CM_STEP_FREQ, cmd.gradual);
-            ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-            if(cmd.dir == counterclockwise)
-            {
-                motor->es_port->IES &= ~motor->es_pin;
-                motor->es_port->IFG &= ~motor->es_pin;
-                _enableMotor(motor, counterclockwise);
-                _startTurn(motor, CM_STEP_FREQ, cmd.gradual);
-                ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-            }
-        }
-        else
-        {
-            motor->es_port->IES &= ~motor->es_pin;
-            _enableMotor(motor, cmd.dir);
-            _startTurn(motor, CM_STEP_FREQ, cmd.gradual);
-            ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-            if(cmd.dir == clockwise)
-            {
-                motor->es_port->IES |= motor->es_pin;
-                motor->es_port->IFG &= ~motor->es_pin;
-                _enableMotor(motor, clockwise);
-                _startTurn(motor, CM_STEP_FREQ, cmd.gradual);
-                ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-            }
-        }
-        motor->es_port->IES ^= motor->es_pin;
-        motor->es_port->IFG &= ~motor->es_pin;
-        _enableMotor(motor, cmd.dir==clockwise? counterclockwise : clockwise);
+        _enableMotor(motor, counterclockwise);
         _startTurn(motor, CM_STEP_FREQ>>3, cmd.gradual);
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-        motor->es_port->IE &= ~motor->es_pin;
         _disableMotor(motor);
+        motor->es_port->IE &= ~motor->es_pin;
+        motor->es_port->IFG &= ~motor->es_pin;
 #endif
-        if(orientation_info.aligned_valid == true)
-            orientation_info.current_valid = true;
+        orientation_info.current_valid = true;
         if(motor == &Theta)
-            orientation_info.theta_current = -1*orientation_info.theta_aligned;
+            orientation_info.theta_current = 0;
         else
-            orientation_info.phi_current = -1*orientation_info.phi_aligned;
+            orientation_info.phi_current = 0;
         _storeOrientationInfo();
         xSemaphoreGive(motor_ownership);
         cmd.handler(cmd.handler_args);
