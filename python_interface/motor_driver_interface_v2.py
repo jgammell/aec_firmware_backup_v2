@@ -21,6 +21,7 @@ ORIENT   = 'ORIENTATION'
 
 class MotorDriver:
     def __init__(self, port,
+                 debug=True,
                  baudrate=9600,
                  bytesize=serial.EIGHTBITS,
                  parity=serial.PARITY_NONE,
@@ -30,6 +31,7 @@ class MotorDriver:
                                  bytesize=bytesize,
                                  parity=parity,
                                  stopbits=stopbits)
+        self.debug = debug
     def __del__(self):
         try:
             self.ser.close()
@@ -47,7 +49,8 @@ class MotorDriver:
             while self.ser.in_waiting == 0:
                 pass
             msg.append(self.ser.read().decode('ASCII'))
-        print(msg)
+        if self.debug:
+            print(msg)
         msg = ''.join(msg)
         return msg[:-1]
     def getId(self):
@@ -165,3 +168,17 @@ class MotorDriver:
         rv = self._rxCmd()
         assert self._rxCmd() == cmd
         return int(rv)
+    def align(self, motor):
+        assert motor in ['theta', 'phi']
+        align_offset = self.getOrientation(motor, 'aligned')
+        if align_offset == None:
+            print('Must calibrate system')
+            assert False
+        orientation = self.getOrientation(motor, 'current')
+        if orientation != None:
+            direction = 'cw' if orientation<0 else 'ccw'
+        else:
+            direction = 'cw'
+        self.findEndSwitch(motor, direction)
+        direction = 'ccw' if orientation<0 else 'cw'
+        self.turnMotor(motor, abs(align_offset), direction)

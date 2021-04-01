@@ -9,9 +9,9 @@ def degreesToSteps(degrees):
 
 from motor_driver_interface_v2 import MotorDriver
 
-COM = r'COM15'#r'COM11'
+COM = r'COM21'
 
-MD = MotorDriver(COM)
+MD = MotorDriver(COM, debug=False)
 
 
 
@@ -70,6 +70,15 @@ MD.writeLaser(True)
 MD.writeLaser(False)
 print(MD.readSensor())
 
+import numpy as np
+vals = []
+for i in range(1000):
+    vals.append(MD.readSensor())
+print(np.mean(vals))
+print(np.std(vals))
+print(np.max(vals))
+print(np.min(vals))
+
 #%%
 
 # Check status
@@ -86,8 +95,8 @@ MD.getOrientation('theta', 'aligned')
 MD.getOrientation('phi', 'aligned')
 MD.getOrientation('theta', 'current')
 MD.getOrientation('phi', 'current')
-MD.findEndSwitch('theta', 'cw')
-MD.findEndSwitch('phi', 'cw')
+MD.findEndSwitch('theta', 'ccw')
+MD.findEndSwitch('phi', 'ccw')
 MD.turnMotor('theta', 50000, 'cw')
 MD.turnMotor('phi',   100000, 'cw')
 MD.turnMotor('theta', 50000, 'ccw')

@@ -3,17 +3,29 @@
 
 # Section 1
 
-COM_test = r'COM21'
-COM_probe = r'COM15'
+COM_test = r'COM15'
+COM_probe = r'COM21'
 motor = 'theta'
 
 def degreesToSteps(degrees):
     return int(9140000*(degrees/360))
 
-from motor_driver_interface import MotorDriver
+from motor_driver_interface_v2 import MotorDriver
 
 Test = MotorDriver(COM_test)
 Probe = MotorDriver(COM_probe)
+
+vals = []
+Test.writeLaser(True)
+Test.turnMotor('theta', 10000, 'ccw')
+Test.turnMotor('phi', 20000, 'ccw')
+for i in range(200):
+    Test.turnMotor('theta', 100, 'cw')
+    for j in range(200):
+        Test.turnMotor('phi', 200, 'cw')
+        vals.append(Probe.readSensor())
+    Test.turnMotor('phi', 200000, 'ccw')
+        
 
 #%%
 

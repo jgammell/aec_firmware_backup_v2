@@ -225,7 +225,7 @@ void CM_init(void)
     IO_configurePin(Theta.fault_port, Theta.fault_pin, &io_config);
     IO_configurePin(Theta.es_port, Theta.es_pin, &io_config);
     IO_configurePin(Phi.fault_port, Phi.fault_pin, &io_config);
-    IO_configurePin(Phi.es_port, Theta.es_pin, &io_config);
+    IO_configurePin(Phi.es_port, Phi.es_pin, &io_config);
 
     IO_attachInterrupt(Theta.es_port, Theta.es_pin, _eventAlignTheta);
     IO_attachInterrupt(Phi.es_port, Phi.es_pin, _eventAlignPhi);
@@ -388,19 +388,19 @@ static void _alignTask(void * _motor)
         orientation_info.current_valid = false;
         _storeOrientationInfo();
 #if DIST_PCB == true
-        if(IO_readPin(motor->es_port, motor->es_pin) == 0)
+        if(IO_readPin(motor->es_port, motor->es_pin) == 1)
         {
             motor->es_port->IE &= ~motor->es_pin;
-            motor->es_port->IES &= ~motor->es_pin;
+            motor->es_port->IES |= motor->es_pin;
             motor->es_port->IFG &= ~motor->es_pin;
             motor->es_port->IE |= motor->es_pin;
             _enableMotor(motor, cmd.dir);
             _startTurn(motor, CM_STEP_FREQ, cmd.gradual);
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         }
-        ASSERT(IO_readPin(motor->es_port, motor->es_pin) == 1);
+        ASSERT(IO_readPin(motor->es_port, motor->es_pin) == 0);
         motor->es_port->IE &= ~motor->es_pin;
-        motor->es_port->IES |= motor->es_pin;
+        motor->es_port->IES &= ~motor->es_pin;
         motor->es_port->IFG &= ~motor->es_pin;
         motor->es_port->IE |= motor->es_pin;
         _enableMotor(motor, counterclockwise);
