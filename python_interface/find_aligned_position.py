@@ -194,8 +194,11 @@ def findAlignedPosition(MD_test, MD_probe):
             printInstructions('Updating aligned orientation on MCU...')
             if (test_theta != None) and (test_phi != None):
                 MD_test.setAlignedOrientation(test_theta, test_phi)
+                test_theta_a = test_theta
+                test_phi_a = test_phi
             if probe_phi != None:
                 MD_probe.setAlignedOrientation(0, probe_phi)
+                probe_phi_a = probe_phi
             mcu_updated = True
             while keyboard.is_pressed('c'):
                 pass

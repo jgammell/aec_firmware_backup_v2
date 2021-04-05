@@ -2,6 +2,7 @@
 
 import serial
 import time
+from error_codes import *
 
 CMDDELIM = '\n'
 ARGDELIM = ':'
@@ -18,10 +19,44 @@ MOVE     = 'MOVE'
 FREQ     = 'FREQ'
 ORIENT   = 'ORIENTATION'
 
+def getMotorDriverComPorts(pid=0x3Df):
+    ports = []
+    for candidate in serial.tools.list_ports.comports():
+        if candidate.pid == pid:
+            ports.append(candidate)
+    return ports
+    
+def findSystemMotorDrivers():
+    ports = getMotorDriverPorts()
+    if len(ports) != 2:
+        return {'error code': ERROR_CODE__MISC}
+    Test_MD  = None
+    Probe_MD = None
+    for port in ports:
+        try:
+            MD = MotorDriver(port.name)
+            identity = MotorDriver.getId()
+            if identity == 'TEST':
+                Test_MD = MD
+            elif identity == 'PROBE':
+                Probe_MD = MD
+            else:
+                assert False
+        except:
+            return {'error code': ERROR_CODE__CONNECTION}
+    if Test_MD == None:
+        del Probe_MD
+        return {'error code': ERROR_CODE__CONNECTION_TEST}
+    if Probe_MD == None:
+        del Test_MD
+        return {'error code': ERROR_CODE__CONNECTION_PROBE}
+    return {'test motor driver':  Test_MD,
+            'probe motor driver': Probe_MD,
+            'error code':         ERROR_CODE__SUCCESS}
 
 class MotorDriver:
     def __init__(self, port,
-                 debug=True,
+                 debug=False,
                  baudrate=9600,
                  bytesize=serial.EIGHTBITS,
                  parity=serial.PARITY_NONE,
