@@ -14,7 +14,7 @@
 
 void CA_init(void);
 
-void CA_writeLaser(bool state, void (*handler)(void *), void * handler_args);
+void CA_writeLaser(bool state, void (*handler)(void *, bool), void * handler_args);
 
 void CA_measureSensor(void (*handler)(uint16_t, void *), void * handler_args);
 

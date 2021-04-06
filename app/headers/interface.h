@@ -13,6 +13,7 @@
 
 #define IF_ACK_CMD         "a"
 #define IF_NACK_CMD        "nack"
+#define IF_ERROR_CMD       "ERROR"
 
 #define IF_CMDDELIM_CHAR   '\n'
 #define IF_ARGDELIM_CHAR   ':'

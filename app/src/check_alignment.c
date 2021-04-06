@@ -28,7 +28,7 @@ static _Id_Enum id = invalid;
 typedef struct
 {
     bool state;
-    void (*handler)(void *);
+    void (*handler)(void *, bool);
     void * handler_args;
 } _LaserControl_Struct;
 typedef struct
@@ -73,7 +73,7 @@ void CA_init(void)
         _initProbe();
 }
 
-void CA_writeLaser(bool state, void (*handler)(void *), void * handler_args)
+void CA_writeLaser(bool state, void (*handler)(void *, bool), void * handler_args)
 {
     ASSERT(id == test);
     ((_LaserControl_Struct *)cmd_struct)->state = state;
@@ -168,7 +168,7 @@ static void _laserControlTask(void * args)
         xSemaphoreTake(laser_ownership, portMAX_DELAY);
         IO_writePin(CA_POWER_PORT, CA_POWER_PIN, (IO_Out_Enum)cmd->state);
         xSemaphoreGive(laser_ownership);
-        cmd->handler(cmd->handler_args);
+        cmd->handler(cmd->handler_args, false);
     }
 }
 

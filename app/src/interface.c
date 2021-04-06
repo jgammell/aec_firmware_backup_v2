@@ -55,13 +55,13 @@ static void _rxTask(void *);
 static void _parseAndExecuteCmd(char *, uint8_t);
 static void _ack(void);
 static void _nack(void);
-static void _done(void *);
-static void _iden(void *);
+static void _done(void *, bool);
+static void _iden(void *, bool);
 static void _rsensor(uint16_t, void *);
-static void _rassert(void *);
-static void _invbsl(void *);
-static void _rfreq(void *);
-static void _roinfo(void *);
+static void _rassert(void *, bool);
+static void _invbsl(void *, bool);
+static void _rfreq(void *, bool);
+static void _roinfo(void *, bool);
 static void _invbslButton(void);
 static void _toCaps(char *, uint8_t);
 static bool _strEq(const char *, const char *, uint8_t);
@@ -145,7 +145,7 @@ static void _parseAndExecuteCmd(char * s, uint8_t n)
         ASSERT(pref_len < n);
     }
     uint8_t cmd_idx = _storePendingCmd(s);
-    void (*wb_handler)(void *) = 0;
+    void (*wb_handler)(void *, bool) = 0;
     void * wb_args = 0;
     if((pref_len==STRLEN_C(IF_IDEN_PREF)) && _strEq(s, IF_IDEN_PREF, pref_len))
     {
@@ -424,7 +424,7 @@ static void _parseAndExecuteCmd(char * s, uint8_t n)
     }
     _ack();
     if(wb_handler!=0)
-        (*wb_handler)(wb_args);
+        (*wb_handler)(wb_args, false);
 }
 
 static void _ack(void)
@@ -439,16 +439,20 @@ static void _nack(void)
     _sendData(nack_msg, STRLEN_C(nack_msg));
 }
 
-static void _done(void * _idx)
+static void _done(void * _idx, bool error)
 {
+    char error_str[STRLEN_C(IF_ERROR_CMD IF_CMDDELIM_STR)] = IF_ERROR_CMD IF_CMDDELIM_STR;
     uint8_t idx = (uint8_t)(uintptr_t)(_idx);
     uint8_t len = _strFind(pending_cmds[idx], IF_CMDDELIM_CHAR, MAX_CMD_LEN)+1;
     ASSERT(len<MAX_CMD_LEN+1);
-    _sendData(pending_cmds[idx], len);
+    if(!error)
+        _sendData(pending_cmds[idx], len);
+    else
+        _sendData(error_str, STRLEN_C(IF_ERROR_CMD IF_CMDDELIM_STR));
     _rmPendingCmd(idx);
 }
 
-static void _iden(void * done_args)
+static void _iden(void * done_args, bool error)
 {
     static char id_msg[MAX(STRLEN_C(IF_IDEN_RV_TEST), STRLEN_C(IF_IDEN_RV_PROBE))+STRLEN_C(IF_CMDDELIM_STR)];
     if(CA_idProbe())
@@ -461,7 +465,7 @@ static void _iden(void * done_args)
         _strCpy(IF_IDEN_RV_TEST IF_CMDDELIM_STR, id_msg, STRLEN_C(id_msg)+1);
         _sendData(id_msg, STRLEN_C(IF_IDEN_RV_TEST)+1);
     }
-    _done(done_args);
+    _done(done_args, false);
 }
 
 static void _rsensor(uint16_t output, void * done_args)
@@ -475,10 +479,10 @@ static void _rsensor(uint16_t output, void * done_args)
     rv_msg[i] = IF_CMDDELIM_CHAR;
     ++i;
     _sendData(rv_msg, i);
-    _done(done_args);
+    _done(done_args, false);
 }
 
-static void _rfreq(void * _args)
+static void _rfreq(void * _args, bool error)
 {
     static char rv_msg[10 + STRLEN_C(IF_CMDDELIM_STR)];
     _Rfreq_Struct * args = (_Rfreq_Struct *) _args;
@@ -490,10 +494,10 @@ static void _rfreq(void * _args)
     rv_msg[i] = IF_CMDDELIM_CHAR;
     ++i;
     _sendData(rv_msg, i);
-    _done((void *)args->cmd_idx);
+    _done((void *)args->cmd_idx, false);
 }
 
-static void _roinfo(void * _args)
+static void _roinfo(void * _args, bool error)
 {
     static char rv_msg[11 + STRLEN_C(IF_CMDDELIM_STR)];
     _Oinfo_Struct * args = (_Oinfo_Struct *) _args;
@@ -513,16 +517,16 @@ static void _roinfo(void * _args)
     rv_msg[i] = IF_CMDDELIM_CHAR;
     ++i;
     _sendData(rv_msg, i);
-    _done((void *)args->cmd_idx);
+    _done((void *)args->cmd_idx, false);
 }
 
-static void _rassert(void * done_args)
+static void _rassert(void * done_args, bool error)
 {
     static char done_str[131];
     ERROR_AssertInfo_Struct * info = ERROR_lastAssertInfo();
     if(info == 0)
     {
-        _done(done_args);
+        _done(done_args, false);
         return;
     }
     uint8_t idx = 0;
@@ -539,18 +543,18 @@ static void _rassert(void * done_args)
         done_str[idx] = '0'+((info->line/base)%10);
     done_str[idx] = IF_CMDDELIM_CHAR;
     _sendData(done_str, idx+1);
-    _done(done_args);
+    _done(done_args, false);
 }
 
 static void _invbslButton(void)
 {
-    _invbsl((void *)MAX_CMD_NUM);
+    _invbsl((void *)MAX_CMD_NUM, false);
 }
 
-static void _invbsl(void * done_args)
+static void _invbsl(void * done_args, bool error)
 {
     if(done_args != (void *)MAX_CMD_NUM)
-        _done(done_args);
+        _done(done_args, false);
     while (USBCDC_getInterfaceStatus(CDC0_INTFNUM, done_args, done_args) & USBCDC_WAITING_FOR_SEND);
     __disable_interrupt();
     TB_reset(TB0);
