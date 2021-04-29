@@ -416,6 +416,26 @@ static void _parseAndExecuteCmd(char * s, uint8_t n)
             wb_args = (void *) cmd_idx;
         }
     }
+    else if((pref_len==STRLEN_C(IF_ABORT_PREF)) && _strEq(s, IF_ABORT_PREF, pref_len))
+    {
+        s += pref_len+1;
+        uint8_t arg0_len = _strFind(s, IF_CMDDELIM_CHAR, n);
+        ASSERT(arg0_len < n);
+        CM_Motor_Enum motor;
+        if((arg0_len==STRLEN_C(IF_ABORT_ARG0_THETA)) && _strEq(s, IF_ABORT_ARG0_THETA, arg0_len))
+            motor = theta;
+        else if((arg0_len==STRLEN_C(IF_ABORT_ARG0_PHI)) && _strEq(s, IF_ABORT_ARG0_PHI, arg0_len))
+            motor = phi;
+        else
+        {
+            _rmPendingCmd(cmd_idx);
+            _nack();
+            return;
+        }
+        CM_abort(motor);
+        wb_handler = _done;
+        wb_args = (void *) cmd_idx;
+    }
     else
     {
         _rmPendingCmd(cmd_idx);

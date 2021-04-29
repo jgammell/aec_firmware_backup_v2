@@ -61,6 +61,10 @@
 #define IF_OINFO_ARG1_ALIGNED "ALIGNED"
 #define IF_OINFO_ARG1_CURRENT "CURRENT"
 
+#define IF_ABORT_PREF       "ABORT"
+#define IF_ABORT_ARG0_THETA "THETA"
+#define IF_ABORT_ARG0_PHI   "PHI"
+
 
 void IF_informRx(void);
 

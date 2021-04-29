@@ -123,6 +123,13 @@ static TaskHandle_t theta_align_task     = NULL;
 static TaskHandle_t phi_turnsteps_task   = NULL;
 static TaskHandle_t phi_align_task       = NULL;
 
+static volatile bool theta_turning = false;
+static volatile bool theta_aligning = false;
+static volatile bool theta_aborting = false;
+static volatile bool phi_turning = false;
+static volatile bool phi_aligning = false;
+static volatile bool phi_aborting = false;
+
 static void _turnMotorStepsTask(void *);
 static void _alignTask(void *);
 static void _enableMotor(CM_Motor_Struct * motor, CM_Dir_Enum dir);
@@ -241,6 +248,40 @@ void CM_init(void)
         _retrieveOrientationInfo();
 }
 
+void CM_abort(CM_Motor_Enum motor)
+{
+    if(motor==theta)
+    {
+        if(theta_turning)
+        {
+            theta_aborting = true;
+            PWM_stop(Theta.timer_source);
+            vTaskNotifyGiveFromISR(theta_turnsteps_task, NULL);
+        }
+        else if(theta_aligning)
+        {
+            theta_aborting = true;
+            PWM_stop(Theta.timer_source);
+            vTaskNotifyGiveFromISR(theta_align_task, NULL);
+        }
+    }
+    else if(motor==phi)
+    {
+        if(phi_turning)
+        {
+            phi_aborting = true;
+            PWM_stop(Phi.timer_source);
+            vTaskNotifyGiveFromISR(phi_turnsteps_task, NULL);
+        }
+        else if(phi_aligning)
+        {
+            phi_aborting = true;
+            PWM_stop(Phi.timer_source);
+            vTaskNotifyGiveFromISR(phi_align_task, NULL);
+        }
+    }
+}
+
 void CM_setFreq(CM_Motor_Enum motor, uint32_t freq)
 {
     ASSERT(freq > 0);
@@ -350,11 +391,14 @@ static void _turnMotorStepsTask(void * _motor)
     SemaphoreHandle_t motor_ownership = motor==&Theta? theta_ownership : phi_ownership;
     QueueHandle_t cmd_queue = motor==&Theta? theta_turnsteps_command : phi_turnsteps_command;
     void (*fault_handler)(void) = motor==&Theta? _faultThetaTurnsteps : _faultPhiTurnsteps;
+    volatile bool * turning = motor==&Theta? &theta_turning : &phi_turning;
+    volatile bool * aborting = motor==&Theta? &theta_aborting : &phi_aborting;
     while(1)
     {
         CM_TurnStepsCmd_Struct cmd;
         xQueueReceive(cmd_queue, &cmd, portMAX_DELAY);
         xSemaphoreTake(motor_ownership, portMAX_DELAY);
+        *turning = true;
         _enableMotor(motor, cmd.dir);
         volatile uint32_t delay_idx;
 #if DIST_PCB == false
@@ -363,7 +407,7 @@ static void _turnMotorStepsTask(void * _motor)
 #endif
         for(delay_idx=100000; (delay_idx>0) && (!IO_readPin(motor->fault_port, motor->fault_pin)); --delay_idx);
         bool fault = !IO_readPin(motor->fault_port, motor->fault_pin);
-        if(!fault)
+        if((!fault) && (!(*aborting)))
         {
             IO_attachInterrupt(motor->fault_port, motor->fault_pin, fault_handler);
             IO_writePin(motor->fault_port, motor->fault_pin, ioOutLow);
@@ -390,7 +434,7 @@ static void _turnMotorStepsTask(void * _motor)
                 fault = !IO_readPin(motor->fault_port, motor->fault_pin);
             }
             motor->fault_port->IE &= ~motor->fault_pin;
-            orientation_info.current_valid = orig_state & (!fault);
+            orientation_info.current_valid = orig_state & (!fault) & (!(*aborting));
             if(motor == &Theta)
                 orientation_info.theta_current += (cmd.dir == counterclockwise? -1 : 1)*cmd.num_steps;
             else
@@ -398,6 +442,8 @@ static void _turnMotorStepsTask(void * _motor)
             _storeOrientationInfo();
         }
         xSemaphoreGive(motor_ownership);
+        *turning = false;
+        *aborting = false;
         cmd.handler(cmd.handler_args, fault);
     }
 }
@@ -408,11 +454,14 @@ static void _alignTask(void * _motor)
     SemaphoreHandle_t motor_ownership = motor==&Theta? theta_ownership : phi_ownership;
     QueueHandle_t cmd_queue = motor==&Theta? theta_align_command : phi_align_command;
     void (*fault_handler)(void) = motor==&Theta? _faultThetaAlign : _faultPhiAlign;
+    volatile bool * aligning = motor==&Theta? &theta_aligning : &phi_aligning;
+    volatile bool * aborting = motor==&Theta? &theta_aborting : &phi_aborting;
     while(1)
     {
         CM_AlignCmd_Struct cmd;
         xQueueReceive(cmd_queue, &cmd, portMAX_DELAY);
         xSemaphoreTake(motor_ownership, portMAX_DELAY);
+        *aligning = true;
         _retrieveOrientationInfo();
         orientation_info.current_valid = false;
         _storeOrientationInfo();
@@ -420,7 +469,7 @@ static void _alignTask(void * _motor)
         volatile uint32_t delay_idx;
         for(delay_idx=100000; (delay_idx>0) && (!IO_readPin(motor->fault_port, motor->fault_pin)); --delay_idx);
         bool fault = !IO_readPin(motor->fault_port, motor->fault_pin);
-        if(!fault)
+        if((!fault) && (!(*aborting)))
         {
 #if DIST_PCB == true
             IO_attachInterrupt(motor->fault_port, motor->fault_pin, fault_handler);
@@ -442,7 +491,7 @@ static void _alignTask(void * _motor)
                 for(delay_idx=100000; delay_idx>0; --delay_idx);
             }
             fault = !IO_readPin(motor->fault_port, motor->fault_pin);
-            if(!fault)
+            if((!fault) && (!(*aborting)))
             {
                 ASSERT(IO_readPin(motor->es_port, motor->es_pin) == 0);
                 motor->es_port->IE &= ~motor->es_pin;
@@ -458,13 +507,15 @@ static void _alignTask(void * _motor)
             }
 #endif
         }
-        orientation_info.current_valid = !fault;
+        orientation_info.current_valid = (!fault) && (!(*aborting));
         if(motor == &Theta)
             orientation_info.theta_current = 0;
         else
             orientation_info.phi_current = 0;
         _storeOrientationInfo();
         xSemaphoreGive(motor_ownership);
+        *aligning = false;
+        *aborting = false;
         cmd.handler(cmd.handler_args, fault);
     }
 }

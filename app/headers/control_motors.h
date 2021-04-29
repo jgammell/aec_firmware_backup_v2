@@ -37,6 +37,8 @@ typedef enum
 
 void CM_init(void);
 
+void CM_abort(CM_Motor_Enum motor);
+
 void CM_setFreq(CM_Motor_Enum motor, uint32_t freq);
 
 uint32_t CM_getFreq(CM_Motor_Enum motor);
