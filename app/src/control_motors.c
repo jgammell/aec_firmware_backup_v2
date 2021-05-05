@@ -226,6 +226,8 @@ void CM_init(void)
     IO_configurePin(Phi.sd_port, Phi.sd_pin, &io_config);
     IO_configurePin(Phi.reset_port, Phi.reset_pin, &io_config);
     IO_configurePin(Phi.dir_port, Phi.dir_pin, &io_config);
+    IO_configurePin(LED5_PORT, LED5_PIN, &io_config);
+    IO_writePin(LED5_PORT, LED5_PIN, ioOutLow);
     io_config.sel = ioSelPeripheral;
     IO_configurePin(Theta.step_port, Theta.step_pin, &io_config);
     IO_configurePin(Phi.step_port, Phi.step_pin, &io_config);
@@ -430,8 +432,8 @@ static void _turnMotorStepsTask(void * _motor)
                 _startTurnSteps(motor, cmd.num_steps, cmd.gradual);
                 ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
                 _stopTurn(motor);
-                _disableMotor(motor);
                 fault = !IO_readPin(motor->fault_port, motor->fault_pin);
+                _disableMotor(motor);
             }
             motor->fault_port->IE &= ~motor->fault_pin;
             orientation_info.current_valid = orig_state & (!fault) & (!(*aborting));

@@ -2,14 +2,14 @@
 <descTool>
     <toolOptions>
         <runGUI>1</runGUI>
-        <workspace>C:\Users\jgamm\Desktop\f2020\ecen4610\code_composer_workspace\C3_EchoToHost\USB_config</workspace>
+        <workspace>C:\Users\jgamm\Desktop\sp2021\ecen_4620\ecen4620_firmware\USB_config</workspace>
         <projectName>n/a</projectName>
     </toolOptions>
     <toolConfig>
         <treeConfig>
             <MSP mcuFam="0">
                 <mspConfig>
-                    <disableXtalOnSus>1</disableXtalOnSus>
+                    <disableXtalOnSus>0</disableXtalOnSus>
                     <XT2OscFreq>14</XT2OscFreq>
                     <DMAChannel>1</DMAChannel>
                     <bypassXT2>0</bypassXT2>
@@ -28,7 +28,7 @@
                     <config>
                         <configParam>
                             <selfPowered>1</selfPowered>
-                            <remWkupSup>0</remWkupSup>
+                            <remWkupSup>1</remWkupSup>
                             <maxPowDrain>200</maxPowDrain>
                             <configStr>MSP USB</configStr>
                         </configParam>

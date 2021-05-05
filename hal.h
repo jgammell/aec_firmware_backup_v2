@@ -96,7 +96,7 @@
 #define CA_TXRXID_PIN     (IO_PIN6)
 #else
 #define SW2_PORT (P1)
-#define SW2_PIN (IO_PIN0)
+#define SW2_PIN (IO_PIN1)
 #define LED5_PORT (P4)
 #define LED5_PIN (IO_PIN7)
 #define CA_POWER_PORT (P1)

@@ -129,6 +129,9 @@ static void _rxTask(void * params)
         if(_strFind(rx_buffer, IF_CMDDELIM_CHAR, count) < count)
         {
             _parseAndExecuteCmd(rx_buffer, count);
+            uint8_t i;
+            for(i=0; i<MAX_CMD_LEN; ++i)
+                rx_buffer[i] = 0x00;
             count = 0;
         }
     }
@@ -634,5 +637,12 @@ static void _rmPendingCmd(uint8_t idx)
 static void _sendData(const char * s, uint8_t n)
 {
     xSemaphoreTake(tx_available, portMAX_DELAY);
-    USBCDC_sendDataInBackground((uint8_t *)s, n, CDC0_INTFNUM, 1);
+    while(USBCDC_sendDataInBackground((uint8_t *)s, n, CDC0_INTFNUM, 1000))
+    {
+        //USB_forceRemoteWakeup();
+        uint32_t delay_idx;
+        for(delay_idx=10000; delay_idx<0xFFFFFFFF; --delay_idx);
+    }
+    xSemaphoreTake(tx_available, portMAX_DELAY);
+    xSemaphoreGive(tx_available);
 }
